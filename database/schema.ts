@@ -1,5 +1,6 @@
 import { pgTable, uuid, text, timestamp, boolean, integer, serial, jsonb, unique, foreignKey, primaryKey } from 'drizzle-orm/pg-core';
 import type { ActiveLibrary, ResolvedMaterial } from '../packages/contracts/resolution.js';
+import type { BomResult } from '../packages/contracts/bom.js';
 import type { CsvProfile, CsvResult, ImportedCabinet, ImportedPart } from '../packages/contracts/imports.js';
 import type { ModelSummary, ModelIssue } from '../packages/contracts/technical-model.js';
 import type { LibraryCategory, LibraryResult, MaterialMatch } from '../packages/contracts/library.js';
@@ -78,3 +79,7 @@ export const materialResolutions = pgTable('material_resolution_reports', {
   snapshots: jsonb('snapshots').$type<ActiveLibrary[]>().notNull(), results: jsonb('results').$type<ResolvedMaterial[]>().notNull(),
   createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
 }, t => [unique().on(t.modelId, t.inputKey, t.resolverVersion)]);
+export const bomReports = pgTable('material_requirement_reports', {
+  id: id(), resolutionId: uuid('resolution_id').references(() => materialResolutions.id).notNull(), algorithmVersion: text('algorithm_version').notNull(),
+  result: jsonb('result').$type<BomResult>().notNull(), createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.resolutionId, t.algorithmVersion)]);

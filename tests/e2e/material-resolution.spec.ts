@@ -24,10 +24,19 @@ test('project automatically resolves current materials and shows only exceptions
   await expect(page.getByRole('heading', { name: 'Materials resolved: 13/13', exact: true })).toBeVisible();
   const area = page.getByRole('region', { name: 'Automatic material resolution' });
   await expect(area.getByText('No material exceptions require attention.')).toBeVisible();
-  await expect(area.locator('table')).toHaveCount(0);
+  await expect(area.locator('.material-exceptions table')).toHaveCount(0);
   await expect(page.locator('.model-totals')).toHaveText('21 cabinets · 216 part rows · 280 units · 8 materials');
   const endpoint = `/api/projects/${projectId}/technical-models/${process.env.MOBLUX_REAL_MODEL_ID}/material-resolution`;
   const initial = await (await page.request.get(endpoint)).json();
+  const bom = page.getByRole('region', { name: 'Automatic material requirements' });
+  await expect(bom.getByRole('heading', { name: 'Material requirements / BOM' })).toBeVisible();
+  await expect(bom.locator('.bom-totals')).toContainText('280 panel units');
+  await expect(bom.locator('tbody tr')).toHaveCount(13);
+  expect(initial.bom.result.panels).toHaveLength(8); expect(initial.bom.result.edges).toHaveLength(5);
+  expect(initial.bom.result.edges.every((e: { lengthM: null }) => e.lengthM === null)).toBe(true);
+  await bom.getByText(/^Panel sources/).first().click();
+  await expect(bom.getByText(/Contribution:/).first()).toBeVisible();
+  await bom.getByText(/^Panel sources/).first().click();
 
   await expect(area.getByRole('button', { name: 'Refresh material resolution' })).toBeEnabled();
   expect((await (await page.request.get(endpoint)).json()).current.id).toBe(initial.current.id);
@@ -38,7 +47,7 @@ test('project automatically resolves current materials and shows only exceptions
   try {
   
     await expect(page.getByRole('heading', { name: 'Materials resolved: 5/13', exact: true })).toBeVisible({ timeout: 15000 });
-    await expect(area.locator('tbody tr')).toHaveCount(8);
+    await expect(area.locator('.material-exceptions tbody tr')).toHaveCount(8);
     await expect(area.getByText('8 unresolved · 0 ambiguous · 8 unmatched · 0 review required', { exact: true })).toBeVisible();
   } finally {
     await page.request.post('/api/library/active', { headers, data: { category: 'PANEL', snapshotId: selected.PANEL, reason: 'Restore verified current Panel library after browser check' } });

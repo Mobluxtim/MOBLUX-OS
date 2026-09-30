@@ -40,3 +40,7 @@ The owner authorized normalized technical review from existing CSV reports. Foll
 ## Automatic material resolution — current owner-authorized increment
 
 The owner authorized EXACT_UNIQUE auto-linking and exception-only project review. Follow docs/MATERIAL_RESOLUTION.md: use explicitly active snapshots, derive requirements from the immutable normalized model, retain separate append-only reports and internal MaterialMaster IDs, and never merge identities across source snapshots without evidence. library.activate controls administrative activation. No manual material re-entry, supplier concepts or manufacturing authorization is included. Earlier proposal-only restrictions are superseded only for this bounded technical-resolution scope. Do not commit/push or begin the next increment.
+
+## Current authorized BOM increment
+
+The owner authorizes automatic technical Material Requirements / BOM from the normalized model and existing master links. Follow docs/MATERIAL_REQUIREMENTS.md: exact exported rectangular PANEL area and units only; EDGE material/thickness traceability counts with null length until orientation is confirmed. Preserve immutable reports and drill-down. No supplier, price, stock, purchasing, waste, optimization, sheet purchasing quantity or costing scope. Stop after this increment for review.

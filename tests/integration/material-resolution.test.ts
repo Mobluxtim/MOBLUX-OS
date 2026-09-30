@@ -9,6 +9,7 @@ import { syntheticLibrary } from '../fixtures/library.js';
 import { parseLibrary } from '../../packages/modules/imports/polyboard-library.js';
 import type { LibraryCategory, LibraryRecord } from '../../packages/contracts/library.js';
 import type { ResolutionReport, ResolutionState, ActiveLibrary } from '../../packages/contracts/resolution.js';
+import { decimalIdentity } from '../../packages/modules/projects/normalize.js';
 
 test('automatic resolution, active libraries, persistent identity and immutable history', async t => {
   const app = buildServer(), owner = new pg.Pool({ connectionString: process.env.MIGRATION_DATABASE_URL });
@@ -52,7 +53,18 @@ test('automatic resolution, active libraries, persistent identity and immutable 
     const get = async () => (await app.inject({ method: 'GET', url: first.url, headers })).json<ResolutionState>();
     const run = async () => { const r = await app.inject({ method: 'POST', url: first.url, headers }); assert.equal(r.statusCode, 200, r.body); return r.json<ResolutionReport>(); };
     const initial = (await get()).current!;
+    const initialBom = (await get()).bom!;
     const versions = (await owner.query('select * from project_versions where project_id=$1 order by id', [first.projectId])).rows;
+    await t.test('BOM is automatic, immutable, idempotent and pinned to exact resolution/version with complete source drill-down', async () => {
+      assert.ok(initialBom); assert.equal(initialBom.resolutionId, initial.id);
+      assert.deepEqual([initialBom.result.totals.cabinets, initialBom.result.totals.partRows, initialBom.result.totals.units], [21,216,280]);
+      assert.equal(initialBom.result.panels.flatMap(p => p.contributions).length, 216);
+      assert.ok(initialBom.result.panels.flatMap(p => p.contributions).every(c => c.sourceHash && c.reportId && c.partId && c.cabinetId));
+      assert.ok(initialBom.result.edges.every(e => e.lengthM === null));
+      await Promise.all([run(), run()]); assert.equal((await get()).bom!.id, initialBom.id);
+      assert.equal((await owner.query("select count(*)::int n from audit_events where entity_id=$1 and event='material_requirements.derived'", [initialBom.id])).rows[0].n, 1);
+      await assert.rejects(owner.query('update material_requirement_reports set result=$1 where id=$2', ['{}', initialBom.id]));
+    });
     await t.test('creation derives materials automatically; exact results link and other results do not', async () => {
       assert.equal(initial.results.length, 9); assert.equal(initial.results.filter(r => r.materialMasterId).length, 2);
       assert.equal(initial.results.filter(r => r.status === 'NO_MATCH').length, 7);
@@ -65,6 +77,7 @@ test('automatic resolution, active libraries, persistent identity and immutable 
     await t.test('same corroborated source reuses stable internal master across projects', async () => {
       const second = await createModel(); const state = (await app.inject({ method: 'GET', url: second.url, headers })).json<ResolutionState>();
       assert.deepEqual(state.current!.results.filter(r => r.materialMasterId).map(r => r.materialMasterId), initial.results.filter(r => r.materialMasterId).map(r => r.materialMasterId));
+      assert.notEqual(state.bom!.id, initialBom.id); assert.notEqual(state.bom!.result.versionId, initialBom.result.versionId);
       assert.ok(initial.results.filter(r => r.materialMasterId).every(r => r.materialMasterId !== r.candidates[0].candidateUuid));
     });
     await t.test('active change creates separate reports; ambiguity/review/missing are never linked; old exact report unchanged', async () => {
@@ -74,10 +87,13 @@ test('automatic resolution, active libraries, persistent identity and immutable 
         const r = await run(), result = r.results.find(m => m.category === 'PANEL' && m.name === 'Synthetic material 0')!;
         assert.notEqual(r.id, initial.id); assert.equal(result.materialMasterId, null);
         assert.equal(result.status, { ambiguous: 'AMBIGUOUS', review: 'REVIEW_REQUIRED', missing: 'NO_MATCH' }[mode]);
+        assert.notEqual((await get()).bom!.id, initialBom.id);
+        assert.equal((await get()).bom!.result.totals.panelAreaM2, initialBom.result.totals.panelAreaM2);
       }
       await activate('PANEL', null); assert.equal((await run()).results.find(r => r.category === 'PANEL')?.status, 'REVIEW_REQUIRED');
       await activate('PANEL', exact); assert.equal((await run()).id, initial.id);
       assert.deepEqual((await get()).history.find(r => r.id === initial.id), initial);
+      assert.deepEqual((await get()).bom, initialBom);
       assert.deepEqual((await owner.query('select * from project_versions where project_id=$1 order by id', [first.projectId])).rows, versions);
       await assert.rejects(owner.query('update material_resolution_reports set results=$1 where id=$2', ['[]', initial.id]));
       await assert.rejects(owner.query('delete from material_masters where id=$1', [initial.results.find(r => r.materialMasterId)!.materialMasterId]));
@@ -111,6 +127,19 @@ test('automatic resolution, active libraries, persistent identity and immutable 
       assert.equal(r.results.filter(m => m.category === 'PANEL').length, 8); assert.equal(r.results.filter(m => m.category === 'EDGE').length, 5);
       assert.deepEqual((await app.inject({ method: 'GET', url: base, headers })).json(), before);
       assert.deepEqual([before.cabinets.length, before.parts.length, before.parts.reduce((n: number, p: { data: { quantity: number } }) => n + p.data.quantity, 0), before.materials.length], [21,216,280,8]);
+      const bom = (await app.inject({ method: 'GET', url: `${base}/material-resolution`, headers })).json<ResolutionState>().bom!;
+      assert.equal(bom.result.panels.length, 8); assert.equal(bom.result.edges.length, 5);
+      assert.ok(bom.result.panels.every(p => p.materialMasterId)); assert.ok(bom.result.edges.every(e => e.materialMasterId && e.lengthM === null));
+      const expected = (await owner.query(`select m.description, m.thickness, count(*)::int rows, sum((p.data->>'quantity')::int)::int units,
+        sum((p.data->'dimensions'->>'first')::numeric * (p.data->'dimensions'->>'second')::numeric * (p.data->>'quantity')::numeric / 1000000)::text area
+        from parts p join technical_materials m on m.id=p.material_id where p.version_id=$1 group by m.id order by m.description`, [model.version_id])).rows;
+      for (const row of expected) {
+        const actual = bom.result.panels.find(p => p.name === row.description && p.thicknessMm === decimalIdentity(row.thickness))!;
+        assert.ok(actual); assert.equal(actual.areaM2, decimalIdentity(row.area)); assert.equal(actual.units, row.units); assert.equal(actual.partRows, row.rows);
+      }
+      const edgeTotals = (await owner.query(`select count(*)::int slots, sum((p.data->>'quantity')::int)::int occurrences from edge_data e join parts p on p.id=e.part_id where e.version_id=$1 and e.material<>''`, [model.version_id])).rows[0];
+      assert.equal(bom.result.totals.populatedEdgeSlots, edgeTotals.slots); assert.equal(bom.result.totals.edgeOccurrences, edgeTotals.occurrences);
+      console.log('Real BOM:', JSON.stringify({ totals: bom.result.totals, panels: bom.result.panels.map(p => ({ name: p.name, thickness: p.thicknessMm, units: p.units, areaM2: p.areaM2 })), edges: bom.result.edges.map(e => ({ name: e.name, thickness: e.thicknessMm, slots: e.slotRows, occurrences: e.occurrences, lengthM: e.lengthM })) }));
       console.log('Real automatic resolution: 13/13 linked; 8 Panel + 5 Edge; 21/216/280/8 unchanged.');
     });
   } finally {

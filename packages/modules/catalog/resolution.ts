@@ -2,7 +2,9 @@ import { createHash } from 'node:crypto';
 import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db, type Transaction } from '../../infrastructure/db.js';
-import { libraryActivations, librarySnapshots, materialMasters, materialResolutions, technicalModels, materials, edgeData } from '../../../database/schema.js';
+import { libraryActivations, librarySnapshots, materialMasters, materialResolutions, technicalModels, materials, edgeData, bomReports } from '../../../database/schema.js';
+import { ensureBom } from '../projects/bom-service.js';
+import { bomAlgorithmVersion } from '../projects/bom.js';
 import { authorize, DomainError, type Actor } from '../identity/policy.js';
 import { record } from '../audit/service.js';
 import { libraryCategories } from '../../contracts/library.js';
@@ -69,7 +71,7 @@ async function resolveCore(tx: Transaction, actor: Actor, projectId: string, mod
   await tx.execute(lock);
   const { requests, active, inputKey } = await context(tx, projectId, modelId);
   const previous = await tx.query.materialResolutions.findFirst({ where: and(eq(materialResolutions.modelId, modelId), eq(materialResolutions.inputKey, inputKey), eq(materialResolutions.resolverVersion, resolverVersion)) });
-  if (previous) return previous;
+  if (previous) { await ensureBom(tx, actor, previous); return previous; }
   const selected = active.length ? await tx.select().from(librarySnapshots).where(inArray(librarySnapshots.id, active.map(a => a.snapshotId))) : [];
   const matches = proposeMatches(requests, selected.map(s => ({ id: s.id, records: s.result.records })));
   const results: ResolvedMaterial[] = [];
@@ -90,6 +92,7 @@ async function resolveCore(tx: Transaction, actor: Actor, projectId: string, mod
   }
   const [report] = await tx.insert(materialResolutions).values({ modelId, inputKey, resolverVersion, snapshots: active, results, createdBy: actor.id }).returning();
   await record(tx, actor.id, 'materials.automatically_resolved', report.id, projectId, { modelId, snapshotIds: active.map(a => a.snapshotId), resolverVersion, resolved: results.filter(r => r.materialMasterId).length, total: results.length, manufacturingVerified: false });
+  await ensureBom(tx, actor, report);
   return report;
 }
 export async function resolveMaterials(actor: Actor, projectId: string, modelId: string) {
@@ -101,6 +104,7 @@ export async function resolutionState(actor: Actor, projectId: string, modelId: 
     await tx.execute(lock); const { active, inputKey } = await context(tx, projectId, modelId);
     const history = await tx.select().from(materialResolutions).where(eq(materialResolutions.modelId, modelId)).orderBy(desc(materialResolutions.createdAt));
     const current = history.find(r => r.inputKey === inputKey && r.resolverVersion === resolverVersion) ?? null;
-    return { current, history, active, stale: !current };
+    const bom = current ? await tx.query.bomReports.findFirst({ where: and(eq(bomReports.resolutionId, current.id), eq(bomReports.algorithmVersion, bomAlgorithmVersion)) }) : null;
+    return { current, history, active, stale: !current, bom: bom ?? null };
   });
 }

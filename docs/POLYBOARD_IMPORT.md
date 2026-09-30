@@ -66,3 +66,7 @@ The owner authorized the next bounded library increment. POLYBOARD_LIBRARY_PROFI
 ## Automatic post-normalization material resolution
 
 Technical model creation and refresh now derive requests automatically and resolve them against explicitly active category snapshots. Exact corroborated results link to persistent internal MaterialMaster IDs in separate append-only reports. No adapter mapping or source confidence is changed. Unresolved results remain exceptions; source/current-library selection and history are detailed in MATERIAL_RESOLUTION.md.
+
+## Automatic BOM boundary
+
+The current BOM consumes only the confirmed normalized dimensions/quantity/material fields. It does not reparse exports or alter adapters. Rectangle area does not require assigning manufacturing axes. Column 10 and raw edge orientation remain excluded; no edge length is calculated. See MATERIAL_REQUIREMENTS.md for exact formula, limitations and source-row lineage.

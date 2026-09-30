@@ -43,3 +43,6 @@ The normal project entry point is Overview (and Technical model), not Material L
 Activation-triggered recomputation runs as an internal consequence of the authorized library.activate command, attributed to its administrator in audit. It does not require granting that administrator project-processing capabilities or returning project contents through the activation response. Normal project resolution continues to require project access and works without library.view/match/activate/raw.view.
 
 Synchronous recomputation is suitable for the present local dataset; activation duration grows with affected models. A future durable batching design would require explicit work and equivalent atomic/current-status guarantees. No new job infrastructure is introduced in this correction.
+## Automatic downstream BOM
+
+Resolution now automatically ensures an immutable MaterialRequirementReport for the exact resolution/algorithm, including when a stored resolution is reused. This occurs in the same transaction and through the same authorized triggers. Ordinary project responses include the current BOM; no manual BOM input/trigger exists. New material-association evidence creates a separate BOM while earlier versions/reports stay unchanged. See MATERIAL_REQUIREMENTS.md.

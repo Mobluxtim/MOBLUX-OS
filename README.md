@@ -192,3 +192,9 @@ After an administrative library change, reopen the project or use **Refresh mate
 ### Workflow correction
 
 Open a project normally: its Overview now shows automatic material resolution for the latest normalized version. Technical model also opens its latest normalized version automatically. You do not need Material Library or manual matching controls. Administrators still configure active libraries centrally; changing one immediately creates/reuses affected resolution reports, and open project views update automatically. Manual comparison controls are collapsed under Administrative matching diagnostics (optional).
+
+## Automatic material requirements / BOM
+
+After updating, stop the app, run `pnpm db:migrate`, then restart (`pnpm dev`, or `pnpm build` and `pnpm start`). No new dependencies or seed grants are required.
+
+Open a project normally. Material requirements / BOM appears automatically with its current resolved technical model: PANEL units and net exported rectangular m², plus expandable Cabinet/Part/source-row evidence. EDGE rows show traceability counts and **Unknown** length until export orientation is confirmed. These are not sheet purchase quantities or costs. See [MATERIAL_REQUIREMENTS.md](docs/MATERIAL_REQUIREMENTS.md).

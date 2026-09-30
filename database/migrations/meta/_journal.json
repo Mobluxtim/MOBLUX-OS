@@ -43,6 +43,13 @@
       "when": 1790792558386,
       "tag": "0005_colossal_major_mapleleaf",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790794601006,
+      "tag": "0006_wakeful_meggan",
+      "breakpoints": true
     }
   ]
 }

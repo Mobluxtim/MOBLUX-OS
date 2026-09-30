@@ -457,3 +457,60 @@ Verification after correction:
 Additional files changed by this correction: apps/web/components/workspace.tsx, apps/web/components/material-resolution.tsx, apps/web/components/material-library.tsx, packages/modules/catalog/resolution.ts, tests/e2e/material-resolution.spec.ts, tests/e2e/library.spec.ts, tests/integration/material-resolution.test.ts, docs/MATERIAL_RESOLUTION.md, docs/ARCHITECTURE.md, docs/PERMISSIONS.md, docs/DECISIONS.md, README.md and this report. No new migration/dependency required for the correction.
 
 Workflow gap is fixed within the requested scope. Active-source propagation is synchronous and atomic for the current dataset; its duration scales with affected models. No supplier, costing, manufacturing/CAD feature or subsequent increment was started. No commit or push.
+
+## Completed Automatic Material Requirements / BOM — 2026-09-30
+
+This increment started from a clean repository containing the completed automatic resolution workflow. It reuses the normalized model, resolved internal master links, permissions, transaction lock and existing automatic project entry points. No adapter was re-analyzed or rewritten.
+
+### Implemented model and automation
+
+Migration 0006 adds immutable material_requirement_reports (24 application tables total), pinned to an exact resolution report + algorithm version. The resolution fixes model/version and complete library evidence. Database ancestry validation and immutable triggers preserve history. Calculation and audit commit in the existing transaction. Model creation, project open and active-library propagation automatically create/reuse the BOM; there is no manual BOM command/input in the UI.
+
+The pure calculator uses exact BigInt decimal arithmetic and deterministic ordering. PANEL groups by MaterialMaster + thickness; unresolved identities remain separate with visible issues. Each source row contributes first dimension × second dimension × exported quantity / 1,000,000 m² exactly once, without multiplying cabinet quantities. Quantities and area are net exported rectangles, not validated finished contours or sheet purchase requirements. EDGE groups confirmed material/thickness pairs, retaining raw slot counts and quantity-weighted occurrences; all linear lengths remain null because orientation is unconfirmed. Full cabinet/part/source-report/row/line/hash drill-down is preserved.
+
+### Actual real-fixture totals
+
+Unchanged model: 21 cabinets / 216 part rows / 280 exported units / 8 normalized panel materials. Existing resolution: 8 PANEL + 5 EDGE exact internal master links.
+
+| PANEL material (exact source name) | Thickness mm | Units | Net exported rectangular m² |
+| --- | ---: | ---: | ---: |
+| --W960 st7-- | 36 | 7 | 2.6176 |
+| H3702 ST10 Nuc Pacific Tbac | 36 | 12 | 1.092 |
+| 398 | 18 | 6 | 5.61877323 |
+| zz-Glass 0080 tr nou | 22 | 1 | 0.935165 |
+| H3702 ST10 Nuc Pacific Tabac | 18 | 43 | 22.30425672 |
+| --W960 ST7-- | 18 | 159 | 67.219211 |
+| --PFL--0110 PE(Alb) | 3 | 18 | 22.21447334 |
+| H1732 ST9 Mesteacan Nisip | 18 | 34 | 4.461702 |
+| **Total** | | **280** | **126.46318129** |
+
+EDGE: 5 material/thickness groups, 744 populated source slots, 996 quantity-weighted occurrences. These counts are not metres. Linear requirements are unknown, not zero.
+
+| EDGE material | Thickness mm | Source slots | Weighted occurrences |
+| --- | ---: | ---: | ---: |
+| --W960 ST7--23mm | 0.8 | 412 | 476 |
+| H3702 ST10 Nuc Pacific Tabac | 0.8 | 92 | 152 |
+| H1732 ST9 Mesteacan Nisip | 0.8 | 80 | 132 |
+| 398 | 1 | 132 | 196 |
+| H3702 ST10 Nuc Pacific Tabac DUBLAT | 0.8 | 28 | 40 |
+
+BOM status is PARTIAL because edge lengths remain unavailable. All real material identities resolve; this does not resolve grain, slot orientation, cut-out geometry or authorize manufacturing.
+
+### UI and verification
+
+Normal Project Overview / Technical model automatically shows Material requirements / BOM beneath material resolution. Tables display PANEL row/unit/area aggregates, EDGE unknown-length indicators and expandable source drill-down. No library visit, snapshot selection, material entry or generation button is required. Exact version, resolution, algorithm and creation time are visible under evidence.
+
+Checks completed:
+
+- 10 focused unit tests passed: three new BOM tests plus upstream technical-model/derivation tests. Covers decimal precision down to 10^-18 m², exported quantities without parent multiplication, grouping, unresolved preservation, deterministic reruns, ancestry and invalid dimensions/edge data.
+- Seven integration results passed (six subtests + parent) in the resolution/BOM suite against real PostgreSQL/S3, including the actual local fixture. BOM is present automatically after model creation; concurrent reruns reuse its ID/audit; separate versions and changed resolution evidence receive separate reports; old content remains unchanged. Direct UPDATE is rejected. Every real PANEL group was independently cross-checked with PostgreSQL numeric multiplication/aggregation; EDGE counts independently checked with SQL joins.
+- Two relevant Chrome browser scenarios passed: automatic resolution/BOM and technical model workflow. Real BOM appears without manual trigger, contains 8 PANEL + 5 EDGE groups, exposes contribution evidence, and keeps all EDGE lengths null. Existing exception handling still works. Desktop/mobile screenshots inspected; no page errors or document overflow.
+- Typecheck, lint and API/Next production build passed. No dependency added. Whitespace check passed after removing a trailing blank line. Authoritative source specifications unchanged.
+
+Increment complete within the requested bounded technical scope. No supplier, price, stock, purchasing, waste/optimization, sheet purchase quantity, costing, margin or profit implementation. No commit/push. Recommended next increment, after owner review: confirm edge-slot-to-dimension mapping using controlled export evidence, then add exact linear EDGE requirements without guessed orientation.
+
+### File manifest
+
+Created: apps/web/components/material-requirements.tsx; packages/contracts/bom.ts; packages/modules/projects/bom.ts; packages/modules/projects/bom-service.ts; database/migrations/0006_wakeful_meggan.sql; database/migrations/meta/0006_snapshot.json; tests/unit/bom.test.ts; docs/MATERIAL_REQUIREMENTS.md.
+
+Updated: AGENTS.md; README.md; apps/web/app/globals.css; apps/web/components/material-resolution.tsx; database/schema.ts; database/migrations/meta/_journal.json; packages/contracts/resolution.ts; packages/modules/catalog/resolution.ts; tests/e2e/material-resolution.spec.ts; tests/integration/material-resolution.test.ts; docs/ARCHITECTURE.md; docs/DOMAIN_MODEL.md; docs/DECISIONS.md; docs/MATERIAL_RESOLUTION.md; docs/POLYBOARD_IMPORT.md; docs/OPEN_QUESTIONS.md; docs/IMPLEMENTATION_REPORT.md.

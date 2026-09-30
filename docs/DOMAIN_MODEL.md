@@ -187,3 +187,7 @@ erDiagram
     TechnicalModel ||--o{ MaterialResolutionReport : resolved_by
     MaterialResolutionReport }o--o{ MaterialMaster : exact_links_in_results
 ```
+
+## Technical BOM report
+
+MaterialRequirementReport references one MaterialResolutionReport, which fixes TechnicalModel/ProjectVersion. Unique resolution + algorithm version makes retries reproducible. The contained immutable PANEL lines group master/thickness (or explicit unresolved version material), storing exported units and exact rectangular area. EDGE lines group material/thickness and preserve slot/quantity-weighted counts; length remains null. Contributions retain cabinet/part/source/report/row/line/hash evidence. No procurement or commercial entity is introduced. See MATERIAL_REQUIREMENTS.md.

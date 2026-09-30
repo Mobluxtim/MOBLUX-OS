@@ -137,3 +137,7 @@ The current implementation extends Catalog with library_activations, material_ma
 ## Normal-project workflow correction
 
 See D42 and MATERIAL_RESOLUTION.md: Overview now exposes automatic resolution immediately, using the latest normalized version without a selector step. Active snapshot changes immediately recompute affected models in the same transaction, superseding the previous deferred-until-refresh description. Open views follow results automatically. Historical reports and ProjectVersions remain untouched.
+
+## Technical material requirements
+
+Projects now owns immutable material_requirement_reports, derived inside the existing resolution transaction. The Catalog resolver calls the narrow Projects BOM service with an exact resolution ID/results; the BOM module reads frozen model rows and uses a pure deterministic calculator. No new queue, microservice or dependency. The report is linked to resolution/version rather than inserted into the immutable design. See MATERIAL_REQUIREMENTS.md and D43.

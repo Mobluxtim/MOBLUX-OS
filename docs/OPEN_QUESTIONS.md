@@ -65,3 +65,7 @@ BLOCKING questions for the current staging + safe matching increment: none. No n
 ## Automatic resolution clarification
 
 Q18 is now resolved for this increment: the owner explicitly permits automatic EXACT_UNIQUE technical associations without per-material approval. No manual exception override or cross-snapshot identity merge was authorized. Q16/Q17 and CSV unknowns remain unchanged. Before implementing future identity reconciliation, establish what evidence permits associating two different source snapshots with one master; before manual exceptions, agree reviewer permissions and acceptable evidence. These are NON-BLOCKING for the current automatic/exception-only flow. Current BLOCKING questions: none.
+
+## BOM scope clarification
+
+Q13 still blocks linear edge-length calculations: the material/thickness pair is confirmed but the four slot-to-dimension mappings are not. The current BOM safely sums exported PANEL rectangles and keeps EDGE lengths null. Finished contour/cut-out allowances and purchasing yield are outside this increment; they are not silently inferred. No new blocking question affects this bounded technical BOM.
