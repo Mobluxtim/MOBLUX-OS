@@ -87,3 +87,11 @@ Model reads require project.view + project.import + project.files.download; crea
 | library.match | Persist proposals; additionally requires library.view and project.view + project.import + project.files.download for the model; audited |
 
 The development seed grants these to the local administrator. Explicit denies prevail; customer actors remain denied even if given staff grants. No capability grants catalog publication, financial action, approval or production release. Ordinary library responses never include raw record/header bytes; UI visibility is not the enforcement boundary.
+
+## Automatic resolution access
+
+library.activate + library.view authorizes explicit activation/deactivation with reason and audit. Default local administrator receives the capability via db:seed. Project resolution instead uses project.view + project.import + project.files.download and exact ancestry; it does not need library.match, library.activate or raw/financial permissions. Thus normal project processing requires no per-material manual approval. Customer actors remain denied. No capability grants purchasing/manufacturing authority.
+
+## Activation propagation authorization
+
+An authorized library.activate command now recomputes affected technical material reports internally in its transaction, attributed to the initiating administrator. The internal resolver is private and cannot bypass permissions through an HTTP endpoint. Normal project processing still requires the existing project permissions and no library/admin capabilities. Manual matching diagnostics are optional and retain their original authorization.

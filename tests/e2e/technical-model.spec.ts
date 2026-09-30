@@ -23,7 +23,7 @@ test('technical model review links reports, exposes four views and reuses the sa
   await page.getByRole('button', { name: 'Synthetic cabinet 1', exact: true }).click();
   await expect(page.getByLabel('Filter parts by cabinet')).not.toHaveValue('');
   await page.getByText('Raw / provenance', { exact: true }).first().click(); await expect(page.getByText('Column 10 (unmapped): -1', { exact: false }).first()).toBeVisible();
-  await page.getByRole('tab', { name: 'Materials', exact: true }).click(); await expect(page.locator('.technical-review tbody tr')).toHaveCount(8);
+  await page.getByRole('tab', { name: 'Materials', exact: true }).click(); await expect(page.locator('.technical-review > .table-wrap tbody tr')).toHaveCount(8);
   await page.getByRole('tab', { name: 'Import issues / unmapped data', exact: true }).click(); await expect(page.getByText('UNMAPPED_MANUFACTURING_FIELDS', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Show ambiguous / unmapped parts' }).click(); await expect(page.getByText('No parts in this selection.', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Create review version' }).click(); await expect(page.getByLabel('Normalized version').locator('option')).toHaveCount(2);

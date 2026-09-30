@@ -1,4 +1,4 @@
-// Publication is deliberately absent: library staging never creates a material master.
+// Automatic resolution creates source-evidenced internal masters, never manufacturing authorization.
 // Suppliers, offers, prices and stock are separate future module concepts.
 interface MasterIdentity { id: string; name: string; manufacturerReference: string | null; }
 export interface PanelMaterial extends MasterIdentity { kind: 'PANEL'; thicknessMm: string | null; }

@@ -10,9 +10,10 @@ import { libraryCategories } from '../../contracts/library.js';
 import type { LibraryCategory } from '../../contracts/library.js';
 import { libraryFilenames, libraryParserVersion, parseLibrary, sha256 } from '../imports/polyboard-library.js';
 import { libraryInputLimit, LibraryBusyError } from '../imports/library-decompress.js';
-import { libraryMatcherVersion, proposeMatches, type MaterialRequest } from './matching.js';
+import { libraryMatcherVersion, proposeMatches } from './matching.js';
+import { deriveMaterialRequests } from './requests.js';
 import { technicalModelDetail } from '../projects/technical-model.js';
-import { decimalIdentity } from '../projects/normalize.js';
+
 
 const metadata = { id: librarySnapshots.id, category: librarySnapshots.category, filename: librarySnapshots.filename, hash: librarySnapshots.hash,
   size: librarySnapshots.size, parserVersion: librarySnapshots.parserVersion, status: librarySnapshots.status, recordCount: librarySnapshots.recordCount,
@@ -75,15 +76,7 @@ export async function matchLibrary(actor: Actor, projectId: string, modelId: str
     await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${`library-match:${modelId}:${inputKey}`}, 0))`);
     const previous = await tx.query.libraryMatches.findFirst({ where: and(eq(libraryMatches.modelId, modelId), eq(libraryMatches.inputKey, inputKey), eq(libraryMatches.matcherVersion, libraryMatcherVersion)) });
     if (previous) return { ...previous, projectId, versionId: detail.model.versionId, reused: true };
-    const requests: MaterialRequest[] = detail.materials.map(m => ({ category: 'PANEL', name: m.description, thickness: m.thickness, unit: m.unit, sourceRefs: [m.id] }));
-    const edges = new Map<string, MaterialRequest>();
-    for (const edge of detail.edges) {
-      if (!edge.material && !edge.thickness) continue;
-      const key = JSON.stringify([edge.material, decimalIdentity(edge.thickness), edge.unit]);
-      const item = edges.get(key) ?? { category: 'EDGE', name: edge.material, thickness: decimalIdentity(edge.thickness), unit: edge.unit, sourceRefs: [] };
-      item.sourceRefs.push(`${edge.partId}:${edge.slot}`); edges.set(key, item);
-    }
-    requests.push(...edges.values());
+    const requests = deriveMaterialRequests(detail.materials, detail.edges);
     // Missing category is review-required, not evidence that its material does not exist.
     const results = proposeMatches(requests, selected.map(s => ({ id: s.id, records: s.result.records }))).map(r => selected.some(s => s.category === r.category) ? r : { ...r, status: 'REVIEW_REQUIRED' as const, reason: 'No snapshot selected for this category.' });
     const [report] = await tx.insert(libraryMatches).values({ modelId, snapshotIds: ids, matcherVersion: libraryMatcherVersion, inputKey, results, createdBy: actor.id }).returning();

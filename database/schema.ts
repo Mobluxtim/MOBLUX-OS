@@ -1,4 +1,5 @@
-import { pgTable, uuid, text, timestamp, boolean, integer, jsonb, unique, foreignKey, primaryKey } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp, boolean, integer, serial, jsonb, unique, foreignKey, primaryKey } from 'drizzle-orm/pg-core';
+import type { ActiveLibrary, ResolvedMaterial } from '../packages/contracts/resolution.js';
 import type { CsvProfile, CsvResult, ImportedCabinet, ImportedPart } from '../packages/contracts/imports.js';
 import type { ModelSummary, ModelIssue } from '../packages/contracts/technical-model.js';
 import type { LibraryCategory, LibraryResult, MaterialMatch } from '../packages/contracts/library.js';
@@ -61,3 +62,19 @@ export const libraryMatches = pgTable('library_match_reports', {
   inputKey: text('input_key').notNull(), results: jsonb('results').$type<MaterialMatch[]>().notNull(),
   createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
 }, t => [unique().on(t.modelId, t.inputKey, t.matcherVersion)]);
+
+export const libraryActivations = pgTable('library_activations', {
+  id: id(), sequence: serial('sequence').notNull().unique(), category: text('category').$type<LibraryCategory>().notNull(),
+  snapshotId: uuid('snapshot_id').references(() => librarySnapshots.id), reason: text('reason').notNull(),
+  createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+});
+export const materialMasters = pgTable('material_masters', {
+  id: id(), category: text('category').$type<LibraryCategory>().notNull(), name: text('name').notNull(), thickness: text('thickness').notNull(), unit: text('unit').$type<'mm'>().notNull(),
+  snapshotId: uuid('snapshot_id').references(() => librarySnapshots.id).notNull(), recordId: uuid('record_id').notNull(),
+  createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.snapshotId, t.recordId)]);
+export const materialResolutions = pgTable('material_resolution_reports', {
+  id: id(), modelId: uuid('model_id').references(() => technicalModels.id).notNull(), inputKey: text('input_key').notNull(), resolverVersion: text('resolver_version').notNull(),
+  snapshots: jsonb('snapshots').$type<ActiveLibrary[]>().notNull(), results: jsonb('results').$type<ResolvedMaterial[]>().notNull(),
+  createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.modelId, t.inputKey, t.resolverVersion)]);

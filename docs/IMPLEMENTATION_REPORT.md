@@ -345,3 +345,115 @@ Updated:
 - docs/IMPLEMENTATION_REPORT.md
 
 Private .env, .local evidence/service data, original reference files, generated build output and browser screenshots remain outside the tracked deliverable.
+
+## Completed Automatic Material Resolution + Exception-Only Review — 2026-09-30
+
+The repository was clean at the start of this increment; the prior technical model and library staging work was already committed by the owner. This increment adds automatic processing without rewriting the CSV/binary adapters or changing source confidence. All implementation changes remain uncommitted for review.
+
+### Domain/database and flow
+
+Migration 0005 adds three tables (23 application tables total): library_activations, material_masters and material_resolution_reports. Activations are append-only category selections/deactivations with a monotonic sequence, actor, reason and audit. Masters use MOBLUX UUIDs with corroborated source snapshot/record evidence. Resolution reports reference exact immutable models, relevant active snapshots, resolver version and complete request/candidate/link provenance. Immutable triggers protect all three tables; insert validation enforces valid active snapshots and corroborated master evidence. Runtime gains sequence usage, not update/delete access.
+
+Creating/reusing a normalized model now resolves its materials transactionally. Opening or refreshing its project technical view automatically ensures current resolution; no manual material input or project-specific library selection exists. A shared derivation function also keeps administrative proposals consistent. Only EXACT_UNIQUE auto-links to a master; other statuses have null links and remain exceptions. Existing immutable design/version rows, customer approval and ProductionRelease semantics remain unchanged.
+
+Masters are reused across projects for the same corroborated snapshot/record. Different source snapshots are not automatically merged by PolyBoard UUID/name because continuity is not proven. This may create distinct masters for new snapshots; it avoids inventing equivalence. Supplier/product/price/stock concepts remain absent. Detailed behavior, idempotency and permission boundaries are in MATERIAL_RESOLUTION.md and D39–D41.
+
+### Active configuration and historical behavior
+
+An explicit authorized administrative action selects the current snapshot per category. Uploading alone has no effect. The original verified Panel/Edge/Bar snapshots are now configured as active locally through the administrative UI. Historical snapshots stay reviewable.
+
+New technical versions get their own reports and may reuse existing masters. New active sources take effect on the next project create/open/refresh command; there is no background mass rewrite. Relevant snapshot changes produce new reports and the read API detects stale configuration. If an exact result becomes ambiguous it loses its current automatic link; history stays intact. Repeating identical inputs reuses the report. A→B→A reuses A's original report while retaining all activation events. Bar changes do not affect projects without Bar requirements.
+
+### UI
+
+Project → Technical model now shows resolved/total, unresolved, ambiguous, unmatched and review-required counts, status and timestamp. Only exceptions are listed by default. Successful links, snapshot identities/hashes and historical reports remain under Resolution evidence and history. Refresh material resolution needs no material entry or library selection. The administrative Material Library screen retains detailed records/proposals and adds active selection, activation reason and history. Normal project users need project permissions, not library.activate or manual approval per exact result.
+
+### Real data and verification
+
+- Existing real model unchanged: 21 cabinets, 216 part rows, 280 units, 8 version-owned project materials.
+- Existing library unchanged: 372 Panel / 84 Edge / 43 Bar.
+- Automatic resolution: 13/13 linked, comprising 8 Panel + 5 Edge identities; 0 ambiguous, 0 unmatched, 0 review required. Thirteen includes edges; the original eight project panel materials remain eight.
+- Full before/after model responses and immutable version rows compared in integration tests. Same source masters reused across separate synthetic projects. Concurrent reruns create one report/audit; historical report content unchanged across activation changes.
+- Typecheck: passed (root/API and web).
+- Lint: passed.
+- Unit tests: 25 passed, zero skipped with real-library environment enabled. Adds deterministic automatic derivation/deduplication/source references; retains all parser confidence and matcher status tests.
+- PostgreSQL/S3 integration: 18 reported tests passed (15 subtests + three parents), zero skipped with real-model environment enabled. New coverage: transactional automatic creation, active configuration, exact links, ambiguous/no-match/review-required non-links, persistent cross-project master reuse, concurrent idempotency, changed-source reports, immutable history, activation permission/category checks, project ancestry/permission and Origin checks. Existing source storage/permissions remain verified.
+- API and Next production build: passed. Browser verification ran against that production build on local PostgreSQL/S3.
+- Browser: all five scenarios passed across the full run and targeted reruns. Initial failures were test scoping: the library selector included new synthetic evidence fixtures, the old technical-table count included the new exception table, and the new test omitted opening the Technical model tab. Corrected selectors/navigation; all three affected scenarios passed. CSV and original first-slice scenarios had already passed.
+- New browser scenario verifies administrative active selection, automatic 13/13 without project material input, no success table in the default view, same-report refresh, eight exceptions after a Panel change, restoration/reload to 13/13, history/provenance and mobile no-overflow. No JavaScript errors. Desktop/mobile screenshots inspected.
+- Authoritative MASTER_SPEC.md and BUSINESS_FLOW.md retain their original hashes. Real library hashes/counts remain verified by the unchanged parser tests. Git whitespace check passed with Windows line-ending notices only.
+
+### Completion and limits
+
+The requested bounded increment is complete with no implementation blocker. Unknown flags, grain/orientation, financial fields, Bar profile semantics, CSV column 10 and edge sides remain raw/unmapped. No confidence upgrade was introduced. Active changes are picked up on project processing/refresh, not pushed live into already-open browser views. No manual exception override or cross-snapshot master merge is provided without an agreed evidence policy. Development authentication/production-hardening limitations remain as previously documented.
+
+No dependencies added, no supplier integration, prices, stock, purchasing, costing, Methods/SubMethods, hardware, construction rules or rendering implemented. No commit/push or Git configuration changes. Recommended next increment after owner review: define and implement evidence-based exception resolution and cross-snapshot material identity reconciliation, preserving history and confidence boundaries.
+
+### File manifest for automatic resolution
+
+Created:
+
+- apps/web/components/active-library.tsx
+- apps/web/components/material-resolution.tsx
+- packages/contracts/resolution.ts
+- packages/modules/catalog/requests.ts
+- packages/modules/catalog/resolution.ts
+- database/migrations/0005_colossal_major_mapleleaf.sql
+- database/migrations/meta/0005_snapshot.json
+- tests/unit/material-resolution.test.ts
+- tests/integration/material-resolution.test.ts
+- tests/e2e/material-resolution.spec.ts
+- docs/MATERIAL_RESOLUTION.md
+
+Updated:
+
+- AGENTS.md
+- README.md
+- apps/api/server.ts
+- apps/web/components/material-library.tsx
+- apps/web/components/technical-model.tsx
+- database/schema.ts
+- database/migrations/meta/_journal.json
+- packages/modules/catalog/model.ts
+- packages/modules/catalog/service.ts
+- packages/modules/identity/policy.ts
+- packages/modules/projects/technical-model.ts
+- scripts/migrate.ts
+- tests/e2e/library.spec.ts
+- tests/e2e/technical-model.spec.ts
+- docs/ARCHITECTURE.md
+- docs/DOMAIN_MODEL.md
+- docs/PERMISSIONS.md
+- docs/SECURITY.md
+- docs/POLYBOARD_IMPORT.md
+- docs/POLYBOARD_LIBRARY_PROFILE.md
+- docs/PROJECT_LIFECYCLE.md
+- docs/DECISIONS.md
+- docs/OPEN_QUESTIONS.md
+- docs/ROADMAP.md
+- docs/IMPLEMENTATION_REPORT.md
+
+## Workflow-gap correction — 2026-09-30
+
+Owner correctly identified that the previous completion report did not demonstrate a normal-user path independent of library administration, and active changes were deferred until project processing. This correction preserves the existing uncommitted increment rather than replacing it.
+
+Automatic triggers now live in:
+
+- Projects createTechnicalModel → resolveInTransaction: creates/reuses the immutable model and resolves its materials transactionally.
+- Normal Project Overview → MaterialResolution: automatically picks the latest normalized version from the project's existing version manifest, ensures resolution and displays the result without opening another screen. Technical model retains automatic latest-model selection; changing the selector is optional historical inspection.
+- Catalog activateLibrary → private resolveCore: an audited administrative activation immediately recomputes all affected existing technical models in the same transaction, including closed projects. New configurations produce immutable reports; identical configurations reuse history. No ProjectVersion is modified.
+- Open project views synchronize automatically every five seconds while visible and on window focus. The refresh button is optional recovery, never a required workflow step.
+
+The manual matcher is now collapsed under Administrative matching diagnostics (optional). Normal users never select Project, technical version, category snapshots, saved matching report or Create matching proposals. Their project shows resolved/total, actual exceptions only, active snapshot abbreviations, status and timestamp, with complete provenance/history expandable.
+
+Verification after correction:
+
+- 25 unit tests passed, including real source confidence/hash checks.
+- 18 PostgreSQL/S3 integration results passed, zero skipped. Activation tests now assert a current persisted report exists before any subsequent project command. Normal resolution succeeds with library.view/match/activate/raw.view explicitly denied. Existing authorization, audit, immutable history and idempotency checks remain green.
+- All five Chrome browser scenarios passed. The corrected automatic scenario never navigates to /library, does not select the normalized version or snapshots, and asserts no browser request to the manual library-matches or activation endpoints. It sees 13/13 directly on Project Overview, then the automatically selected Technical model. A separately simulated administrative source change produces only eight actual exceptions and the open view updates without a refresh click. Restoring the source returns to 13/13 and preserves report history.
+- Actual fixture remains 8 Panel + 5 Edge auto-links, 21 cabinets / 216 rows / 280 units / 8 version-owned materials. No source mapping changed.
+- Typecheck, lint, API/web production build passed. Browser tests ran against the rebuilt application. Desktop/mobile captures retained; mobile capture visually inspected and no document overflow or JavaScript errors reported.
+
+Additional files changed by this correction: apps/web/components/workspace.tsx, apps/web/components/material-resolution.tsx, apps/web/components/material-library.tsx, packages/modules/catalog/resolution.ts, tests/e2e/material-resolution.spec.ts, tests/e2e/library.spec.ts, tests/integration/material-resolution.test.ts, docs/MATERIAL_RESOLUTION.md, docs/ARCHITECTURE.md, docs/PERMISSIONS.md, docs/DECISIONS.md, README.md and this report. No new migration/dependency required for the correction.
+
+Workflow gap is fixed within the requested scope. Active-source propagation is synchronous and atomic for the current dataset; its duration scales with affected models. No supplier, costing, manufacturing/CAD feature or subsequent increment was started. No commit or push.

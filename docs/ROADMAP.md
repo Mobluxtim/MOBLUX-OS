@@ -70,3 +70,7 @@ Confirmed staged fields now populate a new immutable technical review version wi
 ## Material library staging increment
 
 Completed bounded Panel/Edge/Bar snapshot staging and separate persistent project-material proposals. Review UI and confidence rules are in POLYBOARD_LIBRARY_PROFILE.md; verification is in IMPLEMENTATION_REPORT.md. No catalog publication, manufacturing calculations or supplier functionality is included. Recommended next bounded increment, subject to owner review: define and implement explicit material-match review/acceptance with audit and evidence, without rewriting existing versions; first agree publication policy Q18. Controlled exports for Q16/Q17 can be collected independently.
+
+## Automatic resolution increment
+
+Normal project processing now resolves materials automatically from active libraries and shows exceptions only, with immutable evidence and persistent source-scoped masters. See MATERIAL_RESOLUTION.md. Next bounded candidate, after review: evidence-based exception handling and cross-snapshot identity reconciliation policy; no supplier/costing work implied.

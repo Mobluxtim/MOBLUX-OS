@@ -43,3 +43,7 @@ Immutable `library_match_reports` reference an exact technical model, selected s
 The internal Material Library screen provides category tabs, upload/reuse, snapshot metadata, search/pagination, safe decoded fields, provenance, raw indicators, permission-gated raw inspection/download and text-only texture references. Matching results persist and can be filtered by all four statuses. No path is fetched, opened or rendered as an image.
 
 Future general-format support requires additional/controlled snapshots, documented or experimentally verified extension semantics, cross-snapshot identity evidence and a separately reviewed parser version. Confidence changes require evidence, not merely successful decoding. See OPEN_QUESTIONS.md; no unresolved question blocks the current review-only increment.
+
+## Current automatic resolution extension
+
+The owner now permits EXACT_UNIQUE to create/reuse internal MaterialMaster identities and automatic technical links in separate resolution reports. All parser/confidence limits above remain unchanged. Explicit active snapshots remove per-project manual selection; historical manual proposal reports remain available for diagnostics. MATERIAL_RESOLUTION.md defines the authoritative implemented flow and source-scoped identity reuse. Automatic links are not supplier assignments, prices, stock, approvals or releases.

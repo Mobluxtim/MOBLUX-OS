@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, type FormEvent } from 'react';
 import { api } from './api';
+import { ActiveLibraryAdmin } from './active-library';
 import type { LibraryCategory, LibrarySnapshot, LibrarySnapshotDetail, LibraryRecord, MatchReport, MatchStatus } from '../../../packages/contracts/library';
 import type { Project } from '../../../packages/contracts/index';
 import type { TechnicalModel } from '../../../packages/contracts/technical-model';
@@ -44,7 +45,7 @@ export function MaterialLibrary() {
         <div className="csv-pagination"><button className="button secondary" disabled={page === 0} onClick={() => setPage(p => p - 1)}>Previous records</button><span>{records.length} matching records · page {page + 1}</span><button className="button secondary" disabled={(page + 1) * 25 >= records.length} onClick={() => setPage(p => p + 1)}>Next records</button></div>
       </>}
     </section>
-    <MatchingReview snapshots={snapshots} />
+    <ActiveLibraryAdmin snapshots={snapshots} /><details className="panel padded"><summary>Administrative matching diagnostics (optional)</summary><p>Projects resolve materials automatically. These manual controls are only for comparing historical snapshots.</p><MatchingReview snapshots={snapshots} /></details>
   </div>;
 }
 function RecordEvidence({ row, snapshotId }: { row: LibraryRecord; snapshotId: string }) {

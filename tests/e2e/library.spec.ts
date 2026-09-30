@@ -29,15 +29,15 @@ test('library snapshots, raw review and persisted project proposals on desktop/m
   }
   const cabinetReportId = await report('synthetic-cabinets.csv', cabinetCsv, 'polyboard-cabinets-7/v1'), partReportId = await report('synthetic-parts.csv', cuttingCsv, 'polyboard-cutting-18/v1');
   const model = await page.request.post(`/api/projects/${projectId}/technical-models`, { headers, data: { cabinetReportId, partReportId, requestId: crypto.randomUUID() } }); expect(model.status()).toBe(201); const modelId = (await model.json()).id;
-  const snapshots = (await (await page.request.get('/api/library')).json()) as { id: string; category: string; recordCount: number; hash: string }[];
-  await page.reload();
+  const snapshots = (await (await page.request.get('/api/library')).json()) as { id: string; category: string; recordCount: number; hash: string; parserVersion: string }[];
+  await page.reload(); await page.getByText('Administrative matching diagnostics (optional)', { exact: true }).click();
   await page.getByRole('combobox', { name: 'Project', exact: true }).selectOption(projectId);
   await page.getByLabel('Technical version').selectOption(modelId);
-  for (const category of ['PANEL', 'EDGE', 'BAR']) await page.getByLabel(`${category} matching snapshot`).selectOption(snapshots.find(s => s.category === category && s.recordCount === 1)!.id);
+  for (const category of ['PANEL', 'EDGE', 'BAR']) await page.getByLabel(`${category} matching snapshot`).selectOption(snapshots.find(s => s.category === category && s.recordCount === 1 && s.parserVersion === 'polyboard-library-observed/v1')!.id);
   await page.getByRole('button', { name: 'Create matching proposals' }).click();
   await expect(page.getByText('EXACT_UNIQUE: 0 · AMBIGUOUS: 0 · NO_MATCH: 7 · REVIEW_REQUIRED: 2', { exact: true })).toBeVisible();
   await page.getByLabel('Match status').selectOption('NO_MATCH'); await expect(page.locator('.library-matches tbody tr')).toHaveCount(7);
-  await page.reload(); await page.getByRole('combobox', { name: 'Project', exact: true }).selectOption(projectId); await page.getByLabel('Technical version').selectOption(modelId);
+  await page.reload(); await page.getByText('Administrative matching diagnostics (optional)', { exact: true }).click(); await page.getByRole('combobox', { name: 'Project', exact: true }).selectOption(projectId); await page.getByLabel('Technical version').selectOption(modelId);
   await expect(page.getByText('EXACT_UNIQUE: 0 · AMBIGUOUS: 0 · NO_MATCH: 7 · REVIEW_REQUIRED: 2', { exact: true })).toBeVisible();
   if (process.env.MOBLUX_REAL_MODEL_ID) {
     const projects = await (await page.request.get('/api/projects')).json();

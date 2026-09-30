@@ -58,3 +58,7 @@ The addendum's suggested production indicators (WAITING_PAYMENT, WAITING_TECHNIC
 First slice ends at exact-version customer approval and audit; it does not implement purchasing or release commands. Framework fixtures may be synthetic and clearly labeled until samples validate a real PolyBoard adapter.
 
 Every later stage retains the canonical Project ID and applicable version/release references. Record actor, time, source evidence and correlation for transitions. Repeated commands must be idempotent; concurrent commands cannot change which version was approved or released. Full path: customer → project → version → release → requirements/allocations/purchases → processing/assembly/QC → installation/acceptance → invoice/payment → warranty. Preliminary commitments join this history without pretending they were originally release-authorized.
+
+## Material resolution is a separate technical association
+
+Creating or refreshing a technical review model now automatically resolves its unique Panel/Edge requests against current libraries. Reports and MaterialMaster associations are external to the frozen ProjectVersion. RESOLVED means all catalog requests have safe exact technical links only: it does not mean customer approval, commercial/payment satisfaction, technical manufacturing validation or ProductionRelease. Changing active libraries creates new evidence on next processing without rewriting earlier design or approval history. See MATERIAL_RESOLUTION.md.

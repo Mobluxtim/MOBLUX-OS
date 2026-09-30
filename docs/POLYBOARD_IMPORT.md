@@ -62,3 +62,7 @@ The next owner-authorized increment now creates normalized review versions from 
 ## Implemented material library staging
 
 The owner authorized the next bounded library increment. POLYBOARD_LIBRARY_PROFILE.md specifies the sequential Panel/Edge/Bar adapter, decompression limits, safe failure, immutable snapshot/source preservation and separate matching proposals. POLYBOARD_LIBRARY_ANALYSIS.md remains the original evidence; decoding does not upgrade semantic confidence. Only eight Panel and five Edge thicknesses carry independently corroborated evidence. CSV column 10, edge-side orientation and undocumented library fields remain unresolved. No original CSV adapter or immutable project dataset is rewritten.
+
+## Automatic post-normalization material resolution
+
+Technical model creation and refresh now derive requests automatically and resolve them against explicitly active category snapshots. Exact corroborated results link to persistent internal MaterialMaster IDs in separate append-only reports. No adapter mapping or source confidence is changed. Unresolved results remain exceptions; source/current-library selection and history are detailed in MATERIAL_RESOLUTION.md.

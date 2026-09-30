@@ -75,3 +75,17 @@ Dependency APIs were checked against [Next.js installation documentation](https:
 | D38 IMPLEMENTED bounded technical choice | seek-bzip 2.0.0 in a resource-limited worker; bounded JSONB staging under Catalog; independent internal identities and typed MaterialMaster subtypes | Small inputs need deterministic review and resource bounds, not a new microservice or premature supplier/catalog publication | Two database tables; raw access has its own capability; no supplier identity merge, prices, manufacturing calculation or automatic accepted material link |
 
 Proposed future work, not approved/implemented here: reviewed publication of material-master identities and explicit accepted associations with preserved evidence, following an agreed review policy. General-format compatibility and cross-snapshot UUID stability remain unproven.
+
+## Automatic resolution owner authorization — 2026-09-30
+
+| ID / status | Decision | Rationale | Consequences |
+| --- | --- | --- | --- |
+| D39 CONFIRMED owner scope; IMPLEMENTED | Automatically derive project requests, use explicit active libraries, and link only EXACT_UNIQUE | Eliminate unnecessary material entry/approval in normal processing | Separate immutable resolution reports; exceptions only in the default project view; no approval/release semantics |
+| D40 IMPLEMENTED safety boundary | Persistent MOBLUX MaterialMaster per exact snapshot/record evidence; reuse across projects, no automatic cross-snapshot merge | PolyBoard UUID continuity remains unproven | New snapshots may create new masters; supplier/product/price concepts remain absent |
+| D41 IMPLEMENTED lifecycle | Append-only active selection events; resolve transactionally on model creation/reuse and project open/refresh; identity by model/relevant snapshots/resolver | Preserve historical evidence and bounded work without global rewrites or speculative job infrastructure | Active changes do not eagerly rewrite/reprocess every project; read API detects stale configuration; A→B→A reuses original A report and preserves activation history |
+
+Q18 is resolved for automatic EXACT_UNIQUE technical associations by the owner's explicit authorization. Manual exception overrides and cross-snapshot identity equivalence remain future, unapproved policies.
+
+## D42 — CONFIRMED owner correction; IMPLEMENTED automatic project entry and activation propagation
+
+Normal project Overview automatically resolves the latest normalized version; Technical model also selects its latest model automatically. Manual matching is optional administrative diagnostics. Active-library changes now recompute affected model reports transactionally, without waiting for any project to be opened or refreshed. This supersedes D41's deferred activation behavior. Existing design and report history remain immutable; identical configurations reuse their reports. Open project views update automatically. Administrative activation authorizes its internal catalog recomputation with the initiating actor's audit, without granting general project access. Current bounded data uses synchronous work; scaling it to durable batches is future work, not an implemented claim.

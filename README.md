@@ -180,3 +180,15 @@ pnpm test:e2e
 ```
 
 Integration suites run sequentially because permission tests temporarily override the shared development administrator. Browser tests require the application running. Without these variables, optional real-fixture tests skip; synthetic tests still run. Library staging adds seek-bzip 2.0.0; earlier no-new-dependency notes describe historical increments.
+
+## Automatic project material resolution
+
+Stop the app, run `pnpm db:migrate` and `pnpm db:seed`, then restart with `pnpm dev` (or `pnpm build` followed by `pnpm start`). No new dependency installation is needed for this increment. Keep PostgreSQL/S3 running.
+
+An administrator configures **Material Library → Active project libraries** once per category, selecting a successful snapshot and recording a reason. Upload alone never activates it. Opening/creating a project's technical model then derives and resolves materials automatically: no material entry or per-project snapshot selection. The project shows **Materials resolved: 13/13** for the verified real fixture with its original libraries active. Exceptions alone are listed by default; evidence/history and the detailed admin library remain accessible.
+
+After an administrative library change, reopen the project or use **Refresh material resolution**. Previous reports and project versions stay unchanged. Missing libraries appear as review-required exceptions. See [MATERIAL_RESOLUTION.md](docs/MATERIAL_RESOLUTION.md) for exact semantics and limits.
+
+### Workflow correction
+
+Open a project normally: its Overview now shows automatic material resolution for the latest normalized version. Technical model also opens its latest normalized version automatically. You do not need Material Library or manual matching controls. Administrators still configure active libraries centrally; changing one immediately creates/reuses affected resolution reports, and open project views update automatically. Manual comparison controls are collapsed under Administrative matching diagnostics (optional).

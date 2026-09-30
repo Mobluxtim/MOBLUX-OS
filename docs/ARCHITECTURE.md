@@ -129,3 +129,11 @@ The owner-authorized technical model consumes existing staged reports without re
 The Import module owns the bounded sequential binary adapter; Catalog owns immutable library snapshots and material matching reports. PostgreSQL stores snapshot metadata and bounded record JSONB atomically; private versioned S3 stores exact originals. Migration 0004 adds two append-only tables with immutable triggers. This avoids mutable catalog publication and unnecessary per-field tables while the source semantics remain uncertain. No new service or durable job queue is introduced; decompression uses a resource-limited worker thread inside the API process.
 
 Matching reads exact existing technical models and records proposals separately. It cannot mutate ProjectVersion, TechnicalMaterial, approval or ProductionRelease. The catalog type boundary distinguishes Panel, Edge and Bar/Profile material masters from source records and from future supplier products. See POLYBOARD_LIBRARY_PROFILE.md and D36–D38 for limits, confidence and identity rules.
+
+## Automatic project material resolution
+
+The current implementation extends Catalog with library_activations, material_masters and material_resolution_reports. Projects call the catalog transaction service after sealing a technical model; project open/refresh invokes the same idempotent command. The existing matcher and confidence rules are reused. Activations and resolution serialize on a shared advisory lock to capture consistent source sets and prevent duplicate master creation. No new service, dependency or queue is needed for this bounded increment. Active changes are applied on the next project processing command, not by rewriting historical versions. See MATERIAL_RESOLUTION.md and D39–D41.
+
+## Normal-project workflow correction
+
+See D42 and MATERIAL_RESOLUTION.md: Overview now exposes automatic resolution immediately, using the latest normalized version without a selector step. Active snapshot changes immediately recompute affected models in the same transaction, superseding the previous deferred-until-refresh description. Open views follow results automatically. Historical reports and ProjectVersions remain untouched.

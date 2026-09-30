@@ -6,6 +6,7 @@ import { projects, versions, sources, csvImports, technicalModels, cabinets, par
 import { authorize, DomainError, type Actor } from '../identity/policy.js';
 import { record } from '../audit/service.js';
 import { normalizeReports, normalizerVersion } from './normalize.js';
+import { resolveInTransaction } from '../catalog/resolution.js';
 
 const inputSchema = z.object({ cabinetReportId: z.string().uuid(), partReportId: z.string().uuid(), requestId: z.string().uuid() }).strict();
 function readAccess(actor: Actor) { authorize(actor, 'project.view'); authorize(actor, 'project.import'); authorize(actor, 'project.files.download'); }
@@ -27,10 +28,11 @@ export async function createTechnicalModel(actor: Actor, projectId: string, inpu
     if (requestVersion) {
       const ref = requestVersion.snapshot.normalizedData;
       if (!ref || ref.cabinetReportId !== values.cabinetReportId || ref.partReportId !== values.partReportId || ref.normalizer !== normalizerVersion) throw new DomainError(409, 'Request identifier already used for different version content.');
+      await resolveInTransaction(tx, actor, projectId, ref.modelId);
       return { id: ref.modelId, versionId: requestVersion.id, reused: true };
     }
     const existing = await tx.query.technicalModels.findFirst({ where: and(eq(technicalModels.projectId, projectId), eq(technicalModels.cabinetReportId, values.cabinetReportId), eq(technicalModels.partReportId, values.partReportId), eq(technicalModels.normalizer, normalizerVersion)) });
-    if (existing) return { id: existing.id, versionId: existing.versionId, reused: true };
+    if (existing) { await resolveInTransaction(tx, actor, projectId, existing.id); return { id: existing.id, versionId: existing.versionId, reused: true }; }
     const normalized = normalizeReports(c.report.result, p.report.result);
     const modelId = randomUUID(), versionId = randomUUID();
     const [count] = await tx.select({ value: sql<number>`coalesce(max(${versions.number}), 0)::int` }).from(versions).where(eq(versions.projectId, projectId));
@@ -50,6 +52,7 @@ export async function createTechnicalModel(actor: Actor, projectId: string, inpu
     // Inserting this seal last makes further inserts into this version's technical rows fail.
     await tx.insert(technicalModels).values({ id: modelId, projectId, versionId, baseVersionId: c.source.versionId, cabinetReportId: c.report.id, partReportId: p.report.id, normalizer: normalizerVersion, summary: normalized.summary, issues: normalized.issues, createdBy: actor.id });
     await record(tx, actor.id, 'technical_model.created', modelId, projectId, { versionId, number: count.value + 1, cabinetReportId: c.report.id, partReportId: p.report.id, sourceIds: [c.source.id, p.source.id], sourceHashes: [c.source.hash, p.source.hash], normalizer: normalizerVersion, summary: normalized.summary, manufacturingVerified: false });
+    await resolveInTransaction(tx, actor, projectId, modelId);
     return { id: modelId, versionId, reused: false };
   });
 }

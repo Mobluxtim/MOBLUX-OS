@@ -173,3 +173,17 @@ erDiagram
 ```
 
 The two persisted tables are library_snapshots and library_match_reports; contained records/results are immutable JSONB, not additional mutable tables. Snapshot deduplication uses category + hash + parser; report deduplication uses model + sorted snapshot-set hash + matcher. New source snapshots do not merge identities by candidate UUID across exports. See POLYBOARD_LIBRARY_PROFILE.md.
+
+## Persistent technical material resolution
+
+MaterialMaster is now persisted as a source-evidenced internal identity, with category, name, corroborated thickness/mm, origin snapshot/record and actor/time. Snapshot/record uniqueness enables reuse across projects. It remains distinct from version-owned TechnicalMaterial and all future supplier entities. Cross-snapshot identity merging is deliberately absent.
+
+LibraryActivation is an append-only administrative event; last sequence per category defines current selection, including deactivation. MaterialResolutionReport references one TechnicalModel, exact active source set and resolver version, with immutable results containing a nullable MaterialMaster ID. Only EXACT_UNIQUE receives that ID. Historical design rows remain unchanged. See MATERIAL_RESOLUTION.md for idempotency, evidence and exception behavior.
+
+```mermaid
+erDiagram
+    LibrarySnapshot ||--o{ LibraryActivation : selected_by
+    LibrarySnapshot ||--o{ MaterialMaster : provides_evidence
+    TechnicalModel ||--o{ MaterialResolutionReport : resolved_by
+    MaterialResolutionReport }o--o{ MaterialMaster : exact_links_in_results
+```

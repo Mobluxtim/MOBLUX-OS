@@ -61,3 +61,7 @@ Q13–Q15 remain unresolved where they affect manufacturing orientation, prices 
 - Q18: What actor/review policy should publish a staged material master or accept a catalog association? Blocks that future publication workflow, not creation of proposals.
 
 BLOCKING questions for the current staging + safe matching increment: none. No new contradiction between the authoritative specifications was introduced or resolved by decoding these files.
+
+## Automatic resolution clarification
+
+Q18 is now resolved for this increment: the owner explicitly permits automatic EXACT_UNIQUE technical associations without per-material approval. No manual exception override or cross-snapshot identity merge was authorized. Q16/Q17 and CSV unknowns remain unchanged. Before implementing future identity reconciliation, establish what evidence permits associating two different source snapshots with one master; before manual exceptions, agree reviewer permissions and acceptable evidence. These are NON-BLOCKING for the current automatic/exception-only flow. Current BLOCKING questions: none.
