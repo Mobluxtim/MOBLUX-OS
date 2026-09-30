@@ -1,6 +1,7 @@
 import { pgTable, uuid, text, timestamp, boolean, integer, jsonb, unique, foreignKey, primaryKey } from 'drizzle-orm/pg-core';
 import type { CsvProfile, CsvResult, ImportedCabinet, ImportedPart } from '../packages/contracts/imports.js';
 import type { ModelSummary, ModelIssue } from '../packages/contracts/technical-model.js';
+import type { LibraryCategory, LibraryResult, MaterialMatch } from '../packages/contracts/library.js';
 const id = () => uuid('id').defaultRandom().primaryKey();
 const created = () => timestamp('created_at', { withTimezone: true }).defaultNow().notNull();
 export const users = pgTable('users', { id: id(), email: text('email').notNull().unique(), name: text('name').notNull(), active: boolean('active').default(true).notNull(), kind: text('kind', { enum: ['staff', 'customer'] }).notNull(), createdAt: created() });
@@ -44,3 +45,19 @@ export const parts = pgTable('parts', {
 export const edgeData = pgTable('edge_data', {
   versionId: uuid('version_id').notNull(), partId: uuid('part_id').notNull(), slot: integer('slot').notNull(), material: text('material').notNull(), thickness: text('thickness').notNull(), unit: text('unit').$type<'mm'>().notNull(), side: text('side').$type<null>()
 }, t => [primaryKey({ columns: [t.partId, t.slot] }), foreignKey({ columns: [t.versionId, t.partId], foreignColumns: [parts.versionId, parts.id] })]);
+
+// One immutable document per source revision. Nested staging records are inserted atomically;
+// no partially populated snapshot or catalog master is exposed.
+export const librarySnapshots = pgTable('library_snapshots', {
+  id: id(), category: text('category').$type<LibraryCategory>().notNull(), filename: text('filename').notNull(),
+  hash: text('hash').notNull(), size: integer('size').notNull(), parserVersion: text('parser_version').notNull(),
+  objectKey: text('object_key').notNull().unique(), objectVersion: text('object_version'),
+  status: text('status').$type<LibraryResult['status']>().notNull(), recordCount: integer('record_count').notNull(),
+  result: jsonb('result').$type<LibraryResult>().notNull(), createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.category, t.hash, t.parserVersion)]);
+export const libraryMatches = pgTable('library_match_reports', {
+  id: id(), modelId: uuid('model_id').references(() => technicalModels.id).notNull(),
+  snapshotIds: jsonb('snapshot_ids').$type<string[]>().notNull(), matcherVersion: text('matcher_version').notNull(),
+  inputKey: text('input_key').notNull(), results: jsonb('results').$type<MaterialMatch[]>().notNull(),
+  createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.modelId, t.inputKey, t.matcherVersion)]);

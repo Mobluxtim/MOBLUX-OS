@@ -254,3 +254,94 @@ No dependencies were added. No Git configuration changes, commit or push. No 3D/
 - `docs/POLYBOARD_IMPORT.md`
 - `docs/ROADMAP.md`
 - `docs/IMPLEMENTATION_REPORT.md`
+
+## Completed material library staging + safe matching increment — 2026-09-30
+
+The interrupted implementation was resumed from its existing working tree. Already present: the sequential observed-format parser reproducing 372/84/43, private source snapshots, catalog contracts, separate proposal persistence, protected raw responses and the initial passing type/lint/24-unit checks. The continuation completed real PostgreSQL/S3 and permission verification, idempotent retry/audit checks, real persisted matching reports and immutable-fixture comparison, the internal review UI/browser checks, final resource-limit coverage and documentation. Existing CSV adapters and prior project versions were not rebuilt or rewritten.
+
+### Domain and persistence
+
+Migration 0004 adds library_snapshots and library_match_reports (20 application tables total), foreign keys, idempotency constraints and immutable triggers. Snapshot-owned records and report results are bounded immutable JSONB. Exact original bytes are private versioned S3 objects. Snapshot identity is category/hash/parser; report identity is exact model/sorted snapshot set/matcher. MaterialMaster with PanelMaterial, EdgeMaterial and BarProfileMaterial is a typed boundary, not an automatically published master catalog. Supplier products/prices remain separate and unimplemented.
+
+Parser architecture, limits and field confidence are specified in POLYBOARD_LIBRARY_PROFILE.md. New runtime dependency: seek-bzip 2.0.0, lockfile pinned. No source files or real private data were added to tracked fixtures; tests use synthetic fixtures plus optional environment-selected local evidence.
+
+### Actual persisted results
+
+| Verification | Result |
+| --- | --- |
+| Panel records | 372 |
+| Edge records | 84 |
+| Bar/Profile records | 43 |
+| Candidate source UUIDs | 499 distinct within these supplied files; stability across snapshots unproven |
+| Panel material/thickness requests | 8/8 EXACT_UNIQUE |
+| Edge material/thickness requests | 5/5 EXACT_UNIQUE |
+| Real report ambiguous / missing / review-required requests | 0 / 0 / 0 |
+| Existing real model | 21 cabinets / 216 part rows / 280 units / 8 normalized materials, unchanged |
+
+Every real report candidate references its exact snapshot/record and every request retains technical-model provenance. Downloaded S3 originals equal the local input bytes; real-file SHA-256 values match the original analysis. Concurrent/repeated imports reuse snapshots; repeated/reordered matching requests reuse the same report. Full technical-model responses and existing project-version rows were compared before/after and remain unchanged.
+
+### UI and access
+
+Material Library at /library provides snapshots; Panel, Edge and Bar/Profile tabs; upload/reuse status; record search/pagination; provenance; corroborated/candidate fields; raw indicators; permission-gated raw inspection and original download; texture path text; immutable model selection; saved matching reports and four-status filtering. Mobile tables scroll horizontally. No texture is downloaded or fabricated. Backend checks library.view/import/raw.view/match, project/model permissions and ancestry; customer actors cannot enter staff services. Raw bytes and undocumented financial-looking fields are absent from ordinary review responses.
+
+### Final verification
+
+- Typecheck: passed for root/API and web.
+- Lint: passed.
+- Unit tests: 24 passed, zero skipped with the real library directory supplied. Coverage includes recognition/decompression, malformed/truncated/count-mismatched/trailing/oversized data, deterministic enumeration, exact hashes/IDs, full raw coverage, confidence preservation, category/deduplication boundaries and all four matching statuses.
+- PostgreSQL/S3 integration: 12 reported tests passed (10 subtests + two parents), zero skipped with the existing real model supplied. Includes direct permission denies, customer denial, raw/download protection, atomic audit, immutable triggers, concurrent idempotency, persistent reports, exact ancestry and actual 499-record/13-match verification.
+- Browser: all four scenarios passed across the complete run and targeted library reruns. The first library attempts exposed two overly strict test-label selectors; corrected to accessible combobox selectors. The final library scenario passed after a mobile table readability adjustment. Existing CSV, technical-model and first-slice scenarios already passed and were not needlessly rerun.
+- Chrome desktop/mobile library workflow: uploads in all three categories, raw/provenance/texture inspection, duplicate reuse, synthetic REVIEW_REQUIRED/NO_MATCH, report reload persistence, actual 13 EXACT_UNIQUE results and actual model totals. No JavaScript errors; no document overflow at 390 px. Screenshots inspected. AMBIGUOUS behavior is covered by unit tests; no real ambiguous match is fabricated for the UI.
+- API and Next production build: passed after final UI adjustment.
+- Git whitespace check: passed; Windows line-ending notices only. MASTER_SPEC.md and BUSINESS_FLOW.md hashes unchanged. Original library hashes unchanged.
+
+### Limits and completion
+
+Every requirement of this bounded staging/review increment is complete. No remaining implementation blocker. This is not a general production-quality PolyBoard importer: the grammar is bounded to the observed structure, UUID persistence is unproven and only 13 thickness entries have independent corroboration. Other thicknesses remain candidates; flags, financial-looking values, grain/orientation, profile dimensions/properties and extensions remain raw. CSV column 10 and edge-side orientation remain unmapped. Matching is a proposal, not catalog publication or manufacturing authorization. No excluded supplier/ERP/costing/Methods/hardware/rendering work was started.
+
+Recommended next increment, only after owner review: agree Q18 and add explicit authorized material-match review/acceptance with preserved audit/evidence, without changing immutable project snapshots. Gather controlled source variations for Q16/Q17 independently. No commit, push or Git configuration change was performed.
+
+### Current increment file manifest
+
+Created:
+
+- apps/web/components/material-library.tsx
+- packages/contracts/library.ts
+- packages/modules/catalog/model.ts
+- packages/modules/catalog/matching.ts
+- packages/modules/catalog/service.ts
+- packages/modules/imports/library-decompress.ts
+- packages/modules/imports/library-evidence.ts
+- packages/modules/imports/polyboard-library.ts
+- database/migrations/0004_worthless_sprite.sql
+- database/migrations/meta/0004_snapshot.json
+- tests/fixtures/library.ts
+- tests/unit/polyboard-library.test.ts
+- tests/integration/library.test.ts
+- tests/e2e/library.spec.ts
+- docs/POLYBOARD_LIBRARY_PROFILE.md
+
+Updated:
+
+- AGENTS.md
+- README.md
+- apps/api/server.ts
+- apps/web/components/workspace.tsx
+- apps/web/app/globals.css
+- database/schema.ts
+- database/migrations/meta/_journal.json
+- packages/modules/identity/policy.ts
+- package.json
+- pnpm-lock.yaml
+- docs/ARCHITECTURE.md
+- docs/DOMAIN_MODEL.md
+- docs/PERMISSIONS.md
+- docs/SECURITY.md
+- docs/POLYBOARD_IMPORT.md
+- docs/POLYBOARD_LIBRARY_ANALYSIS.md (implementation follow-up; original evidence retained)
+- docs/DECISIONS.md
+- docs/OPEN_QUESTIONS.md
+- docs/ROADMAP.md
+- docs/IMPLEMENTATION_REPORT.md
+
+Private .env, .local evidence/service data, original reference files, generated build output and browser screenshots remain outside the tracked deliverable.

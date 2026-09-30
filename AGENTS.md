@@ -33,4 +33,6 @@ Architecture baseline v0.1 is approved. The owner authorized the first implement
 
 ## Current authorized increment
 
+The owner additionally authorized PolyBoard Material Library Staging + Safe Material Matching. Preserve the confidence boundaries in docs/POLYBOARD_LIBRARY_ANALYSIS.md and docs/POLYBOARD_LIBRARY_PROFILE.md. Library snapshots and matching proposals are immutable review evidence, not published material masters or manufacturing authorization. Do not infer prices, grain, edge sides, profile dimensions or supplier identity. Existing project versions must remain unchanged. Stop after verification of this bounded increment for owner review.
+
 The owner authorized normalized technical review from existing CSV reports. Follow DOMAIN_MODEL.md and D33–D35: create a new immutable review version, exact-name cabinet links only, version-scoped material deduplication, raw column 10 and edge slots, explicit ambiguous/unmapped states, audit and idempotent reuse of the exact report pair. Later ERP, rendering, portal and release work remains outside scope.

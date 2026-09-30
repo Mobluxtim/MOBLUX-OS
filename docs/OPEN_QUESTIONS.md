@@ -53,3 +53,11 @@ Real samples have now established the two bounded positional profiles in POLYBOA
 ## Current reconciliation boundary
 
 Q13–Q15 remain unresolved where they affect manufacturing orientation, prices and cross-version identity. The new technical review model can link all 216 real sample rows to 21 uniquely named cabinets using exact source labels. This proves only the selected report pair's links, not a general identifier convention. Other report pairs with repeated/missing names preserve ambiguous/unmapped rows. Parent quantity multiplication and automatic synonym/catalog matching remain unimplemented.
+
+## Library questions — NON-BLOCKING for this completed review increment
+
+- Q16: Which controlled re-export/rename/copy examples or official serialization schema can establish cross-snapshot identifier stability and compatibility beyond the observed grammar? Blocks a general production-quality library importer and automatic cross-snapshot identity merging.
+- Q17: Which controlled setting changes establish grain/orientation and Bar profile dimensions/units, including the MDF 060x040 name versus 60/30 numeric conflict? Blocks manufacturing use of those fields. Existing CSV orientation questions Q13 remain separate.
+- Q18: What actor/review policy should publish a staged material master or accept a catalog association? Blocks that future publication workflow, not creation of proposals.
+
+BLOCKING questions for the current staging + safe matching increment: none. No new contradiction between the authoritative specifications was introduced or resolved by decoding these files.

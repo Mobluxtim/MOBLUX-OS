@@ -58,3 +58,7 @@ The owner authorized the first real CSV adapter after uploading real sources. Se
 ## Using staged reports in the technical model
 
 The next owner-authorized increment now creates normalized review versions from an explicit cabinet/cutting report pair. No adapter changes were needed. The same reports are reused without reparsing; source bytes, reports and earlier versions remain unchanged. See DOMAIN_MODEL.md for row provenance, conservative linking, deduplication and sealed immutable storage. This does not resolve the unknown CSV fields or authorize manufacturing.
+
+## Implemented material library staging
+
+The owner authorized the next bounded library increment. POLYBOARD_LIBRARY_PROFILE.md specifies the sequential Panel/Edge/Bar adapter, decompression limits, safe failure, immutable snapshot/source preservation and separate matching proposals. POLYBOARD_LIBRARY_ANALYSIS.md remains the original evidence; decoding does not upgrade semantic confidence. Only eight Panel and five Edge thicknesses carry independently corroborated evidence. CSV column 10, edge-side orientation and undocumented library fields remain unresolved. No original CSV adapter or immutable project dataset is rewritten.

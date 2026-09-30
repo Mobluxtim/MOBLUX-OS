@@ -5,7 +5,9 @@ import rateLimit from '@fastify/rate-limit';
 import { z, ZodError } from 'zod';
 import { getConfig } from '../../packages/configuration/env.js';
 import { authenticate, login, logout } from '../../packages/modules/identity/session.js';
-import { DomainError } from '../../packages/modules/identity/policy.js';
+import { authorize, DomainError } from '../../packages/modules/identity/policy.js';
+import * as library from '../../packages/modules/catalog/service.js';
+import { libraryCategories } from '../../packages/contracts/library.js';
 import * as customers from '../../packages/modules/customers/service.js';
 import * as projects from '../../packages/modules/projects/service.js';
 import * as technical from '../../packages/modules/projects/technical-model.js';
@@ -25,7 +27,7 @@ export function buildServer(logging = false) {
     if (error instanceof DomainError) return reply.status(error.status).send({ error: error.message });
     if (error instanceof ZodError) return reply.status(400).send({ error: error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ') });
     const e = error as { statusCode?: number; code?: string };
-    if (e.statusCode && e.statusCode < 500) return reply.status(e.statusCode).send({ error: e.statusCode === 413 ? 'File exceeds the 20 MB limit.' : 'Invalid request. Please check your input.' });
+    if (e.statusCode && e.statusCode < 500) return reply.status(e.statusCode).send({ error: e.statusCode === 413 ? (request.url.startsWith('/api/library/') ? 'Library exceeds the 256 KiB limit.' : 'File exceeds the 20 MB limit.') : 'Invalid request. Please check your input.' });
     request.log.error({ code: e.code, requestId: request.id }, 'Request failed');
     return reply.status(503).send({ error: 'The service is unavailable. Check that the database and object storage are running, then retry.' });
   });
@@ -50,6 +52,23 @@ export function buildServer(logging = false) {
     return reply.code(201).send(await imports.upload(actor, projectId, versionId, requestId, file.filename, body));
   });
   app.get('/api/documents', async req => projects.listSources(await authenticate(req.cookies.moblux_session)));
+  app.get('/api/library', async req => library.listLibrary(await authenticate(req.cookies.moblux_session)));
+  app.post<{ Params: { category: string } }>('/api/library/:category', { config: { rateLimit: { max: 15, timeWindow: '1 minute' } } }, async (req, reply) => {
+    const actor = await authenticate(req.cookies.moblux_session); authorize(actor, 'library.import'); authorize(actor, 'library.view');
+    const category = z.enum(libraryCategories).parse(req.params.category);
+    const file = await req.file({ limits: { fileSize: 256 * 1024, files: 1, fields: 0 } });
+    if (!file) throw new DomainError(400, 'Choose an original library file.');
+    const bytes = await file.toBuffer(); if (file.file.truncated) throw new DomainError(413, 'Library exceeds 256 KiB.');
+    return reply.code(201).send(await library.stageLibrary(actor, category, file.filename, bytes));
+  });
+  app.get<{ Params: { id: string } }>('/api/library/:id', async req => library.libraryDetail(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id)));
+  app.get<{ Params: { id: string; index: string } }>('/api/library/:id/records/:index/raw', async req => library.rawLibraryRecord(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), z.coerce.number().int().min(1).max(2000).parse(req.params.index)));
+  app.get<{ Params: { id: string } }>('/api/library/:id/download', async (req, reply) => {
+    const file = await library.downloadLibrary(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id));
+    return reply.type('application/octet-stream').header('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`).header('Content-Security-Policy', "sandbox; default-src 'none'").send(Buffer.from(file.bytes));
+  });
+  app.post<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/library-matches', async (req, reply) => reply.code(201).send(await library.matchLibrary(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId), req.body)));
+  app.get<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/library-matches', async req => library.listMatches(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId)));
   app.get<{ Params: { id: string } }>('/api/projects/:id/technical-models', async req => technical.listTechnicalModels(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id)));
   app.post<{ Params: { id: string } }>('/api/projects/:id/technical-models', async (req, reply) => reply.code(201).send(await technical.createTechnicalModel(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), req.body)));
   app.get<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId', async req => technical.technicalModelDetail(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId)));

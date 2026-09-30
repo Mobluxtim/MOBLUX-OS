@@ -6,13 +6,14 @@ import { LayoutDashboard, Users, FolderKanban, Factory, ShoppingCart, Package, F
 import { api } from './api';
 import { CsvImport } from './csv-import';
 import { TechnicalModelView } from './technical-model';
+import { MaterialLibrary } from './material-library';
 import type { Customer, Project, ProjectDetail, Identity, Source } from '../../../packages/contracts/index';
 
 const navigation = [
   { href: '/', label: 'Overview', icon: LayoutDashboard }, { href: '/customers', label: 'Customers', icon: Users },
   { href: '/projects', label: 'Projects', icon: FolderKanban }, { href: '/production', label: 'Production', icon: Factory },
   { href: '/purchasing', label: 'Purchasing', icon: ShoppingCart }, { href: '/inventory', label: 'Inventory', icon: Package },
-  { href: '/documents', label: 'Documents', icon: Files }, { href: '/settings', label: 'Settings', icon: Settings }
+  { href: '/documents', label: 'Documents', icon: Files }, { href: '/library', label: 'Material Library', icon: Layers }, { href: '/settings', label: 'Settings', icon: Settings }
 ];
 const date = (value: string) => new Date(value).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 const code = (id: string) => `MLX-${id.slice(0, 8).toUpperCase()}`;
@@ -43,6 +44,7 @@ export function Workspace() {
   else if (path === '/projects/new') content = <ProjectForm />;
   else if (path.startsWith('/projects/')) content = <ProjectView key={path} id={path.split('/')[2]} />;
   else if (path === '/documents') content = <Documents />;
+  else if (path === '/library') content = <MaterialLibrary />;
   else if (path === '/settings') content = <SettingsView identity={identity} />;
   else if (['/production', '/purchasing', '/inventory'].includes(path)) content = <ComingLater name={section} />;
   else content = <Empty title="Page not found"><Link href="/">Return to overview</Link></Empty>;

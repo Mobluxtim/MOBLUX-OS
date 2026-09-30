@@ -153,3 +153,30 @@ After updating the checkout, stop the app, run `pnpm db:migrate`, then start it 
 Open a project → **Technical model**. The test project already contains its normalized **V2**. Use **Cabinets**, **Parts**, **Materials**, and **Import issues / unmapped data** to inspect the model. Clicking a cabinet filters its parts. Parts retain source/report IDs, original row/line, original cells, column 10 and four raw edge slots. Tables have row pagination; wide tables scroll horizontally on mobile.
 
 To build another model, expand **Create from CSV reports**, choose successful cabinet and cutting reports from the same original version, then select **Create review version**. Repeating the same report pair reopens the existing model. A different report pair is a separate input. Existing versions stay unchanged. Review versions are not technically validated, approved or released for production.
+
+## PolyBoard Material Library review
+
+For this increment stop the application, then run:
+
+```powershell
+pnpm install --frozen-lockfile
+pnpm db:migrate
+pnpm db:seed
+pnpm dev
+```
+
+Keep existing PostgreSQL/S3 infrastructure running. Open http://localhost:3000/library after signing in. Select Panel, Edge or Bar / Profile and upload the corresponding original .mat-boole file. Identical files reuse the snapshot. Select a snapshot to inspect records, provenance, confidence, raw indicators and texture paths; raw inspection/download requires its separate permission. No texture path is automatically opened.
+
+Under Project material matching select a project, an immutable technical version and the intended category snapshots, then create matching proposals. Saved reports persist and expose exact, ambiguous, missing and review-required results. Proposals do not change the version or authorize manufacturing. See [the implemented profile](docs/POLYBOARD_LIBRARY_PROFILE.md).
+
+Optional real-fixture checks use local paths/IDs supplied through the environment, never committed reference data:
+
+```powershell
+$env:POLYBOARD_LIBRARY_DIR='<local library directory>'
+$env:MOBLUX_REAL_MODEL_ID='<existing technical model UUID>'
+pnpm test
+pnpm test:integration
+pnpm test:e2e
+```
+
+Integration suites run sequentially because permission tests temporarily override the shared development administrator. Browser tests require the application running. Without these variables, optional real-fixture tests skip; synthetic tests still run. Library staging adds seek-bzip 2.0.0; earlier no-new-dependency notes describe historical increments.

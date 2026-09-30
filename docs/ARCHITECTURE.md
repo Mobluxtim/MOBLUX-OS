@@ -123,3 +123,9 @@ The owner subsequently authorized real CSV adapters. The imports module now stor
 ## Normalized model implementation
 
 The owner-authorized technical model consumes existing staged reports without reparsing or modifying adapters. The Projects module owns technical_models, cabinets, parts, technical_materials and edge_data; Import owns the immutable source reports. Creation is a synchronous transaction that allocates a new version, inserts all normalized rows, seals the model and records audit. Version snapshots reference the exact manifest; no change to an existing version is permitted. Review remains NEEDS_REVIEW, with no approval or production authorization. See DOMAIN_MODEL.md and D33–D35.
+
+## Library staging and safe proposals — 2026-09-30
+
+The Import module owns the bounded sequential binary adapter; Catalog owns immutable library snapshots and material matching reports. PostgreSQL stores snapshot metadata and bounded record JSONB atomically; private versioned S3 stores exact originals. Migration 0004 adds two append-only tables with immutable triggers. This avoids mutable catalog publication and unnecessary per-field tables while the source semantics remain uncertain. No new service or durable job queue is introduced; decompression uses a resource-limited worker thread inside the API process.
+
+Matching reads exact existing technical models and records proposals separately. It cannot mutate ProjectVersion, TechnicalMaterial, approval or ProductionRelease. The catalog type boundary distinguishes Panel, Edge and Bar/Profile material masters from source records and from future supplier products. See POLYBOARD_LIBRARY_PROFILE.md and D36–D38 for limits, confidence and identity rules.

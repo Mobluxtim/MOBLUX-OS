@@ -76,3 +76,14 @@ project.import + project.view + project.files.download are required for CSV stag
 ## Normalized model access
 
 Model reads require project.view + project.import + project.files.download; creation also requires project.version.create. Technical cabinet responses exclude all price cells. project.cost.view remains required for opening the original cabinet CSV report. Model creation does not grant approval, technical validation or production.release.
+
+## Material library capabilities
+
+| Capability | Backend scope |
+| --- | --- |
+| library.view | Staff-only snapshot metadata and safe decoded fields; matching-report reads also require existing model read permissions and exact project ancestry |
+| library.import | Stage bounded sources; additionally requires library.view; audited |
+| library.raw.view | Raw byte inspection and preserved-original downloads; additionally requires library.view; separate because undocumented bytes may contain financial information |
+| library.match | Persist proposals; additionally requires library.view and project.view + project.import + project.files.download for the model; audited |
+
+The development seed grants these to the local administrator. Explicit denies prevail; customer actors remain denied even if given staff grants. No capability grants catalog publication, financial action, approval or production release. Ordinary library responses never include raw record/header bytes; UI visibility is not the enforcement boundary.

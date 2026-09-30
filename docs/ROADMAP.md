@@ -66,3 +66,7 @@ The first real CSV profiles now extract the confirmed fields described in POLYBO
 ## Normalized review increment
 
 Confirmed staged fields now populate a new immutable technical review version with Cabinet, Part, version-specific Material and raw EdgeData. This advances the first vertical slice without implementing customer approval, rendering or production. Next work remains owner-reviewed; confirmation of remaining export semantics and an explicit technical validation workflow are prerequisites for manufacturing calculations.
+
+## Material library staging increment
+
+Completed bounded Panel/Edge/Bar snapshot staging and separate persistent project-material proposals. Review UI and confidence rules are in POLYBOARD_LIBRARY_PROFILE.md; verification is in IMPLEMENTATION_REPORT.md. No catalog publication, manufacturing calculations or supplier functionality is included. Recommended next bounded increment, subject to owner review: define and implement explicit material-match review/acceptance with audit and evidence, without rewriting existing versions; first agree publication policy Q18. Controlled exports for Q16/Q17 can be collected independently.

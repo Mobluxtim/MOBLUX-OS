@@ -155,3 +155,21 @@ erDiagram
     CsvImportAttempt ||--o{ Cabinet : source_row
     CsvImportAttempt ||--o{ Part : source_row
 ```
+
+## Library staging domain — 2026-09-30
+
+- LibrarySnapshot: one immutable category/file/parser revision, MOBLUX ID, source hash/size, private object version, actor/time, validation status and bounded staged records.
+- LibraryRecord: snapshot-owned ordinal/offsets, internally generated record ID, exact source name/group, separate candidate PolyBoard UUID/bytes, corroborated thickness or explicit candidate, texture references and protected raw representation. PANEL, EDGE and BAR remain separate categories; identical names never establish global identity.
+- LibraryMatchReport: immutable proposal set owned by Catalog, referencing an existing TechnicalModel and an explicit snapshot set; matcher version, actor/time, request/candidate provenance and four matching statuses. No accepted catalog link is written into the model.
+- MaterialMaster / PanelMaterial / EdgeMaterial / BarProfileMaterial: discriminated type boundary only in this increment, not published database catalog rows. Supplier products/prices and stock remain separate future entities. TechnicalMaterial continues to belong to its frozen project version.
+
+```mermaid
+erDiagram
+    LibrarySnapshot ||--o{ LibraryRecord : stages_as_bounded_JSON
+    TechnicalModel ||--o{ LibraryMatchReport : reviewed_by
+    LibraryMatchReport }o--o{ LibrarySnapshot : exact_selected_sources
+    LibraryMatchReport ||--o{ MaterialMatchProposal : contains_as_JSON
+    MaterialMatchProposal }o--o{ LibraryRecord : candidate_references
+```
+
+The two persisted tables are library_snapshots and library_match_reports; contained records/results are immutable JSONB, not additional mutable tables. Snapshot deduplication uses category + hash + parser; report deduplication uses model + sorted snapshot-set hash + matcher. New source snapshots do not merge identities by candidate UUID across exports. See POLYBOARD_LIBRARY_PROFILE.md.

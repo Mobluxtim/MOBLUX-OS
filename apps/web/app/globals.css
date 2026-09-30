@@ -11,3 +11,4 @@
 @media(max-width:760px){.source{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px}.source>.button{grid-column:2;justify-self:start;margin-left:0}.source-info{width:100%}}
 
 .technical-review{min-width:0}.technical-review td{white-space:normal;min-width:90px;max-width:300px;overflow-wrap:anywhere}.technical-review code,.technical-review p{overflow-wrap:anywhere}.technical-review .tabs{overflow-x:auto}.technical-review .tabs button{flex-shrink:0}
+.library-review{min-width:0}.library-review label{margin:16px 0}.library-review select,.library-review input{max-width:100%;min-width:0}.library-review>section{margin-bottom:24px}.library-review details p,.library-review code,.library-review li{overflow-wrap:anywhere}.library-raw{white-space:pre-wrap;overflow-wrap:anywhere;max-height:240px;overflow:auto}.library-review table{min-width:720px}.library-review td{max-width:360px}.library-matches{margin-top:24px}
