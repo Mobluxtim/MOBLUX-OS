@@ -124,3 +124,34 @@ Do not fabricate missing source grouping, cross-version identity, conversion fac
 ## Implemented CSV staging relationships
 
 csv_import_attempts belongs to Import and references exactly one immutable source_files record, which fixes Project/ProjectVersion and object hash/revision ancestry. Each attempt is immutable and has actor/time/profile/request UUID, structured findings and row provenance. Canonical cabinet/part values are staged JSON records, not published Cabinet/Part master records. Source labels and repeated source numbers do not create global identities. Source prices, unknown grain indicator and edge-side positions retain explicit unresolved status. No room is inferred. Publication into a new immutable ProjectVersion is a later separately authorized operation.
+
+## Normalized technical model increment — 2026-09-30
+
+The owner authorized ProjectVersion → Cabinet → Part → Material → EdgeData using the existing CSV reports. A new immutable review ProjectVersion contains a manifest referencing both exact source files, report IDs, base version and normalizer version. No existing version or staging report is edited. This is technical review data, not customer approval, manufacturing validation or ProductionRelease.
+
+Implemented tables:
+
+- technical_models: one sealed model per new ProjectVersion, project/base-version ancestry, exact report pair, normalizer, actor/time, summary and issues.
+- cabinets: version-scoped cabinet identity, source/report/row/line, name, quantity and confirmed height/width/depth in mm. Prices stay exclusively in the protected source report.
+- parts: one entity per exported cutting row, not per physical unit. Cabinet link is nullable with LINKED/AMBIGUOUS/UNMAPPED status; material link is required. Confirmed values and every original cell remain preserved in the typed source data, including column 10 and repeated source numbers.
+- technical_materials: version-scoped material identity deduplicated by exact description + numeric thickness + unit. Decimal zero padding is canonicalized without floating-point conversion; case, spelling and whitespace are not merged. Historical part data retains the source spelling/decimal representation. These are not inventory catalog identities.
+- edge_data: four raw slots per part, including empty pairs, with material/thickness and unit; side is constrained to null. Part/version foreign keys preserve ancestry.
+
+Cabinet links require exactly one identical source name in the explicitly selected same-project, same-source-version report pair. Duplicate names and mixed source project labels produce AMBIGUOUS; absent exact names produce UNMAPPED. No fuzzy matching or implied room/group is created. Repeated part numbers never deduplicate rows. Parent quantities do not multiply exported part quantities.
+
+Every child table and model is append-only. The model row seals the version after all children are inserted in one transaction; triggers forbid later additions as well as updates/deletes. Same-version composite foreign keys prevent linking parts to another version's cabinet/material. Important creation audit and manifest commit atomically. Reusing the same exact report pair and normalizer returns the existing model even with a new request UUID. A deliberately different report pair is a different input; no filename-based equivalence is inferred.
+
+```mermaid
+erDiagram
+    ProjectVersion ||--o| TechnicalModel : contains
+    TechnicalModel }o--|| CsvImportAttempt : cabinet_report
+    TechnicalModel }o--|| CsvImportAttempt : cutting_report
+    ProjectVersion ||--o{ Cabinet : freezes
+    ProjectVersion ||--o{ Part : freezes
+    ProjectVersion ||--o{ TechnicalMaterial : freezes
+    Cabinet o|--o{ Part : exact_name_link
+    TechnicalMaterial ||--o{ Part : material
+    Part ||--|{ EdgeData : raw_slots
+    CsvImportAttempt ||--o{ Cabinet : source_row
+    CsvImportAttempt ||--o{ Part : source_row
+```

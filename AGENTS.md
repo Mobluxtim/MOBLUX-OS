@@ -30,3 +30,7 @@ Architecture baseline v0.1 is approved. The owner authorized the first implement
 - `docs/IMPLEMENTATION_REPORT.md`: current increment, verification and file manifest.
 
 - `docs/POLYBOARD_CSV_PROFILE.md`: evidence, verified CSV profiles and current extraction limits.
+
+## Current authorized increment
+
+The owner authorized normalized technical review from existing CSV reports. Follow DOMAIN_MODEL.md and D33–D35: create a new immutable review version, exact-name cabinet links only, version-scoped material deduplication, raw column 10 and edge slots, explicit ambiguous/unmapped states, audit and idempotent reuse of the exact report pair. Later ERP, rendering, portal and release work remains outside scope.

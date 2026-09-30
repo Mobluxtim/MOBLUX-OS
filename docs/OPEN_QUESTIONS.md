@@ -49,3 +49,7 @@ No unresolved direct contradiction was identified after these clarifications. De
 | Q15 | Which exported identifier/package convention distinguishes repeated source part numbers and isolated panels, and how should quantities be interpreted when a cabinet quantity exceeds 1? | Cross-file/cross-version identity reconciliation and a complete material requirement set; current row quantities are preserved without deduplication or parent multiplication |
 
 Real samples have now established the two bounded positional profiles in POLYBOARD_CSV_PROFILE.md. The earlier real-adapter dependency remains applicable to additional formats or unverified semantics, not to the implemented partial CSV extraction. No values are inferred for the remaining unknowns.
+
+## Current reconciliation boundary
+
+Q13–Q15 remain unresolved where they affect manufacturing orientation, prices and cross-version identity. The new technical review model can link all 216 real sample rows to 21 uniquely named cabinets using exact source labels. This proves only the selected report pair's links, not a general identifier convention. Other report pairs with repeated/missing names preserve ambiguous/unmapped rows. Parent quantity multiplication and automatic synonym/catalog matching remain unimplemented.

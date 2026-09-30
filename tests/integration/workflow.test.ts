@@ -4,6 +4,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import pg from 'pg';
 import { buildServer } from '../../apps/api/server.js';
 import { pool } from '../../packages/infrastructure/db.js';
+import { cabinetCsv, cuttingCsv } from '../fixtures/technical-csv.js';
 
 test('real PostgreSQL and S3 first-slice workflow', async t => {
   const app = buildServer(); const owner = new pg.Pool({ connectionString: process.env.MIGRATION_DATABASE_URL });
@@ -93,6 +94,48 @@ test('real PostgreSQL and S3 first-slice workflow', async t => {
           assert.equal((await app.inject({ method: 'GET', url: `/api/projects/${project.id}/csv-imports/${cabinet.json().id}`, headers })).statusCode, 403);
         } finally { await owner.query('DELETE FROM user_overrides WHERE user_id=$1 AND capability=$2', [user.id, capability]); }
       }
+    });
+    await t.test('normalized technical model seals new version, links full fixture and deduplicates retries', async () => {
+      async function report(name: string, content: string, profile: string, sourceVersion = versionId) {
+        const boundary = 'technical-model-fixture';
+        const upload = await app.inject({ method: 'POST', url: `/api/projects/${project.id}/versions/${sourceVersion}/sources`, headers: { ...headers, 'content-type': `multipart/form-data; boundary=${boundary}`, 'idempotency-key': randomUUID() }, payload: Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${name}"\r\nContent-Type: text/csv\r\n\r\n${content}\r\n--${boundary}--\r\n`) }); assert.equal(upload.statusCode, 201, upload.body);
+        const result = await app.inject({ method: 'POST', url: `/api/projects/${project.id}/sources/${upload.json().id}/csv-imports`, headers, payload: { profile, requestId: randomUUID() } }); assert.equal(result.statusCode, 201, result.body); return result.json().id as string;
+      }
+      const cabinetReportId = await report('synthetic-21.csv', cabinetCsv, 'polyboard-cabinets-7/v1');
+      const partReportId = await report('synthetic-216.csv', cuttingCsv, 'polyboard-cutting-18/v1');
+      const before = (await owner.query('select id,snapshot from project_versions where project_id=$1 order by id', [project.id])).rows;
+      const url = `/api/projects/${project.id}/technical-models`, payload = { cabinetReportId, partReportId, requestId: randomUUID() };
+      assert.equal((await app.inject({ method: 'POST', url, headers: { origin }, payload })).statusCode, 401);
+      const results = await Promise.all([1, 2].map(() => app.inject({ method: 'POST', url, headers, payload })));
+      assert.equal(results[0].statusCode, 201, results[0].body); assert.equal(results[1].statusCode, 201, results[1].body); assert.equal(results[0].json().id, results[1].json().id);
+      const result = results[0].json(), readUrl = `${url}/${result.id}`;
+      const detail = (await app.inject({ method: 'GET', url: readUrl, headers })).json();
+      assert.deepEqual(detail.model.summary, { cabinets: 21, partRows: 216, units: 280, materials: 8, linkedRows: 216, ambiguousRows: 0, unmappedRows: 0 });
+      assert.equal(detail.cabinets.length, 21); assert.equal(detail.parts.length, 216); assert.equal(detail.materials.length, 8); assert.equal(detail.edges.length, 864);
+      for (const part of detail.parts) { assert.equal(detail.cabinets.find((c: { id: string }) => c.id === part.cabinetId).name, part.data.cabinetLabel); assert.equal(part.data.unmapped.column10, '-1'); assert.equal(part.reportId, partReportId); }
+      assert.ok(detail.edges.every((e: { side: unknown }) => e.side === null)); assert.ok(!JSON.stringify(detail).includes('999.99'));
+      const again = await app.inject({ method: 'POST', url, headers, payload: { ...payload, requestId: randomUUID() } }); assert.equal(again.json().id, result.id);
+      assert.equal((await app.inject({ method: 'POST', url, headers, payload: { ...payload, cabinetReportId: partReportId, partReportId: cabinetReportId } })).statusCode, 400);
+      assert.equal((await app.inject({ method: 'GET', url: `/api/projects/${randomUUID()}/technical-models/${result.id}`, headers })).statusCode, 404);
+      const after = (await owner.query('select id,snapshot from project_versions where project_id=$1 order by id', [project.id])).rows;
+      assert.equal(after.length, before.length + 1); assert.deepEqual(after.filter(r => r.id !== result.versionId), before);
+      assert.equal(after.find(r => r.id === result.versionId).snapshot.normalizedData.manufacturingVerified, false);
+      assert.equal((await owner.query("select count(*)::int as n from audit_events where project_id=$1 and event='technical_model.created'", [project.id])).rows[0].n, 1);
+      await assert.rejects(owner.query('UPDATE parts SET cabinet_id=NULL WHERE version_id=$1', [result.versionId]));
+      await assert.rejects(owner.query('DELETE FROM edge_data WHERE version_id=$1', [result.versionId]));
+      await assert.rejects(owner.query('INSERT INTO technical_materials (version_id,key,description,thickness,unit) VALUES ($1,$2,$3,$4,$5)', [result.versionId, 'new', 'forbidden appended material', '18', 'mm']));
+      await assert.rejects(owner.query('INSERT INTO technical_materials (version_id,key,description,thickness,unit) VALUES ($1,$2,$3,$4,$5)', [versionId, 'new', 'forbidden old version material', '18', 'mm']));
+      const otherVersion = (await app.inject({ method: 'POST', url: `/api/projects/${project.id}/versions`, headers, payload: { summary: 'Synthetic mismatched source version', requestId: randomUUID() } })).json();
+      const otherReport = await report('synthetic-other.csv', cuttingCsv, 'polyboard-cutting-18/v1', otherVersion.id);
+      assert.equal((await app.inject({ method: 'POST', url, headers, payload: { ...payload, partReportId: otherReport, requestId: randomUUID() } })).statusCode, 409);
+      const user = (await app.inject({ method: 'GET', url: '/api/me', headers })).json();
+      await owner.query('INSERT INTO user_overrides(user_id,capability,allowed) VALUES ($1,$2,false)', [user.id, 'project.version.create']);
+      try { assert.equal((await app.inject({ method: 'POST', url, headers, payload })).statusCode, 403); } finally { await owner.query('DELETE FROM user_overrides WHERE user_id=$1 AND capability=$2', [user.id, 'project.version.create']); }
+      const duplicateReport = await report('synthetic-ambiguous.csv', cabinetCsv.replace('Synthetic cabinet 2;', 'Synthetic cabinet 1;'), 'polyboard-cabinets-7/v1');
+      const ambiguous = await app.inject({ method: 'POST', url, headers, payload: { ...payload, cabinetReportId: duplicateReport, requestId: randomUUID() } }); assert.equal(ambiguous.statusCode, 201, ambiguous.body);
+      const review = (await app.inject({ method: 'GET', url: `${url}/${ambiguous.json().id}`, headers })).json();
+      assert.equal(review.model.summary.ambiguousRows, 11); assert.equal(review.model.summary.unmappedRows, 11); assert.equal(review.model.summary.units, 280);
+      assert.ok(review.parts.filter((p: { linkStatus: string }) => p.linkStatus !== 'LINKED').every((p: { cabinetId: unknown }) => p.cabinetId === null));
     });
     await t.test('user denial and expired sessions are enforced by backend', async () => {
       const user = (await app.inject({ method: 'GET', url: '/api/me', headers })).json();

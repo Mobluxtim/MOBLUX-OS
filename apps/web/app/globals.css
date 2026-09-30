@@ -9,3 +9,5 @@
 
 .csv-import{margin-top:16px;min-width:0}.csv-import>summary{cursor:pointer;font-weight:600}.csv-report{margin-top:20px;border-top:1px solid var(--line);padding-top:16px;min-width:0}.csv-report td{white-space:normal;min-width:75px;max-width:260px;overflow-wrap:anywhere}.csv-report code{white-space:pre-wrap;overflow-wrap:anywhere}.csv-findings{padding-left:20px;font-size:12px}.csv-findings li{margin:8px 0}.csv-pagination{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:16px 0}.csv-import .button{margin-left:0}.source-info{min-width:0}.csv-report .table-wrap{max-width:100%}
 @media(max-width:760px){.source{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px}.source>.button{grid-column:2;justify-self:start;margin-left:0}.source-info{width:100%}}
+
+.technical-review{min-width:0}.technical-review td{white-space:normal;min-width:90px;max-width:300px;overflow-wrap:anywhere}.technical-review code,.technical-review p{overflow-wrap:anywhere}.technical-review .tabs{overflow-x:auto}.technical-review .tabs button{flex-shrink:0}

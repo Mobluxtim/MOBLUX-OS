@@ -8,6 +8,7 @@ import { authenticate, login, logout } from '../../packages/modules/identity/ses
 import { DomainError } from '../../packages/modules/identity/policy.js';
 import * as customers from '../../packages/modules/customers/service.js';
 import * as projects from '../../packages/modules/projects/service.js';
+import * as technical from '../../packages/modules/projects/technical-model.js';
 import * as imports from '../../packages/modules/imports/service.js';
 import { maxUploadBytes } from '../../packages/modules/imports/adapter.js';
 import { uuid } from '../../packages/contracts/index.js';
@@ -49,6 +50,9 @@ export function buildServer(logging = false) {
     return reply.code(201).send(await imports.upload(actor, projectId, versionId, requestId, file.filename, body));
   });
   app.get('/api/documents', async req => projects.listSources(await authenticate(req.cookies.moblux_session)));
+  app.get<{ Params: { id: string } }>('/api/projects/:id/technical-models', async req => technical.listTechnicalModels(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id)));
+  app.post<{ Params: { id: string } }>('/api/projects/:id/technical-models', async (req, reply) => reply.code(201).send(await technical.createTechnicalModel(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), req.body)));
+  app.get<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId', async req => technical.technicalModelDetail(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId)));
   app.post<{ Params: { id: string; sourceId: string } }>('/api/projects/:id/sources/:sourceId/csv-imports', async (req, reply) => reply.code(201).send(await imports.importCsv(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.sourceId), req.body)));
   app.get<{ Params: { id: string; attemptId: string } }>('/api/projects/:id/csv-imports/:attemptId', async req => imports.csvReport(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.attemptId)));
   app.get<{ Params: { id: string } }>('/api/documents/:id/download', async (req, reply) => { const file = await imports.download(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id)); return reply.type('application/octet-stream').header('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`).header('Content-Security-Policy', "sandbox; default-src 'none'").send(Buffer.from(file.bytes)); });

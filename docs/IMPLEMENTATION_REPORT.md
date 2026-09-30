@@ -198,3 +198,59 @@ Verification: 14 unit tests; five integration subtests plus parent; two browser 
 - `docs/IMPLEMENTATION_REPORT.md`
 
 The preceding initial-increment manifest is historical; both increments are still uncommitted for owner review. Recommended next increment, not started: confirm the remaining export schema and implement authorized publication of reviewed import data into a new immutable ProjectVersion with an exact source/attempt manifest.
+
+## Completed normalized technical model increment — 2026-09-30
+
+Scope: consume existing successful CSV staging reports and build ProjectVersion → Cabinet → Part → Material → raw EdgeData. No adapter was rewritten and no CSV was reparsed for the real project. Migration 0003 adds technical_models, cabinets, parts, technical_materials and edge_data (18 total application tables). Model ownership, conservative match rules and ER relationships are in DOMAIN_MODEL.md; D33–D35 record the decisions.
+
+The selected real reports created review V2: 21 cabinets, 216 part rows / 280 units, 8 deduplicated material-description/thickness/unit identities, and 864 raw edge slots including empty pairs. All 216 rows link to exactly one cabinet by identical source name. Ambiguous/unmapped cabinet links: zero in this pair. All part source records were compared in full with the existing cutting report; old project versions, source records and staging assessments remained unchanged. Repeating the same report pair returned the same model/version.
+
+Column 10 stays raw on every part; every edge side is null. Dimension axes/grain conventions, commercial price meanings, catalog resolution and globally stable part numbering are not inferred. Repeated part-number warnings remain visible; they never merge rows. A part with no unique exact cabinet match retains a null cabinet ID plus explicit AMBIGUOUS/UNMAPPED status. Material deduplication is local to the immutable version and preserves original source values through part/report provenance.
+
+UI: Project → Technical model → Cabinets / Parts / Materials / Import issues & unmapped data. Users select exact successful source reports, inspect prior normalized versions, filter parts by cabinet, paginate tables, inspect source/row/line/report/hash provenance, and inspect raw values and issues. Creating a normalized model allocates a new immutable review version; it is not customer approval, technical validation or production release. Model rows seal further child inserts; all child updates/deletes are rejected. Permissions and source-version ancestry are checked in the backend; technical responses exclude cabinet price cells.
+
+Verification completed:
+
+- TypeScript root/frontend: passed.
+- ESLint: passed.
+- Unit: 20 tests passed (six new normalizer tests).
+- Real PostgreSQL/S3 integration: six subtests plus parent passed (7 reported); includes real relational constraints, sealed inserts, preservation of earlier versions, concurrent/repeated command reuse, authorization and persisted ambiguous/unmapped cases.
+- Browser: three scenarios passed against the built app, including all four technical views, filtering, raw data, reload persistence, same-pair reuse and mobile no-overflow assertion. Desktop/mobile screenshots inspected.
+- API/Next production build: passed.
+- Real staged-report normalization: 21/216/280/8 verified; 864 edge slots retained; previous versions and all part source fields unchanged.
+- git diff --check: passed; Windows line-ending notices only. Authoritative specification hashes unchanged.
+
+No dependencies were added. No Git configuration changes, commit or push. No 3D/viewer, client portal, purchasing or production release was implemented. The increment is complete within the requested technical-review scope. Recommended next increment, not started: confirm unresolved export schema semantics and add an explicit technical-validation workflow over exact immutable versions before manufacturing calculations.
+
+### Files created in this increment
+
+- `apps/web/components/technical-model.tsx`
+- `packages/contracts/technical-model.ts`
+- `packages/modules/projects/normalize.ts`
+- `packages/modules/projects/technical-model.ts`
+- `database/migrations/0003_fresh_red_skull.sql`
+- `database/migrations/meta/0003_snapshot.json`
+- `tests/fixtures/technical-csv.ts`
+- `tests/unit/technical-model.test.ts`
+- `tests/e2e/technical-model.spec.ts`
+
+### Files updated in this increment
+
+- `apps/api/server.ts`
+- `apps/web/components/workspace.tsx`
+- `apps/web/app/globals.css`
+- `packages/contracts/index.ts`
+- `database/schema.ts`
+- `database/migrations/meta/_journal.json`
+- `tests/integration/workflow.test.ts`
+- `AGENTS.md`
+- `README.md`
+- `docs/ARCHITECTURE.md`
+- `docs/DOMAIN_MODEL.md`
+- `docs/DECISIONS.md`
+- `docs/SECURITY.md`
+- `docs/PERMISSIONS.md`
+- `docs/OPEN_QUESTIONS.md`
+- `docs/POLYBOARD_IMPORT.md`
+- `docs/ROADMAP.md`
+- `docs/IMPLEMENTATION_REPORT.md`

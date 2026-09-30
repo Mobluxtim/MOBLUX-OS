@@ -54,3 +54,7 @@ Obtain sanitized structured exports, matching geometry and expected hierarchy/co
 ## CSV implementation increment — 2026-09-29
 
 The owner authorized the first real CSV adapter after uploading real sources. See POLYBOARD_CSV_PROFILE.md for the evidence, exact positional mappings and verified limits. Two explicitly selected profiles now stage cabinet and cutting records, with immutable attempt history and audit. Real-sample dependence is resolved only for those profiles; no automatic support for arbitrary PolyBoard exports is implied. Existing raw uploads and project versions remain immutable. Successfully parsed records stay NEEDS_REVIEW until unresolved semantics and a separate publication workflow are addressed.
+
+## Using staged reports in the technical model
+
+The next owner-authorized increment now creates normalized review versions from an explicit cabinet/cutting report pair. No adapter changes were needed. The same reports are reused without reparsing; source bytes, reports and earlier versions remain unchanged. See DOMAIN_MODEL.md for row provenance, conservative linking, deduplication and sealed immutable storage. This does not resolve the unknown CSV fields or authorize manufacturing.

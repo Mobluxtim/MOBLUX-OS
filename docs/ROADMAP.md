@@ -62,3 +62,7 @@ Before live data, review grants, hosting/retention/recovery, harden auth/uploads
 ## CSV adapter increment
 
 The first real CSV profiles now extract the confirmed fields described in POLYBOARD_CSV_PROFILE.md. This completes partial structured staging only, not the full Phase 1 publication/3D/approval workflow. Resolve the scoped export questions before manufacturing calculations; implement authorized publication into a new immutable version before presenting staging as published design data.
+
+## Normalized review increment
+
+Confirmed staged fields now populate a new immutable technical review version with Cabinet, Part, version-specific Material and raw EdgeData. This advances the first vertical slice without implementing customer approval, rendering or production. Next work remains owner-reviewed; confirmation of remaining export semantics and an explicit technical validation workflow are prerequisites for manufacturing calculations.

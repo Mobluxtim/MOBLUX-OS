@@ -145,3 +145,11 @@ See [docs/IMPLEMENTATION_REPORT.md](docs/IMPLEMENTATION_REPORT.md) for verificat
 See [POLYBOARD_CSV_PROFILE.md](docs/POLYBOARD_CSV_PROFILE.md) for the two verified positional layouts, evidence and unresolved fields. Column 10 stays raw; edge material/thickness pairs have no assigned sides. Project versions remain frozen. Select only the export profile matching your source configuration. There is no automatic schema detection or manufacturing approval. Existing CSV sources can be analyzed without uploading again.
 
 After updating this checkout, restart the app and run `pnpm db:migrate` and `pnpm db:seed` before `pnpm dev`. Migration adds immutable CSV attempt history; seed grants the local administrator cost-view permission for price-bearing cabinet reports. No new package installation is required for this increment.
+
+## Technical model review
+
+After updating the checkout, stop the app, run `pnpm db:migrate`, then start it again. No new dependencies are required.
+
+Open a project → **Technical model**. The test project already contains its normalized **V2**. Use **Cabinets**, **Parts**, **Materials**, and **Import issues / unmapped data** to inspect the model. Clicking a cabinet filters its parts. Parts retain source/report IDs, original row/line, original cells, column 10 and four raw edge slots. Tables have row pagination; wide tables scroll horizontally on mobile.
+
+To build another model, expand **Create from CSV reports**, choose successful cabinet and cutting reports from the same original version, then select **Create review version**. Repeating the same report pair reopens the existing model. A different report pair is a separate input. Existing versions stay unchanged. Review versions are not technically validated, approved or released for production.

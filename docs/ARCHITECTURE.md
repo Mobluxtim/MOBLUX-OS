@@ -119,3 +119,7 @@ PROJECT_LIFECYCLE.md details lifecycle distinctions and transition evidence. SEC
 ## CSV staging implementation
 
 The owner subsequently authorized real CSV adapters. The imports module now stores append-only csv_import_attempts with a source foreign key, profile version, actor/time, request UUID and normalized review result. See POLYBOARD_CSV_PROFILE.md and D30–D32. This is bounded synchronous text extraction, not conversion or publication: no durable background effect exists yet. The next publishing increment must create a new ProjectVersion, never alter one of the current snapshots.
+
+## Normalized model implementation
+
+The owner-authorized technical model consumes existing staged reports without reparsing or modifying adapters. The Projects module owns technical_models, cabinets, parts, technical_materials and edge_data; Import owns the immutable source reports. Creation is a synchronous transaction that allocates a new version, inserts all normalized rows, seals the model and records audit. Version snapshots reference the exact manifest; no change to an existing version is permitted. Review remains NEEDS_REVIEW, with no approval or production authorization. See DOMAIN_MODEL.md and D33–D35.

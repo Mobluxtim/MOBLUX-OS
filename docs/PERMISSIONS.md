@@ -72,3 +72,7 @@ Test direct API access as well as UI: cross-customer reads/writes/search/downloa
 ## Implemented CSV capabilities
 
 project.import + project.view + project.files.download are required for CSV staging commands and reports. Cabinet CSV reports contain raw price fields and additionally require project.cost.view, including direct API reads. The development administrator receives this capability through the idempotent seed. This is data visibility only: it does not authorize purchasing, quotation publication or any other financial action.
+
+## Normalized model access
+
+Model reads require project.view + project.import + project.files.download; creation also requires project.version.create. Technical cabinet responses exclude all price cells. project.cost.view remains required for opening the original cabinet CSV report. Model creation does not grant approval, technical validation or production.release.
