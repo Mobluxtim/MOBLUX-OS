@@ -68,3 +68,7 @@ The visual administration matrix shows checkboxes, scopes, effective grants and 
 ## Verification
 
 Test direct API access as well as UI: cross-customer reads/writes/search/downloads, cost-field leakage, forged version references, deny precedence, expired/replayed magic links, revoked access, station restrictions and unauthorized payment/purchase/release/AI actions. Test an administrator cannot create an event claiming to be customer consent. Review role templates before live rollout.
+
+## Implemented CSV capabilities
+
+project.import + project.view + project.files.download are required for CSV staging commands and reports. Cabinet CSV reports contain raw price fields and additionally require project.cost.view, including direct API reads. The development administrator receives this capability through the idempotent seed. This is data visibility only: it does not authorize purchasing, quotation publication or any other financial action.

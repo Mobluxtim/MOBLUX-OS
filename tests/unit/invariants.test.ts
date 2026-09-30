@@ -1,0 +1,11 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { authorize, type Actor } from '../../packages/modules/identity/policy.js';
+import { unmappedAdapter, validSource, maxUploadBytes } from '../../packages/modules/imports/adapter.js';
+import { customerInput, versionInput } from '../../packages/contracts/index.js';
+const actor: Actor = { id: 'synthetic', kind: 'staff', grants: new Set(['project.view']), denies: new Set() };
+test('permissions default deny and explicit user deny wins', () => { assert.doesNotThrow(() => authorize(actor, 'project.view')); assert.throws(() => authorize(actor, 'project.import')); assert.throws(() => authorize({ ...actor, denies: new Set(['project.view']) }, 'project.view')); });
+test('customer identities cannot use staff-only services even with a grant', () => { assert.throws(() => authorize({ ...actor, kind: 'customer' }, 'project.view')); });
+test('unmapped adapter preserves uncertainty, never manufactures dimensions', () => { const result = unmappedAdapter.assess({ name: 'synthetic.txt', hash: 'fixture', size: 10 }); assert.equal(result.status, 'PENDING_MAPPING'); assert.equal(result.adapter, 'unmapped-source/v1'); assert.ok(result.findings.some(f => f.includes('No dimensions'))); assert.equal('parts' in result, false); });
+test('uploads reject traversal, executables, empty and oversized files', () => { for (const name of ['../source.csv', 'folder\\source.txt', 'program.exe', 'bad\nname.txt']) assert.ok(validSource(name, Buffer.from('fixture'))); assert.ok(validSource('source.txt', Buffer.from('MZexecutable'))); assert.ok(validSource('source.txt', Buffer.alloc(0))); assert.ok(validSource('source.txt', Buffer.alloc(maxUploadBytes + 1))); assert.equal(validSource('synthetic.csv', Buffer.from('unmapped source')), null); });
+test('input contracts reject hidden approval/release fields', () => { assert.equal(customerInput.safeParse({ name: 'AB', email: '', phone: '', address: '', admin: true }).success, false); assert.equal(versionInput.safeParse({ summary: 'Synthetic snapshot', requestId: 'ebbf5924-e382-4e84-90f1-eb6656e13fd9', approved: true }).success, false); });

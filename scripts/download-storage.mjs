@@ -1,0 +1,13 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+if (process.platform !== 'win32' || process.arch !== 'x64') throw new Error('Use Docker Compose on this platform. The portable helper targets Windows x64.');
+const url = 'https://github.com/rustfs/rustfs/releases/download/1.0.0/rustfs-windows-x86_64-v1.0.0.zip';
+const expected = '4ccf5858ce8e6f70f01af2394c8cc0e0878ee77faa6c20d3179153476554b7d8';
+const response = await fetch(url); if (!response.ok) throw new Error(`Storage download failed: ${response.status}`);
+const bytes = Buffer.from(await response.arrayBuffer());
+if (createHash('sha256').update(bytes).digest('hex') !== expected) throw new Error('Storage binary checksum mismatch.');
+await mkdir('.local/bin', { recursive: true });
+await writeFile('.local/bin/storage.zip', bytes);
+execFileSync('tar.exe', ['-xf', '.local/bin/storage.zip', '-C', '.local/bin'], { windowsHide: true });
+console.log('Verified and downloaded local S3-compatible storage. For development use only.');

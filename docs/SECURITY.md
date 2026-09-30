@@ -1,6 +1,6 @@
 # MOBLUX OS — Security
 
-Purpose: initial security architecture for the cumulative specifications and owner decisions. Backend enforcement, granular permissions, customer isolation and audit are confirmed requirements. Technical controls below are proposed implementation direction pending architecture approval; no authentication provider or library is selected here. PERMISSIONS.md contains proposed role templates; PROJECT_LIFECYCLE.md defines command invariants.
+Purpose: security architecture for the cumulative specifications and owner decisions. Baseline v0.1 is approved. The sections below describe the target controls; this bounded development increment implements the subset documented at the end. PERMISSIONS.md contains role templates; PROJECT_LIFECYCLE.md defines command invariants.
 
 ## Authentication and sessions
 
@@ -60,4 +60,18 @@ PolyBoard remains the geometry source; real adapter mappings await samples. Conv
 
 ## Verification before live use
 
-Verify cross-customer denial, safe field serialization, direct API and file-access enforcement, token replay/expiry/revocation, permission escalation prevention, immutable approval/release history, audited preliminary commitments, malicious upload isolation, callback replay, duplicate-job behavior and denied AI actions. Test backups/restoration and credential rotation with synthetic data. No security test or deployment is performed by creating this planning document.
+Verify cross-customer denial, safe field serialization, direct API and file-access enforcement, token replay/expiry/revocation, permission escalation prevention, immutable approval/release history, audited preliminary commitments, malicious upload isolation, callback replay, duplicate-job behavior and denied AI actions as their features are implemented. Test backups/restoration and credential rotation before live use.
+
+## Current implementation boundary
+
+The owner permits local development authentication for this increment. A random local access code from ignored .env signs into a seeded development staff identity; there is no password registration or customer authentication endpoint. The maintained Fastify cookie/rate-limit components provide transport handling; opaque random session tokens are stored only as SHA-256 verifiers in PostgreSQL with an eight-hour expiry. This bounded development mechanism is not the production authentication-provider implementation. DEV_AUTH_ENABLED must be true and APP_ORIGIN must be loopback; the API/web runner binds to loopback. Do not expose it through a public proxy or use production/customer data.
+
+Backend domain services enforce explicit capabilities and user-deny precedence. All customer-kind actors are denied, even with staff grants: a customer portal is deliberately not enabled. All mutation requests require exact configured Origin. Uploads are bounded to 20 MB with an extension allowlist, path/control-character and executable-signature rejection. Original bytes stay private, are never executed or rendered inline, and download as attachments through authenticated API checks. Full malware scanning/conversion isolation is a future prerequisite for parsing/viewing untrusted files.
+
+Versions, source records, import attempts and audit rows are append-only through triggers; runtime credentials additionally lack UPDATE/DELETE grants on these tables. Setup/migrations use a separate owner credential. Local object storage uses generated development credentials and bucket versioning; production IAM, TLS, backup/restore drills, retention and MFA are not implemented or certified by this slice. See IMPLEMENTATION_REPORT.md for tests actually run.
+
+## CSV adapter security boundary
+
+Authenticated staff require project.import, project.view and project.files.download to parse or read CSV reports. Cabinet reports additionally require project.cost.view because original cells include price values. Project lists return safe report metadata only, never parsed commercial cells. Customer actors remain denied. Source/project ancestry, exact source size/hash and profile allowlist are checked in the backend; attempts and their audit events commit atomically. Database triggers and runtime grants keep attempts immutable.
+
+Only a bounded UTF-8 CSV text parser is enabled (1 MB, 5,000 rows, 18 columns, 4,096 characters/cell). It does not evaluate spreadsheet formulas, execute files, fetch imported links, or invoke PDF/CAD converters. The earlier broad parsing deferral is narrowed for this explicitly authorized plain-text path; malware scanning and isolated conversion remain unimplemented for wider file processing. CSV values are rendered as escaped React text, and no parsed CSV spreadsheet export is offered. Profile selection never grants manufacturing authorization.

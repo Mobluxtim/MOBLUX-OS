@@ -1,6 +1,6 @@
 # MOBLUX OS — PolyBoard Import
 
-Purpose: proposed adapter pipeline around PolyBoard as the initial manufacturing geometry authority. No export mapping or conversion compatibility is claimed to be verified. Owner decision Q3 permits architecture and initial framework work without real exports; real samples block only implementation/validation of the first real PolyBoard adapter.
+Purpose: proposed adapter pipeline around PolyBoard as the initial manufacturing geometry authority. Two sample-derived CSV profiles are now verified for bounded review staging; see POLYBOARD_CSV_PROFILE.md. Other mappings and conversion compatibility remain unverified. Owner decision Q3 permits architecture and initial framework work without real exports; real samples block only implementation/validation of the first real PolyBoard adapter.
 
 ## Architecture
 
@@ -47,6 +47,10 @@ Structured import can succeed while conversion fails. Failure must be visible; d
 
 ## Sample acceptance
 
-Until real samples arrive, define contracts for detection, parse, normalization, validation and publication using explicitly synthetic canonical fixtures and a clearly labeled fixture adapter. These fixtures exercise framework behavior, error reporting, provenance and idempotency; they must not claim actual PolyBoard column names, units, encodings or identifier mappings. No real adapter compatibility is inferred from passing fixture tests. Work remains documentation-only until architecture approval.
+Until real samples arrive, define adapter contracts and clearly synthetic canonical fixtures. These fixtures exercise framework behavior, error reporting, provenance and idempotency; they must not claim actual PolyBoard column names, units, encodings or identifier mappings. No real adapter compatibility is inferred from passing fixture tests. The approved first increment implements an unmapped-source assessment adapter and preserves raw source records linked to an exact version; it does not parse or publish a manufacturing dataset. Later normalized import publication remains the target lifecycle described above.
 
 Obtain sanitized structured exports, matching geometry and expected hierarchy/counts/dimensions/units, plus a revised export and malformed fixtures. Tests should prove normalized values, provenance, reproducibility, version separation, validation errors and retry idempotency. Mock data alone cannot establish real PolyBoard support.
+
+## CSV implementation increment — 2026-09-29
+
+The owner authorized the first real CSV adapter after uploading real sources. See POLYBOARD_CSV_PROFILE.md for the evidence, exact positional mappings and verified limits. Two explicitly selected profiles now stage cabinet and cutting records, with immutable attempt history and audit. Real-sample dependence is resolved only for those profiles; no automatic support for arbitrary PolyBoard exports is implied. Existing raw uploads and project versions remain immutable. Successfully parsed records stay NEEDS_REVIEW until unresolved semantics and a separate publication workflow are addressed.

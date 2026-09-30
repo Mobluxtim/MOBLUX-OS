@@ -1,0 +1,23 @@
+import { pgTable, uuid, text, timestamp, boolean, integer, jsonb, unique, foreignKey, primaryKey } from 'drizzle-orm/pg-core';
+import type { CsvProfile, CsvResult } from '../packages/contracts/imports.js';
+const id = () => uuid('id').defaultRandom().primaryKey();
+const created = () => timestamp('created_at', { withTimezone: true }).defaultNow().notNull();
+export const users = pgTable('users', { id: id(), email: text('email').notNull().unique(), name: text('name').notNull(), active: boolean('active').default(true).notNull(), kind: text('kind', { enum: ['staff', 'customer'] }).notNull(), createdAt: created() });
+export const roles = pgTable('roles', { id: id(), name: text('name').notNull().unique() });
+export const roleGrants = pgTable('role_grants', { roleId: uuid('role_id').references(() => roles.id).notNull(), capability: text('capability').notNull() }, t => [primaryKey({ columns: [t.roleId, t.capability] })]);
+export const userRoles = pgTable('user_roles', { userId: uuid('user_id').references(() => users.id).notNull(), roleId: uuid('role_id').references(() => roles.id).notNull() }, t => [primaryKey({ columns: [t.userId, t.roleId] })]);
+export const userOverrides = pgTable('user_overrides', { userId: uuid('user_id').references(() => users.id).notNull(), capability: text('capability').notNull(), allowed: boolean('allowed').notNull() }, t => [primaryKey({ columns: [t.userId, t.capability] })]);
+export const sessions = pgTable('sessions', { tokenHash: text('token_hash').primaryKey(), userId: uuid('user_id').references(() => users.id).notNull(), expiresAt: timestamp('expires_at', { withTimezone: true }).notNull() });
+export const customers = pgTable('customers', { id: id(), name: text('name').notNull(), email: text('email').notNull(), phone: text('phone').notNull(), address: text('address').notNull(), createdAt: created() });
+export const projects = pgTable('projects', { id: id(), customerId: uuid('customer_id').references(() => customers.id).notNull(), name: text('name').notNull(), description: text('description').notNull(), createdAt: created() });
+export interface VersionSnapshot { schemaVersion: 1; projectName: string; summary: string; sourceIds: string[]; normalizedData: null; }
+export const versions = pgTable('project_versions', { id: id(), projectId: uuid('project_id').references(() => projects.id).notNull(), number: integer('number').notNull(), summary: text('summary').notNull(), snapshot: jsonb('snapshot').$type<VersionSnapshot>().notNull(), createdBy: uuid('created_by').references(() => users.id).notNull(), requestId: uuid('request_id').notNull(), createdAt: created() }, t => [unique().on(t.projectId, t.number), unique().on(t.projectId, t.requestId), unique().on(t.projectId, t.id)]);
+export const sources = pgTable('source_files', { id: id(), projectId: uuid('project_id').references(() => projects.id).notNull(), versionId: uuid('version_id').notNull(), name: text('name').notNull(), size: integer('size').notNull(), hash: text('hash').notNull(), objectKey: text('object_key').notNull().unique(), objectVersion: text('object_version'), createdBy: uuid('created_by').references(() => users.id).notNull(), requestId: uuid('request_id').notNull(), createdAt: created() }, t => [foreignKey({ columns: [t.projectId, t.versionId], foreignColumns: [versions.projectId, versions.id] }), unique().on(t.projectId, t.requestId)]);
+export const imports = pgTable('import_attempts', { id: id(), sourceId: uuid('source_id').references(() => sources.id).notNull().unique(), adapter: text('adapter').notNull(), status: text('status', { enum: ['PENDING_MAPPING'] }).notNull(), findings: jsonb('findings').$type<string[]>().notNull(), createdAt: created() });
+// Follow-up CSV attempts are append-only staging, separate from the original upload assessment.
+export const csvImports = pgTable('csv_import_attempts', {
+  id: id(), sourceId: uuid('source_id').references(() => sources.id).notNull(), requestId: uuid('request_id').notNull(),
+  profile: text('profile').$type<CsvProfile>().notNull(), status: text('status').$type<CsvResult['status']>().notNull(),
+  result: jsonb('result').$type<CsvResult>().notNull(), createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.sourceId, t.requestId)]);
+export const audit = pgTable('audit_events', { id: id(), actorId: uuid('actor_id').references(() => users.id).notNull(), projectId: uuid('project_id').references(() => projects.id), entityId: uuid('entity_id').notNull(), event: text('event').notNull(), details: jsonb('details').$type<Record<string, unknown>>().notNull(), createdAt: created() });

@@ -1,0 +1,55 @@
+{
+  "name": "moblux-os",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "infra": "node --env-file=.env scripts/local-infra.mjs",
+    "infra:docker": "docker compose up -d",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx --env-file=.env scripts/migrate.ts",
+    "db:seed": "tsx --env-file=.env scripts/seed.ts",
+    "dev": "node --env-file=.env scripts/run.mjs dev",
+    "start": "node --env-file=.env scripts/run.mjs start",
+    "build": "tsc -p apps/api/tsconfig.build.json && next build apps/web --webpack",
+    "typecheck": "tsc --noEmit && tsc -p apps/web/tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "tsx --test tests/unit/*.test.ts",
+    "test:integration": "tsx --env-file=.env --test tests/integration/*.test.ts",
+    "test:e2e": "playwright test",
+    "infra:download": "node scripts/download-storage.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1141.0",
+    "@fastify/cookie": "11.1.2",
+    "@fastify/multipart": "10.1.2",
+    "@fastify/rate-limit": "11.2.0",
+    "drizzle-orm": "0.45.3",
+    "fastify": "5.12.5",
+    "lucide-react": "1.48.0",
+    "next": "16.3.7",
+    "pg": "8.23.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.19.0",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "drizzle-kit": "0.31.11",
+    "embedded-postgres": "17.6.0-beta.15",
+    "eslint": "9.39.5",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.70.1"
+  }
+}

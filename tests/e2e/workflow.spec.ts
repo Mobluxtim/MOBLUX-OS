@@ -1,0 +1,22 @@
+import { test, expect } from '@playwright/test';
+test('admin can navigate the customer/project/version/source workflow', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/login'); await page.getByLabel('Development access code').fill(process.env.DEV_LOGIN_CODE!); await page.getByRole('button', { name: 'Open workspace' }).click();
+  await expect(page.getByRole('heading', { name: 'Make room for good work.' })).toBeVisible();
+  await page.getByRole('navigation').getByRole('link', { name: 'Customers' }).click(); await page.getByRole('link', { name: 'New customer' }).click();
+  const name = `[DEMO] Browser customer ${Date.now()}`;
+  await page.getByLabel('Name', { exact: true }).fill(name); await page.getByLabel('Email').fill('demo@example.invalid'); await page.getByRole('button', { name: 'Create customer' }).click();
+  await expect(page.getByRole('heading', { name })).toBeVisible(); await page.getByRole('link', { name: 'New project' }).click();
+  await page.getByLabel('Project name').fill('[DEMO] Oak kitchen'); await page.getByLabel('Project brief').fill('Synthetic browser verification project.'); await page.getByRole('button', { name: 'Create project' }).click();
+  await expect(page.getByRole('heading', { name: '[DEMO] Oak kitchen' })).toBeVisible();
+  await page.getByRole('tab', { name: 'Versions', exact: true }).click(); await page.getByRole('button', { name: 'Create initial version' }).click(); await page.getByLabel('Version summary').fill('Initial synthetic design record'); await page.getByRole('button', { name: 'Save version' }).click();
+  await expect(page.getByRole('heading', { name: 'Initial synthetic design record' })).toBeVisible();
+  await page.getByRole('tab', { name: 'Source files', exact: true }).click(); await page.getByLabel('Choose source file').setInputFiles({ name: 'demo-source.txt', mimeType: 'text/plain', buffer: Buffer.from('Synthetic source. Not a PolyBoard export.') }); await page.getByRole('button', { name: 'Upload source', exact: true }).click(); await expect(page.getByText('Pending mapping', { exact: true })).toBeVisible();
+  const downloadEvent = page.waitForEvent('download'); await page.getByRole('link', { name: 'Download', exact: true }).click(); expect((await downloadEvent).suggestedFilename()).toBe('demo-source.txt');
+  await page.getByRole('tab', { name: 'Activity', exact: true }).click(); await expect(page.getByText('Source file preserved', { exact: true })).toBeVisible(); await page.reload(); await expect(page.getByRole('heading', { name: '[DEMO] Oak kitchen' })).toBeVisible();
+  await page.screenshot({ path: 'test-results/project-desktop.png', fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 }); await page.getByRole('button', { name: 'Open navigation' }).click(); await page.getByRole('navigation').getByRole('link', { name: 'Production' }).click(); await expect(page.getByText('Coming later', { exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy(); await page.screenshot({ path: 'test-results/mobile.png', fullPage: true });
+  await page.getByRole('button', { name: 'Open navigation' }).click(); await page.getByRole('button', { name: 'Sign out' }).click(); await expect(page.getByRole('button', { name: 'Open workspace' })).toBeVisible();
+  expect(errors).toEqual([]);
+});

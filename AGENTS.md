@@ -12,7 +12,7 @@ This document defines how Codex and other coding agents should preserve project 
 
 ## Current project stage
 
-The repository is in the documentation and planning stage. The final technology stack has not been selected. Until further instruction, do not create application code, install packages or dependencies, select the final stack, or modify the existing Git configuration.
+Architecture baseline v0.1 is approved. The owner authorized the first implementation increment: local development authentication, customers, projects, immutable initial versions, preserved pending/unmapped source uploads and audit history. Follow the bounded scope and implementation decisions in docs/DECISIONS.md. The owner additionally authorized the real CSV profiles documented in docs/POLYBOARD_CSV_PROFILE.md. Keep column 10 unmapped and edge pairs without side orientation until confirmed. Do not implement later ERP modules or invent additional PolyBoard mappings. Do not modify the two authoritative specifications or existing Git configuration without explicit instruction. Do not commit or push automatically.
 
 ## Project context
 
@@ -25,3 +25,8 @@ The repository is in the documentation and planning stage. The final technology 
 - `docs/ROADMAP.md`: incremental development plan.
 - `docs/DECISIONS.md`: important decisions and their rationale.
 - `docs/OPEN_QUESTIONS.md`: unresolved questions needing clarification.
+- `docs/PROJECT_LIFECYCLE.md`: version, approval and production-release distinctions.
+- `docs/SECURITY.md`: security boundaries and controls.
+- `docs/IMPLEMENTATION_REPORT.md`: current increment, verification and file manifest.
+
+- `docs/POLYBOARD_CSV_PROFILE.md`: evidence, verified CSV profiles and current extraction limits.

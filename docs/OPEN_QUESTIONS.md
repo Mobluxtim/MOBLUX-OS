@@ -1,6 +1,6 @@
 # MOBLUX OS — Open Questions
 
-Purpose: retain only questions materially affecting architecture or implementation. MASTER_SPEC.md and BUSINESS_FLOW.md remain cumulative authority; owner decisions Q1–Q5 resolve the previously recorded interpretation questions. Architecture approval is still required, but is not an unanswered business question.
+Purpose: retain only questions materially affecting architecture or implementation. MASTER_SPEC.md and BUSINESS_FLOW.md remain cumulative authority; owner decisions Q1–Q5 resolve the previously recorded interpretation questions. Architecture baseline v0.1 is approved; implementation is authorized within the current bounded slice.
 
 ## BLOCKING architecture questions
 
@@ -8,7 +8,7 @@ None currently identified. No unresolved contradiction between the two specifica
 
 ## Scoped implementation dependency — real adapter only
 
-Real PolyBoard samples are required to implement/validate the first real adapter and its export-specific mappings. This does not block architecture or the initial framework. Until supplied, define adapter contracts and clearly synthetic canonical fixtures without inventing PolyBoard columns, units, formats or identifier mappings. Do not present fixture tests as verified vendor compatibility.
+Real samples have now been supplied and used to verify the two limited CSV profiles in POLYBOARD_CSV_PROFILE.md. Additional formats and unresolved export semantics still require evidence. This does not block architecture or safe extraction of confirmed fields. Synthetic fixtures validate parser behavior but do not establish compatibility with unobserved vendor formats. See scoped questions Q13–Q15 below.
 
 ## Resolved question references
 
@@ -39,3 +39,13 @@ These are history pointers, not open questions; full rationale and consequences 
 The master's broad lifecycle and demo do not define production approval: D20 makes exact-version customer approval explicit, while the addendum supplies ProductionRelease. The master's immutable-version requirement coexists with later commercial records via D21's explicit version references and preserved snapshots. The addendum's typical purchasing-after-release flow does not prohibit the preliminary commitments now explicitly authorized by D23. Its default advance/payment gate and configurable milestones are compatible under D24; an often approximately 50% advance is not a fixed rule. Sample-dependent import mapping remains as stated in the addendum and scoped by D22.
 
 No unresolved direct contradiction was identified after these clarifications. Detailed operational policies in Q6–Q12 remain open implementation choices, not contradictions between the source documents. Preserve the unchanged sources and record future owner interpretations in the decision log.
+
+## Scoped CSV questions — not blockers for safe extraction
+
+| ID | Question | Blocks |
+| --- | --- | --- |
+| Q13 | What is the official export schema for column 10, dimension-axis/grain conventions and the four edge-pair positions? Owner confirms column 10 remains raw/unmapped, and pairs contain edge material + thickness, with no confirmed LEFT/RIGHT/TOP/BOTTOM mapping. | Grain, rotation, oriented edge or manufacturing calculations; does not block preserving/extracting confirmed fields |
+| Q14 | Which of cabinet columns 6/7 is unit versus total price, and what currency/tax/commercial meaning applies? All observed quantities are 1 and both price values match. | Commercial normalization/calculations; raw values remain permission-protected |
+| Q15 | Which exported identifier/package convention distinguishes repeated source part numbers and isolated panels, and how should quantities be interpreted when a cabinet quantity exceeds 1? | Cross-file/cross-version identity reconciliation and a complete material requirement set; current row quantities are preserved without deduplication or parent multiplication |
+
+Real samples have now established the two bounded positional profiles in POLYBOARD_CSV_PROFILE.md. The earlier real-adapter dependency remains applicable to additional formats or unverified semantics, not to the implemented partial CSV extraction. No values are inferred for the remaining unknowns.

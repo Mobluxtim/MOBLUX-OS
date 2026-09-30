@@ -120,3 +120,7 @@ Preliminary procurement/reservations may exist without ProductionRelease and mus
 Release creation freezes gate evidence in one authorized concurrency-safe use case. Operator progress changes execution records, not snapshot content. Assembly completion never grants QC approval; installation completion never implies acceptance. Customer issues keep the project open. Acceptance may trigger a configured payment milestone; warranty follows agreed completion rules and never depends on public reviews. Retention/deletion cannot break release/audit traceability; Q9 governs live-data retention.
 
 Do not fabricate missing source grouping, cross-version identity, conversion factors, payment percentages, markups or warranty durations. Unknown grouping remains unresolved in staging until an adapter mapping is validated.
+
+## Implemented CSV staging relationships
+
+csv_import_attempts belongs to Import and references exactly one immutable source_files record, which fixes Project/ProjectVersion and object hash/revision ancestry. Each attempt is immutable and has actor/time/profile/request UUID, structured findings and row provenance. Canonical cabinet/part values are staged JSON records, not published Cabinet/Part master records. Source labels and repeated source numbers do not create global identities. Source prices, unknown grain indicator and edge-side positions retain explicit unresolved status. No room is inferred. Publication into a new immutable ProjectVersion is a later separately authorized operation.

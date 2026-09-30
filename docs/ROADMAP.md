@@ -1,6 +1,6 @@
 # MOBLUX OS — Roadmap
 
-Purpose: proposed incremental delivery plan based on both specifications. No code or dependencies until explicit architecture approval. Later ERP features are not prerequisites for the first vertical slice.
+Purpose: incremental delivery plan based on both specifications. Architecture baseline v0.1 is approved. The owner has authorized the beginning of Phase 1: local authentication through customers, projects, immutable versions, pending/unmapped uploads and audit. The full Phase 1 below remains the longer-term target; customer approval and real adapters are not claimed complete by this increment.
 
 ## Phase 0 — Architecture/documentation
 
@@ -58,3 +58,7 @@ Exit: cost comparisons explain inputs without double-counting external operation
 ## Live readiness
 
 Before live data, review grants, hosting/retention/recovery, harden auth/uploads, test coordinated database/object restore and migrations, and document incidents/reconciliation. Later operational assumptions require real examples, not invented rules to complete screens. Microservices require an evidence-backed decision.
+
+## CSV adapter increment
+
+The first real CSV profiles now extract the confirmed fields described in POLYBOARD_CSV_PROFILE.md. This completes partial structured staging only, not the full Phase 1 publication/3D/approval workflow. Resolve the scoped export questions before manufacturing calculations; implement authorized publication into a new immutable version before presenting staging as published design data.

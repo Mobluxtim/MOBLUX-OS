@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790681701466,
+      "tag": "0000_flippant_mentallo",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790682122367,
+      "tag": "0001_immutable_records",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790702832733,
+      "tag": "0002_steep_zaladane",
+      "breakpoints": true
+    }
+  ]
+}

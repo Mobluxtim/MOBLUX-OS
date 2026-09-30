@@ -1,0 +1,38 @@
+import { test, expect } from '@playwright/test';
+
+test('staff can analyze a CSV, inspect history and review rows on mobile', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
+  await page.goto('/login'); await page.getByLabel('Development access code').fill(process.env.DEV_LOGIN_CODE!);
+  await page.getByRole('button', { name: 'Open workspace' }).click();
+  await expect(page.getByRole('heading', { name: 'Make room for good work.' })).toBeVisible();
+  const headers = { origin: process.env.APP_ORIGIN! };
+  const customer = await page.request.post('/api/customers', { headers, data: { name: '[TEST] CSV browser', email: '', phone: '', address: '' } }); expect(customer.status()).toBe(201);
+  const project = await page.request.post('/api/projects', { headers, data: { customerId: (await customer.json()).id, name: '[TEST] CSV import browser', description: 'Synthetic data only' } }); expect(project.status()).toBe(201); const id = (await project.json()).id;
+  const version = await page.request.post(`/api/projects/${id}/versions`, { headers, data: { summary: 'Synthetic frozen version', requestId: crypto.randomUUID() } }); expect(version.status()).toBe(201);
+  const content = Array.from({ length: 26 }, (_, i) => `${i + 1};Synthetic;Cabinet;Panel ${i + 1};123.45;678.90;2;Synthetic panel;18.00;-1;;;;;;;;`).join('\r\n');
+  const upload = await page.request.post(`/api/projects/${id}/versions/${(await version.json()).id}/sources`, { headers: { ...headers, 'idempotency-key': crypto.randomUUID() }, multipart: { file: { name: 'synthetic-browser.csv', mimeType: 'text/csv', buffer: Buffer.from(content) } } }); expect(upload.status()).toBe(201);
+  await page.goto(`/projects/${id}`); await page.getByRole('tab', { name: 'Source files', exact: true }).click();
+  await page.getByText('CSV import & validation', { exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Analyze CSV', exact: true })).toBeDisabled();
+  await page.getByLabel('CSV export profile').selectOption('polyboard-cutting-18/v1');
+  await page.getByRole('button', { name: 'Analyze CSV', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Imported to staging — needs review' })).toBeVisible();
+  await expect(page.getByText('26 rows', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Next rows' }).click(); await expect(page.getByRole('cell', { name: 'Cabinet · #26 Panel 26' })).toBeVisible();
+  await page.reload(); await page.getByRole('tab', { name: 'Source files', exact: true }).click(); await page.getByText('CSV import & validation', { exact: true }).click();
+  await page.getByLabel('Import history').selectOption({ index: 1 }); await expect(page.getByText('26 rows', { exact: true })).toBeVisible();
+  await page.getByLabel('CSV export profile').selectOption('polyboard-cabinets-7/v1'); await page.getByRole('button', { name: 'Analyze CSV', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'CSV validation failed' })).toBeVisible();
+  await expect(page.getByText('Expected 7 columns; received 18. Select the matching export profile.', { exact: false }).first()).toBeVisible();
+  await page.getByLabel('Import history').selectOption({ index: 2 }); await expect(page.getByText('26 rows', { exact: true })).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(async () => { const box = await page.locator('.sidebar').boundingBox(); return Math.round((box?.x ?? 0) + (box?.width ?? 0)); }).toBeLessThanOrEqual(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  await page.getByRole('heading', { name: 'Imported to staging — needs review' }).scrollIntoViewIfNeeded();
+  await page.screenshot({ path: 'test-results/csv-mobile.png' });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await expect.poll(async () => Math.round((await page.locator('.sidebar').boundingBox())?.x ?? -1)).toBe(0);
+  await page.screenshot({ path: 'test-results/csv-desktop.png' });
+  await page.getByRole('tab', { name: 'Activity', exact: true }).click(); await expect(page.getByText('CSV import assessed', { exact: true })).toHaveCount(2);
+  expect(errors).toEqual([]);
+});

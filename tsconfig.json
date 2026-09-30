@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "lib": ["ES2022", "DOM"], "module": "NodeNext", "moduleResolution": "NodeNext",
+    "strict": true, "esModuleInterop": true, "skipLibCheck": true, "resolveJsonModule": true, "noEmit": true
+  },
+  "include": ["apps/api/**/*.ts", "packages/**/*.ts", "database/**/*.ts", "scripts/**/*.ts", "tests/**/*.ts", "drizzle.config.ts", "playwright.config.ts"],
+  "exclude": ["node_modules", "dist", "apps/web"]
+}

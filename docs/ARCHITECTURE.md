@@ -1,6 +1,6 @@
 # MOBLUX OS — Architecture
 
-Status: PROPOSED for owner review, 2026-09-29. MASTER_SPEC.md v0.1 and BUSINESS_FLOW.md v0.2 are cumulative authority. No implementation is authorized until explicit architecture approval. DECISIONS.md distinguishes confirmed requirements from proposals.
+Status: architecture baseline v0.1 APPROVED by the owner, 2026-09-29. MASTER_SPEC.md v0.1 and BUSINESS_FLOW.md v0.2 are cumulative authority. The owner authorized the bounded first implementation increment recorded in DECISIONS.md D26–D29; later roadmap features remain deferred.
 
 ## Specification review
 
@@ -10,7 +10,7 @@ Owner decisions Q1–Q5 clarify the earlier tensions; see D20–D24 in DECISIONS
 
 ## Proposed repository architecture
 
-Future structure only; no application directories are created in this phase:
+Target structure; create runtime entry points only when used. The first increment creates web and API plus shared contracts/configuration/infrastructure/domain modules. A worker is deferred until real parsing/conversion or delivery jobs exist; pending/unmapped assessment is immediate and does not pretend to parse sources.
 
 ```text
 apps/
@@ -114,4 +114,8 @@ CI should enforce types, focused module boundaries, migrations and tests for cri
 | Coupled monolith | Single-writer ownership and narrow contracts |
 | Overcomplicated shop floor | Role-specific task screens and operator walkthroughs |
 
-PROJECT_LIFECYCLE.md details lifecycle distinctions and transition evidence. SECURITY.md defines the initial security architecture alongside PERMISSIONS.md. These fulfill the dedicated documentation requirements in MASTER §31; implementation still requires explicit owner approval.
+PROJECT_LIFECYCLE.md details lifecycle distinctions and transition evidence. SECURITY.md defines security architecture alongside PERMISSIONS.md. These fulfill MASTER §31. Implementation is approved for the current bounded increment; see IMPLEMENTATION_REPORT.md for actual coverage and limitations.
+
+## CSV staging implementation
+
+The owner subsequently authorized real CSV adapters. The imports module now stores append-only csv_import_attempts with a source foreign key, profile version, actor/time, request UUID and normalized review result. See POLYBOARD_CSV_PROFILE.md and D30–D32. This is bounded synchronous text extraction, not conversion or publication: no durable background effect exists yet. The next publishing increment must create a new ProjectVersion, never alter one of the current snapshots.
