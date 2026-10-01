@@ -60,3 +60,7 @@ The owner authorizes the project-level PolyBoard Feronerie summary only. Follow 
 ## Machining BOM v1
 
 The owner authorizes importing explicit PolyBoard report operations only. Follow docs/MACHINING_BOM.md and D47: immutable source/version reports, exact-only Part/Cabinet links, continuation-aware legends, literal geometry evidence and explicit discrepancies. Keep drilling face associations unresolved and project milling totals separate from part details. No prices, rates, tools, CNC execution, scheduling or suppliers. Stop for review.
+
+## Technical Costing Foundation v1
+
+The owner authorizes a separate versioned technical costing layer (D48; docs/TECHNICAL_COSTING.md). Never promote source/reference prices to configured rates. Keep exact input-report/version references and immutable CostingRuns; missing rates/data stay null, not zero. No real rates are seeded. Decimal-safe arithmetic and financial capability enforcement are mandatory. No selling prices, margin, taxes, supplier/purchasing/inventory, time tracking or overhead. Stop after targeted verification for review.

@@ -99,3 +99,7 @@ Only existing authorized project sources in the model/base version are eligible.
 ## Machining PDF boundary
 
 Machining reports reuse staff project.view/import/files.download enforcement, Origin checks, private hash-verified storage and atomic audit. A fixed machining PDF profile scans at most 512 pages with the existing byte/text/item/time/memory/concurrency limits. No financial columns are extracted. Immutable report and nested Part ancestry guards protect version/source relationships. Failed known reports expose no partial data; unrelated sources are unsupported. No original source or existing BOM is modified. See MACHINING_BOM.md.
+
+## Costing financial boundary
+
+Costing checks financial and technical access on every command/query, including previews and full history. Separate configuration/calculation capabilities and Origin validation apply to mutations. Audit records identifiers/counts rather than monetary payloads. Database triggers reject rule/run modification and invalid model/version/project/input ancestry. Exact report IDs and rates remain immutable; no source price becomes authoritative implicitly. Missing values remain null. No new credential, integration, dependency or customer endpoint. See TECHNICAL_COSTING.md.

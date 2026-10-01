@@ -5,6 +5,7 @@ import { MaterialRequirements } from './material-requirements';
 import { Optimization } from './optimization';
 import { HardwareBom } from './hardware';
 import { MachiningBom } from './machining';
+import { TechnicalCosting } from './costing';
 import type { ResolutionState } from '../../../packages/contracts/resolution';
 export function MaterialResolution({ projectId, modelId }: { projectId: string; modelId: string }) {
   const [state, setState] = useState<ResolutionState>(), [error, setError] = useState(''), [busy, setBusy] = useState(false);
@@ -43,6 +44,7 @@ export function MaterialResolution({ projectId, modelId }: { projectId: string; 
     {report && <Optimization projectId={projectId} modelId={modelId} resolutionId={report.id} />}
     <HardwareBom projectId={projectId} modelId={modelId} />
     <MachiningBom projectId={projectId} modelId={modelId} />
+    <TechnicalCosting projectId={projectId} modelId={modelId} />
     <button className="button secondary" disabled={busy} onClick={() => void refresh()}>Refresh material resolution</button>
     <p className="helper">Uses current libraries automatically and updates when they change. Earlier reports stay unchanged.</p>
   </section>;

@@ -103,3 +103,7 @@ Safe classification projections use library.view; project profiles inherit the e
 ## Hardware reference prices
 
 Hardware import/read uses project.view + project.import + project.files.download. Both command and query responses omit item unit/total and report price fields unless project.cost.view is granted without explicit deny. Quantity/name/provenance access does not grant financial visibility. No price appears in audit. This does not grant purchasing or costing authority.
+
+## Technical costing capabilities
+
+All cost read/preview/rule/run endpoints require project.cost.view plus the existing project.view/import/files.download technical evidence permissions. cost.configure separately authorizes new rate versions; cost.calculate authorizes immutable run creation. Development seed grants these explicit capabilities; customer actors and explicit denies remain blocked. A cost-view grant alone does not permit rate edits or run creation. Source reference prices, configured rates and calculated values never appear in unauthorized responses. See TECHNICAL_COSTING.md.

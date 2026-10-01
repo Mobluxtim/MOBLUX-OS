@@ -97,3 +97,10 @@ No BLOCKING question prevents this bounded report import/review increment. These
 Q23 is partially explained: page 22 label I is three through-hole coordinate pairs displayed on both face drawings, explaining six annotations without changing the three-hole legend. No count correction or general deduplication rule is needed. The original immutable report notice remains historical evidence. Label A remains unresolved: page 249 row 8 is actually truncated as `A (52, 265...` in the PDF; a complete source export is needed for the second coordinate.
 
 Q24 remains unresolved despite three unique non-cabinet candidate tuples: PDF pages 7 and 286–288 group them under Paneluri izolate; CSV rows 177–179 assign Vinuri. No explicit source identifier establishes the cross-group ownership mapping. Q25 remains unresolved for automatic drilling face mapping; explicit groove faces were already captured. See MACHINING_BOM.md reconciliation section for exact evidence and unchanged totals.
+
+## Technical costing foundation — NON-BLOCKING for implementation
+
+- Q26: Which actual currency, panel valuation basis and explicit rates should the owner configure? None is provided or seeded; real project lines remain NOT COSTED / MISSING RATE. Initial calculation policy is documented/versioned in TECHNICAL_COSTING.md.
+- Q27: What authoritative additional optimization requirements cover the 21 failed/unplaced fixture units before any complete technical total is accepted? Reported optimized quantities are partial; no guessed sheet/edge/cutting allowance is added.
+
+The eight-category foundation is complete without answering these. They block a complete business-valued result, not the software layer. Selling price, overhead, taxes and the other excluded cost concepts remain future owner-scoped work.

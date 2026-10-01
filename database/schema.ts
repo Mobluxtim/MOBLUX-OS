@@ -5,6 +5,7 @@ import type { MaterialProfile } from '../packages/contracts/material-profile.js'
 import type { OptimizationResult } from '../packages/contracts/optimization.js';
 import type { HardwareResult } from '../packages/contracts/hardware.js';
 import type { MachiningResult } from '../packages/contracts/machining.js';
+import type { CostRules, CostInputs, CostResult } from '../packages/contracts/costing.js';
 import type { CsvProfile, CsvResult, ImportedCabinet, ImportedPart } from '../packages/contracts/imports.js';
 import type { ModelSummary, ModelIssue } from '../packages/contracts/technical-model.js';
 import type { LibraryCategory, LibraryResult, MaterialMatch } from '../packages/contracts/library.js';
@@ -110,3 +111,15 @@ export const machiningReports = pgTable('machining_bom_reports', {
   status: text('status').$type<'IMPORTED' | 'FAILED' | 'UNSUPPORTED'>().notNull(), result: jsonb('result').$type<MachiningResult>(), finding: text('finding'),
   createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
 }, t => [unique().on(t.versionId, t.sourceId, t.parserVersion)]);
+
+export const costRuleVersions = pgTable('cost_rule_versions', {
+  id: id(), projectId: uuid('project_id').references(() => projects.id).notNull(), sequence: serial('sequence').notNull().unique(),
+  previousId: uuid('previous_id'), requestId: uuid('request_id').notNull(), payloadHash: text('payload_hash').notNull(),
+  rules: jsonb('rules').$type<CostRules>().notNull(), createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.projectId, t.requestId)]);
+export const costingRuns = pgTable('costing_runs', {
+  id: id(), projectId: uuid('project_id').references(() => projects.id).notNull(), modelId: uuid('model_id').references(() => technicalModels.id).notNull(),
+  versionId: uuid('version_id').references(() => versions.id).notNull(), ruleVersionId: uuid('rule_version_id').references(() => costRuleVersions.id).notNull(),
+  inputs: jsonb('inputs').$type<CostInputs>().notNull(), inputKey: text('input_key').notNull(), algorithmVersion: text('algorithm_version').notNull(),
+  result: jsonb('result').$type<CostResult>().notNull(), createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.modelId, t.ruleVersionId, t.inputKey, t.algorithmVersion)]);

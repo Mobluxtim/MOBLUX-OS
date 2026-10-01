@@ -207,3 +207,7 @@ HardwareBomReport pins ProjectVersion, TechnicalModel, SourceFile/hash and parse
 ## MachiningBomReport
 
 A separate immutable report pins TechnicalModel/ProjectVersion, SourceFile/hash and parser/actor/time/status. Nested MachiningPart records hold exact source headers, continuation pages, drilling legends/coordinates, explicit grooves, nullable exact Part/Cabinet links and CSV lineage. Source-group and project aggregates preserve drawing counts and quantity-extended counts separately. Printed project machining lengths are not allocated to Parts. Unique version/source/parser, immutability and model/source/linked-part ancestry guards apply. No design or earlier BOM is changed. See MACHINING_BOM.md.
+
+## CostRuleVersion and CostingRun
+
+CostRuleVersion belongs to Project and contains currency, mutually exclusive panel basis, exact category/identity/unit selectors, configured rates, predecessor/request hash, reason and actor/time. CostingRun belongs to exact ProjectVersion/TechnicalModel and CostRuleVersion, pinning existing Material BOM, OptiCut, Hardware and Machining report IDs. Immutable calculated lines freeze quantities, rate used, exact/rounded subtotals and evidence paths; reference prices remain separate fields. Null input/rate/quantity means incomplete, not zero. Historical runs never follow current rate edits. No supplier or commercial master is introduced. See TECHNICAL_COSTING.md.

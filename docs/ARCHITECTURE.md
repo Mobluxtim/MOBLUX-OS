@@ -157,3 +157,7 @@ Import owns the observed PolyBoard hardware-summary parser; Projects owns immuta
 ## Machining BOM
 
 Import owns the bounded continuation-aware PolyBoard operation parser and exact-link function; Projects owns append-only machining_bom_reports and automatic ensure/history commands. The project UI triggers these independently of material resolution. The existing PDF worker has a fixed machining profile for all source pages, retaining resource limits and previous profiles. No new dependency, service or queue. See MACHINING_BOM.md and D47.
+
+## Technical costing foundation
+
+Costing is a new bounded module inside the existing monolith, with a pure exact-decimal calculator and authorized configuration/preview/run service. It reads existing Material/OptiCut/Hardware/Machining reports without triggering or duplicating imports. Project-scoped rate versions and report-pinned runs use two additive immutable tables, transactional audit and ancestry guards. The project component exposes preview/configuration/history; no jobs, microservice or dependency. See TECHNICAL_COSTING.md and D48.
