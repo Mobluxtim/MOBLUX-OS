@@ -149,3 +149,7 @@ Catalog now owns append-only material_technical_profiles, ensured by the existin
 ## OptiCut optimization requirements
 
 Import owns bounded PDF extraction and the pure observed-table parser; Projects owns append-only optimization_requirement_reports pinned to model/source/resolution. The normal project view automatically invokes the idempotent command for uploaded same-version/base-version PDFs. Original storage, permissions and audit are reused. One new dependency, pdfjs-dist, runs text extraction in a resource-limited worker; no optimizer, service or durable job infrastructure is introduced. See OPTICUT_IMPORT.md and D45.
+
+## Hardware BOM import
+
+Import owns the observed PolyBoard hardware-summary parser; Projects owns immutable hardware_bom_reports. The project UI invokes the idempotent import automatically for model/base-version PDF sources. The existing bounded PDF worker is shared through two fixed internal profiles; no new dependency, service or optimizer. Hardware has no material-resolution/catalog identity dependency. See HARDWARE_BOM.md and D46.

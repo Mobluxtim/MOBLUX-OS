@@ -99,3 +99,7 @@ An authorized library.activate command now recomputes affected technical materia
 ## Technical classification access
 
 Safe classification projections use library.view; project profiles inherit the existing project model/processing permissions. Profile creation is an internal audited consequence of authorized resolution/activation. No raw, supplier, financial or manufacturing privileges are granted. No manual override endpoint is introduced.
+
+## Hardware reference prices
+
+Hardware import/read uses project.view + project.import + project.files.download. Both command and query responses omit item unit/total and report price fields unless project.cost.view is granted without explicit deny. Quantity/name/provenance access does not grant financial visibility. No price appears in audit. This does not grant purchasing or costing authority.

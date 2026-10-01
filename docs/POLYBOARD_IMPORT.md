@@ -78,3 +78,7 @@ The classification sidecar reuses staged source evidence without changing either
 ## OptiCut downstream result import
 
 OptiCut reports now have a separate observed PDF adapter described in OPTICUT_IMPORT.md. Existing PolyBoard adapters and edge/grain mappings are unchanged. The result supplies source-reported sheets and lengths without resolving PolyBoard edge orientation, rewriting the net BOM or populating catalog stock dimensions.
+
+## Project Feronerie summary
+
+The observed PolyBoard 8.02c report now has a bounded hardware-summary adapter. It reads only the first project Feronerie table before cabinet chapters, preserves exact labels/quantities/reference prices and excludes machining sections. Existing CSV mappings, material matching and OptiCut requirements are unchanged. See HARDWARE_BOM.md.

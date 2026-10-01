@@ -52,3 +52,7 @@ The owner authorized technical classification and nullable evidence-backed purch
 ## OptiCut result import v1
 
 The owner authorizes importing the existing OptiCut optimization report, not running an optimizer. Follow docs/OPTICUT_IMPORT.md and D45: immutable source/model/resolution reports, separate net BOM and optimized/failed requirements, exact-only material links, truncated failure text preserved, no supplier/pricing/order/costing/nesting scope. Stop after verification for review.
+
+## Hardware BOM v1
+
+The owner authorizes the project-level PolyBoard Feronerie summary only. Follow docs/HARDWARE_BOM.md and D46: exact source names, immutable version/source provenance, idempotent automatic import, financially permission-gated source reference prices. Do not infer identity, decompose source constructs or create machining/purchasing/costing scope. Stop for review.

@@ -199,3 +199,7 @@ MaterialMaster has append-only technical profiles unique by master ID + policy v
 ## OptimizationRequirementReport
 
 Separate from MaterialRequirementReport (net BOM), an OptimizationRequirementReport pins one TechnicalModel, MaterialResolutionReport and SourceFile/hash with parser/actor/time. Its immutable result includes imported stock formats, sheets/areas/placed units, cutting-map waste, edge lengths, project totals and failed source rows/reasons. Exact material associations are report-owned; failed Part IDs remain null. Multiple reports are alternatives/history, not additive demand. Neither master nor design is updated. See OPTICUT_IMPORT.md.
+
+## HardwareBomReport
+
+HardwareBomReport pins ProjectVersion, TechnicalModel, SourceFile/hash and parser with actor/time/status. Immutable nested items contain literal source name, quantity, optional source/reference price strings and PDF page/row. Unique version/source/parser prevents retry duplication. This entity is separate from material and optimization reports; names are not commercial identities. See HARDWARE_BOM.md.
