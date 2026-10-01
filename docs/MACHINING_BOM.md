@@ -60,3 +60,37 @@ Four machining unit scenarios passed, including real source/hash/counts, represe
 Typecheck, lint and API/web build passed. Chrome desktop/mobile verified automatic project display, cabinet/part/coordinate drill-down, real exceptions, report evidence and coexistence with Hardware/Material/OptiCut; no page errors or document overflow. An initially broad browser test locator was narrowed; no UI defect was found. An integration expectation was corrected to distinguish 22 PDF source groups from 21 actual cabinets.
 
 Next proposed increment, subject to owner review: evidence-backed reconciliation of the isolated-panel identifiers and the two drilling annotation discrepancies. Face/coordinate mapping requires authoritative export evidence before any CNC or manufacturing use.
+
+## Reconciliation pass — 2026-10-01
+
+Evidence-only review; no importer, database report or UI behavior changed. Source PDF/hash is the same as above. The normalized model and all Material, OptiCut, Hardware and Machining report rows were fingerprinted before/after the read-only test and remained identical. Exact associations remain **213/216 before and after**.
+
+### Three isolated panels: candidates, not confirmed cabinet links
+
+PDF page 7, extracted rows 26–29, explicitly groups these under `Paneluri izolate`; full drawing headers are on pages 286–288. The original cutting CSV (SHA-256 `172c1b97adced57b0843496c10e5437de7e287914f7f0273c49d08fe882bf41b`) assigns the corresponding candidate rows to `Vinuri`.
+
+| PDF drawing | CSV row | Exact matching attributes | Conflicting evidence |
+| --- | ---: | --- | --- |
+| p286 `1 - Blat[1]` | 177 | name, number, H1732 material, 1516.47 × 400 × 18, quantity 1 | PDF Paneluri izolate / CSV Vinuri |
+| p287 `1 - Acoperire[1]` | 178 | name, number, H1732 material, 350 × 195 × 18, quantity 1 | PDF Paneluri izolate / CSV Vinuri |
+| p288 `1 - Blat[2]` | 179 | name, number, H1732 material, 1516.47 × 400 × 18, quantity 1 | PDF Paneluri izolate / CSV Vinuri |
+
+Each complete non-cabinet tuple has exactly one normalized candidate. That does not establish that the conflicting cabinet relationship is correct or that the two exports encode the same ownership convention. The source number is 1 for all three, not a shared globally unique identifier. No authoritative cross-reference resolves the discrepancy. All three therefore remain UNMAPPED with null Part/Cabinet links; do not silently override the cabinet criterion. Identical dimensions alone also cannot distinguish the two Blat rows. This documents a precise candidate set, not a newly approved mapping rule.
+
+### Page 22 label I: repeated views explain annotation count
+
+Rendered page 22 shows `I (3)`, diameter 3, `Adancime: Strapuns (0)`. The three coordinate pairs `(100, 747)`, `(364, 747)`, `(628, 747)` are each printed twice, once in the Fata 1 drawing and once in the Fata 2 drawing. This explains six annotations for three through holes. The printed count of three is consistent; there is no evidence of six physical holes or a BOM calculation bug. This discrepancy is reconciled as a multi-view annotation explanation, not by deleting evidence, changing counts, assigning a single face, or introducing a general coordinate-deduplication rule. The immutable v1 report retains its original generic mismatch notice.
+
+### Pages 247–249 label A: source itself is truncated
+
+The legend prints one A operation. Page 249, extracted row 8, contains literal `A (52, 265...`; rendered inspection confirms the ellipsis is in the source PDF, not introduced by our parser. The complete second coordinate is unavailable. Preserve the raw annotation and legend count 1; keep parsed coordinates empty. Do not complete it from neighboring B coordinates, panel dimensions or symmetry. This remains unresolved, now with a specific cause and source location.
+
+### Face evidence
+
+Page 22 supports the specific multi-view explanation above. It does not establish a universal drilling face/coordinate transformation. Other inspected drawings contain both face and edge views; proximity to a Fata label is not a reliable general association. Drilling face assignments remain null with original diagram evidence retained. All 50 explicit Canelura rows already provide their own face directly and remain unchanged. No geometry or toolpath semantics are inferred.
+
+### Verification and outcome
+
+One targeted read-only real PostgreSQL/S3 reconciliation test passed, no skip: verified source hash/size, compared the full regenerated MachiningResult to the saved result, checked unique non-cabinet candidates/conflicts, repeated through-hole pairs, truncated A text, explicit groove faces and historical fingerprints. Targeted ESLint on the added test passed. No application code/UI change, so no browser process or browser regression was needed. No new dependencies or migrations.
+
+All totals unchanged: 555 drilling groups; 3467 drawing holes / 3774 quantity-extended; 50 grooves / 50671 mm; project Frezare 48.17 m, BiselTeşit 7.41 m, Nut si Feder 36.88 m and 13.79 m. No report was overwritten or regenerated in storage. No commit/push.

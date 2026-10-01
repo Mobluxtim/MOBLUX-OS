@@ -91,3 +91,9 @@ No blocking question prevents the current observed-report import. Per-material c
 - Q25: What documented export/view convention associates drilling coordinate annotations with faces and machine axes? Diagram labels/coordinates remain source evidence, not executable machining geometry.
 
 No BLOCKING question prevents this bounded report import/review increment. These questions block only future corrected associations or machining execution semantics.
+
+## Machining reconciliation evidence — 2026-10-01
+
+Q23 is partially explained: page 22 label I is three through-hole coordinate pairs displayed on both face drawings, explaining six annotations without changing the three-hole legend. No count correction or general deduplication rule is needed. The original immutable report notice remains historical evidence. Label A remains unresolved: page 249 row 8 is actually truncated as `A (52, 265...` in the PDF; a complete source export is needed for the second coordinate.
+
+Q24 remains unresolved despite three unique non-cabinet candidate tuples: PDF pages 7 and 286–288 group them under Paneluri izolate; CSV rows 177–179 assign Vinuri. No explicit source identifier establishes the cross-group ownership mapping. Q25 remains unresolved for automatic drilling face mapping; explicit groove faces were already captured. See MACHINING_BOM.md reconciliation section for exact evidence and unchanged totals.
