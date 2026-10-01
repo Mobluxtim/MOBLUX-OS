@@ -82,3 +82,7 @@ OptiCut reports now have a separate observed PDF adapter described in OPTICUT_IM
 ## Project Feronerie summary
 
 The observed PolyBoard 8.02c report now has a bounded hardware-summary adapter. It reads only the first project Feronerie table before cabinet chapters, preserves exact labels/quantities/reference prices and excludes machining sections. Existing CSV mappings, material matching and OptiCut requirements are unchanged. See HARDWARE_BOM.md.
+
+## Explicit machining report import
+
+Machining BOM v1 adds a separate observed PolyBoard report adapter; it does not derive operations from hardware names, CSV edge slots or library fields. Exact legends, continuation markers, groove rows and printed project lengths define the import boundary. Face/view ambiguities and coordinate/count discrepancies remain explicit evidence. See MACHINING_BOM.md for confidence, totals and limits.

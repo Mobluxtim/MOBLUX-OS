@@ -83,3 +83,11 @@ No BLOCKING question prevents the bounded classification model and automatic rev
 - Q22: If multiple optimization runs exist for one technical version, what explicit review policy should designate an accepted run? Current reports are separate alternatives/history and are never summed or manufacturing-authoritative.
 
 No blocking question prevents the current observed-report import. Per-material cutting and aggregate waste are absent in this PDF; do not allocate global values or infer them from names/geometry.
+
+## Machining v1 — NON-BLOCKING source questions
+
+- Q23: What authoritative source resolves page 22 drilling label I (printed count 3 versus 6 coordinate annotations), and pages 247–249 label A (printed count 1 without an extracted coordinate annotation)? Keep printed counts and discrepancies; do not correct by guessing.
+- Q24: Which explicit identifiers reconcile the three PDF Paneluri izolate records with normalized CSV cabinet/part records? Exact matching currently leaves them unmapped; do not synthesize a cabinet or use fuzzy matching.
+- Q25: What documented export/view convention associates drilling coordinate annotations with faces and machine axes? Diagram labels/coordinates remain source evidence, not executable machining geometry.
+
+No BLOCKING question prevents this bounded report import/review increment. These questions block only future corrected associations or machining execution semantics.

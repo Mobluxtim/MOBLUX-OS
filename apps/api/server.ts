@@ -10,6 +10,7 @@ import * as library from '../../packages/modules/catalog/service.js';
 import * as resolution from '../../packages/modules/catalog/resolution.js';
 import * as optimization from '../../packages/modules/projects/optimization.js';
 import * as hardware from '../../packages/modules/projects/hardware.js';
+import * as machining from '../../packages/modules/projects/machining.js';
 import { libraryCategories } from '../../packages/contracts/library.js';
 import * as customers from '../../packages/modules/customers/service.js';
 import * as projects from '../../packages/modules/projects/service.js';
@@ -64,6 +65,8 @@ export function buildServer(logging = false) {
   app.get<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/optimization', async req => optimization.optimizationHistory(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId)));
   app.post<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/hardware', async req => hardware.ensureHardware(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId)));
   app.get<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/hardware', async req => hardware.hardwareHistory(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId)));
+  app.post<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/machining', async req => machining.ensureMachining(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId)));
+  app.get<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/machining', async req => machining.machiningHistory(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId)));
   app.post<{ Params: { category: string } }>('/api/library/:category', { config: { rateLimit: { max: 15, timeWindow: '1 minute' } } }, async (req, reply) => {
     const actor = await authenticate(req.cookies.moblux_session); authorize(actor, 'library.import'); authorize(actor, 'library.view');
     const category = z.enum(libraryCategories).parse(req.params.category);

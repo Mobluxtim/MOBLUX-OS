@@ -153,3 +153,7 @@ Import owns bounded PDF extraction and the pure observed-table parser; Projects 
 ## Hardware BOM import
 
 Import owns the observed PolyBoard hardware-summary parser; Projects owns immutable hardware_bom_reports. The project UI invokes the idempotent import automatically for model/base-version PDF sources. The existing bounded PDF worker is shared through two fixed internal profiles; no new dependency, service or optimizer. Hardware has no material-resolution/catalog identity dependency. See HARDWARE_BOM.md and D46.
+
+## Machining BOM
+
+Import owns the bounded continuation-aware PolyBoard operation parser and exact-link function; Projects owns append-only machining_bom_reports and automatic ensure/history commands. The project UI triggers these independently of material resolution. The existing PDF worker has a fixed machining profile for all source pages, retaining resource limits and previous profiles. No new dependency, service or queue. See MACHINING_BOM.md and D47.

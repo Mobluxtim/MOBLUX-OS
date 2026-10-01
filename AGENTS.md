@@ -56,3 +56,7 @@ The owner authorizes importing the existing OptiCut optimization report, not run
 ## Hardware BOM v1
 
 The owner authorizes the project-level PolyBoard Feronerie summary only. Follow docs/HARDWARE_BOM.md and D46: exact source names, immutable version/source provenance, idempotent automatic import, financially permission-gated source reference prices. Do not infer identity, decompose source constructs or create machining/purchasing/costing scope. Stop for review.
+
+## Machining BOM v1
+
+The owner authorizes importing explicit PolyBoard report operations only. Follow docs/MACHINING_BOM.md and D47: immutable source/version reports, exact-only Part/Cabinet links, continuation-aware legends, literal geometry evidence and explicit discrepancies. Keep drilling face associations unresolved and project milling totals separate from part details. No prices, rates, tools, CNC execution, scheduling or suppliers. Stop for review.

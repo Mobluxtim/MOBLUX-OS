@@ -203,3 +203,7 @@ Separate from MaterialRequirementReport (net BOM), an OptimizationRequirementRep
 ## HardwareBomReport
 
 HardwareBomReport pins ProjectVersion, TechnicalModel, SourceFile/hash and parser with actor/time/status. Immutable nested items contain literal source name, quantity, optional source/reference price strings and PDF page/row. Unique version/source/parser prevents retry duplication. This entity is separate from material and optimization reports; names are not commercial identities. See HARDWARE_BOM.md.
+
+## MachiningBomReport
+
+A separate immutable report pins TechnicalModel/ProjectVersion, SourceFile/hash and parser/actor/time/status. Nested MachiningPart records hold exact source headers, continuation pages, drilling legends/coordinates, explicit grooves, nullable exact Part/Cabinet links and CSV lineage. Source-group and project aggregates preserve drawing counts and quantity-extended counts separately. Printed project machining lengths are not allocated to Parts. Unique version/source/parser, immutability and model/source/linked-part ancestry guards apply. No design or earlier BOM is changed. See MACHINING_BOM.md.

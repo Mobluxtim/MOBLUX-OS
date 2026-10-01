@@ -95,3 +95,7 @@ Active configuration is an immutable event history with permission-controlled co
 ## OptiCut PDF import boundary
 
 Only existing authorized project sources in the model/base version are eligible. Original byte count/hash is verified before parsing. OptiCut safe responses exclude financial columns; imported text executes no scripts or URLs. Bounded PDF text extraction runs with no application environment (10 MiB, 64 pages, text/item limits, two workers, 15 seconds, 192 MiB old generation). Unsupported/corrupt reports cannot publish partial requirements. Existing staff project permissions, Origin enforcement, private storage, source/model/resolution ancestry, immutable triggers and atomic audit apply. This is a bounded local parser, not certification for arbitrary hostile PDFs or a production OS sandbox.
+
+## Machining PDF boundary
+
+Machining reports reuse staff project.view/import/files.download enforcement, Origin checks, private hash-verified storage and atomic audit. A fixed machining PDF profile scans at most 512 pages with the existing byte/text/item/time/memory/concurrency limits. No financial columns are extracted. Immutable report and nested Part ancestry guards protect version/source relationships. Failed known reports expose no partial data; unrelated sources are unsupported. No original source or existing BOM is modified. See MACHINING_BOM.md.

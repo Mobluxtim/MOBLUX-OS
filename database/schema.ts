@@ -4,6 +4,7 @@ import type { BomResult } from '../packages/contracts/bom.js';
 import type { MaterialProfile } from '../packages/contracts/material-profile.js';
 import type { OptimizationResult } from '../packages/contracts/optimization.js';
 import type { HardwareResult } from '../packages/contracts/hardware.js';
+import type { MachiningResult } from '../packages/contracts/machining.js';
 import type { CsvProfile, CsvResult, ImportedCabinet, ImportedPart } from '../packages/contracts/imports.js';
 import type { ModelSummary, ModelIssue } from '../packages/contracts/technical-model.js';
 import type { LibraryCategory, LibraryResult, MaterialMatch } from '../packages/contracts/library.js';
@@ -100,5 +101,12 @@ export const hardwareReports = pgTable('hardware_bom_reports', {
   id: id(), modelId: uuid('model_id').references(() => technicalModels.id).notNull(), versionId: uuid('version_id').references(() => versions.id).notNull(),
   sourceId: uuid('source_id').references(() => sources.id).notNull(), sourceHash: text('source_hash').notNull(), parserVersion: text('parser_version').notNull(),
   status: text('status').$type<'IMPORTED' | 'FAILED' | 'UNSUPPORTED'>().notNull(), result: jsonb('result').$type<HardwareResult>(), finding: text('finding'),
+  createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.versionId, t.sourceId, t.parserVersion)]);
+
+export const machiningReports = pgTable('machining_bom_reports', {
+  id: id(), modelId: uuid('model_id').references(() => technicalModels.id).notNull(), versionId: uuid('version_id').references(() => versions.id).notNull(),
+  sourceId: uuid('source_id').references(() => sources.id).notNull(), sourceHash: text('source_hash').notNull(), parserVersion: text('parser_version').notNull(),
+  status: text('status').$type<'IMPORTED' | 'FAILED' | 'UNSUPPORTED'>().notNull(), result: jsonb('result').$type<MachiningResult>(), finding: text('finding'),
   createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
 }, t => [unique().on(t.versionId, t.sourceId, t.parserVersion)]);

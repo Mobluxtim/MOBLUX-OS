@@ -14,7 +14,8 @@ export async function extractOpticutPdf(bytes: Buffer): Promise<PdfLayout> {
 export async function extractHardwarePdf(bytes: Buffer): Promise<PdfLayout> {
   return extractProjectPdf(bytes, 'hardware');
 }
-async function extractProjectPdf(bytes: Buffer, profile: 'opticut' | 'hardware'): Promise<PdfLayout> {
+export async function extractMachiningPdf(bytes: Buffer): Promise<PdfLayout> { return extractProjectPdf(bytes, 'machining'); }
+async function extractProjectPdf(bytes: Buffer, profile: 'opticut' | 'hardware' | 'machining'): Promise<PdfLayout> {
   if (!bytes.subarray(0, 5).equals(Buffer.from('%PDF-')) || bytes.length > 10 * 1024 * 1024) throw new UnsupportedOptimization('Not a supported PDF (maximum 10 MiB).');
   if (active >= 2) throw new OptimizationBusy('PDF parser busy. Retry shortly.');
   active++;
@@ -27,10 +28,10 @@ async function extractProjectPdf(bytes: Buffer, profile: 'opticut' | 'hardware')
           const loading = getDocument({ data: new Uint8Array(workerData.bytes), isEvalSupported: false, useSystemFonts: false, disableFontFace: true, stopAtErrors: true, verbosity: 0 });
           try {
             const doc = await loading.promise;
-            const hardware=workerData.profile==='hardware';
-            if(doc.numPages > (hardware?512:64)) { parentPort.postMessage({unsupported: true}); return; }
+            const hardware=workerData.profile==='hardware', machining=workerData.profile==='machining', polyboard=hardware||machining;
+            if(doc.numPages > (polyboard?512:64)) { parentPort.postMessage({unsupported: true}); return; }
             const pages=[]; let characters=0;
-            for(let n=1;n<=Math.min(doc.numPages,hardware?32:64);n++) {
+            for(let n=1;n<=Math.min(doc.numPages,machining?512:hardware?32:64);n++) {
               const page=await doc.getPage(n), data=await page.getTextContent();
               if(data.items.length>20000) throw Error('Text limit');
               const rows=[];
@@ -43,9 +44,9 @@ async function extractProjectPdf(bytes: Buffer, profile: 'opticut' | 'hardware')
                 row.cells.push({x,text:item.str});
               }
               rows.sort((a,b)=>b.y-a.y); rows.forEach(r=>r.cells.sort((a,b)=>a.x-b.x));
-              if(n===1 && !rows.some(r=>r.cells.some(c=>c.text===(hardware?'PolyBoard 8.02c':'OptiCut 6.09')))) {parentPort.postMessage({unsupported:true});return;}
+              if(n===1 && !rows.some(r=>r.cells.some(c=>c.text===(polyboard?'PolyBoard 8.02c':'OptiCut 6.09')))) {parentPort.postMessage({unsupported:true});return;}
               pages.push(rows);
-              if(hardware ? rows.some(r=>r.cells[0]?.text==='Rezumatul costurilor') : rows.some(r=>r.cells[0]?.text==='Lungime cant')) break;
+              if(!machining && (hardware ? rows.some(r=>r.cells[0]?.text==='Rezumatul costurilor') : rows.some(r=>r.cells[0]?.text==='Lungime cant'))) break;
             }
             parentPort.postMessage({layout:{pageCount:doc.numPages,pages}});
           } finally { await loading.destroy(); }
