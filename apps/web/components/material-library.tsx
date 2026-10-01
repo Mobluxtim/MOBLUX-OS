@@ -2,6 +2,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { api } from './api';
 import { ActiveLibraryAdmin } from './active-library';
+import { MaterialProfileView } from './material-profile';
 import type { LibraryCategory, LibrarySnapshot, LibrarySnapshotDetail, LibraryRecord, MatchReport, MatchStatus } from '../../../packages/contracts/library';
 import type { Project } from '../../../packages/contracts/index';
 import type { TechnicalModel } from '../../../packages/contracts/technical-model';
@@ -41,7 +42,7 @@ export function MaterialLibrary() {
         <details><summary>Snapshot provenance</summary><p>Snapshot: {detail.id}</p><p>Imported by: {detail.createdBy} · {new Date(detail.createdAt).toLocaleString()}</p><code className="hash">SHA-256: {detail.hash}</code><p>{detail.size} original bytes · decoded hash: {detail.result.decodedHash ?? 'Unavailable'}</p><a href={`/api/library/${detail.id}/download`}>Download preserved original (raw permission required)</a></details>
         <ul>{detail.result.findings.map(f => <li key={f}>{f}</li>)}</ul>
         <label>Search library records<input value={search} onChange={e => { setSearch(e.target.value); setPage(0); }} placeholder="Exact source names, grouping or UUID" /></label>
-        <div className="table-wrap"><table><thead><tr><th>Source record</th><th>Grouping text</th><th>Thickness</th><th>Evidence / unmapped</th></tr></thead><tbody>{records.slice(page * 25, page * 25 + 25).map(r => <tr key={r.id}><td><strong>{r.name}</strong><p>#{r.index} · {r.category}</p></td><td>{r.group || '—'}</td><td>{r.thickness ? `${r.thickness.value} mm · CORROBORATED` : r.thicknessCandidate !== null ? `${r.thicknessCandidate} · candidate only; unit unconfirmed` : 'Raw / unmapped'}</td><td><RecordEvidence row={r} snapshotId={detail.id} /></td></tr>)}</tbody></table></div>
+        <div className="table-wrap"><table><thead><tr><th>Source record</th><th>Grouping text</th><th>Thickness</th><th>Technical classification / purchasing basis</th><th>Evidence / unmapped</th></tr></thead><tbody>{records.slice(page * 25, page * 25 + 25).map(r => <tr key={r.id}><td><strong>{r.name}</strong><p>#{r.index} · {r.category}</p></td><td>{r.group || '—'}</td><td>{r.thickness ? `${r.thickness.value} mm · CORROBORATED` : r.thicknessCandidate !== null ? `${r.thicknessCandidate} · candidate only; unit unconfirmed` : 'Raw / unmapped'}</td><td><MaterialProfileView profile={detail.profiles.find(p => p.source.recordId === r.id)} /></td><td><RecordEvidence row={r} snapshotId={detail.id} /></td></tr>)}</tbody></table></div>
         <div className="csv-pagination"><button className="button secondary" disabled={page === 0} onClick={() => setPage(p => p - 1)}>Previous records</button><span>{records.length} matching records · page {page + 1}</span><button className="button secondary" disabled={(page + 1) * 25 >= records.length} onClick={() => setPage(p => p + 1)}>Next records</button></div>
       </>}
     </section>

@@ -29,3 +29,7 @@ The existing project.view + project.import + project.files.download checks and e
 ## Exclusions and next dependency
 
 No suppliers, prices, stock, purchasing, waste factors, optimization, sheet counts, costs, margins, profit, CAD or release actions. Official/controlled export evidence must confirm edge-slot orientation before a linear EDGE requirement calculation can be implemented. This does not block the current PANEL calculation and edge traceability review.
+
+## Classification display
+
+The project now shows current-policy MaterialTechnicalProfile enrichment beside each resolved PANEL BOM line. Profiles are stored separately; historical BOM contents and algorithm remain unchanged. Two real groups are source-declared and six require substrate evidence. Purchasing unit and stock-sheet size remain unverified for all groups. The UI rounds displayed PANEL quantities to at most two decimals while exact stored decimal strings and calculations are preserved. See MATERIAL_CLASSIFICATION.md.

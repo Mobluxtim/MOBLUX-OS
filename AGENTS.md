@@ -44,3 +44,7 @@ The owner authorized EXACT_UNIQUE auto-linking and exception-only project review
 ## Current authorized BOM increment
 
 The owner authorizes automatic technical Material Requirements / BOM from the normalized model and existing master links. Follow docs/MATERIAL_REQUIREMENTS.md: exact exported rectangular PANEL area and units only; EDGE material/thickness traceability counts with null length until orientation is confirmed. Preserve immutable reports and drill-down. No supplier, price, stock, purchasing, waste, optimization, sheet purchasing quantity or costing scope. Stop after this increment for review.
+
+## Material Classification & Purchasing Basis
+
+The owner authorized technical classification and nullable evidence-backed purchasing metadata only. Follow docs/MATERIAL_CLASSIFICATION.md and D44. Preserve historical masters/resolutions/BOMs; derive separate immutable profiles automatically. Only exact-source PFL/Glass declarations are classified in the current fixture; other substrates and all purchase formats remain unverified. No suppliers, prices, stock, purchasing calculations or orders. Stop for review.

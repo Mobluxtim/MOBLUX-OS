@@ -69,3 +69,10 @@ Q18 is now resolved for this increment: the owner explicitly permits automatic E
 ## BOM scope clarification
 
 Q13 still blocks linear edge-length calculations: the material/thickness pair is confirmed but the four slot-to-dimension mappings are not. The current BOM safely sums exported PANEL rectangles and keeps EDGE lengths null. Finished contour/cut-out allowances and purchasing yield are outside this increment; they are not silently inferred. No new blocking question affects this bounded technical BOM.
+
+## Classification and purchasing basis — NON-BLOCKING for this increment
+
+- Q19: Which verified technical declarations establish the substrate of W960 (18/36 mm), 398 (18 mm), H1732 (18 mm) and H3702 (18/36 mm)? Existing decor/group/thickness evidence does not distinguish PAL, MDF or other construction. These six groups remain UNKNOWN/REVIEW_REQUIRED.
+- Q20: Which authoritative evidence establishes purchasing units and available stock-sheet formats? None is confirmed by the analyzed files. These fields stay null; texture dimensions and technical net m² are not substitutes.
+
+No BLOCKING question prevents the bounded classification model and automatic review UI. Evidence collection and any future audited correction workflow must precede filling these unresolved values; no purchasing conversion is implemented.

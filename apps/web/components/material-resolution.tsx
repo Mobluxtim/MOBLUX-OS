@@ -36,7 +36,7 @@ export function MaterialResolution({ projectId, modelId }: { projectId: string; 
         {state?.history.map(h => <details key={h.id}><summary>{new Date(h.createdAt).toLocaleString()} · {h.id} {h.id === report.id ? '(current)' : '(historical)'}</summary><p>{h.results.filter(r => r.materialMasterId).length}/{h.results.length} resolved · {h.resolverVersion}</p>{h.snapshots.map(s => <p key={s.category}>{s.category}: {s.snapshotId}</p>)}</details>)}
       </details>
     </>}
-    {state?.bom && <MaterialRequirements bom={state.bom} />}
+    {state?.bom && <MaterialRequirements bom={state.bom} profiles={state.profiles} />}
     <button className="button secondary" disabled={busy} onClick={() => void refresh()}>Refresh material resolution</button>
     <p className="helper">Uses current libraries automatically and updates when they change. Earlier reports stay unchanged.</p>
   </section>;

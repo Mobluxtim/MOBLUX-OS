@@ -191,3 +191,7 @@ erDiagram
 ## Technical BOM report
 
 MaterialRequirementReport references one MaterialResolutionReport, which fixes TechnicalModel/ProjectVersion. Unique resolution + algorithm version makes retries reproducible. The contained immutable PANEL lines group master/thickness (or explicit unresolved version material), storing exported units and exact rectangular area. EDGE lines group material/thickness and preserve slot/quantity-weighted counts; length remains null. Contributions retain cabinet/part/source/report/row/line/hash evidence. No procurement or commercial entity is introduced. See MATERIAL_REQUIREMENTS.md.
+
+## MaterialTechnicalProfile
+
+MaterialMaster has append-only technical profiles unique by master ID + policy version. Each contains PANEL family/status/reason, exact source provenance, corroborated thickness and nullable evidence-bearing purchasing-unit/stock-format/technical-attribute fields. The current profile is an enrichment, not part of a historical resolution or BOM snapshot. No supplier SKU, price, stock or order entity is added. SOURCE_DECLARED and REVIEW_REQUIRED describe classification evidence independently of EXACT_UNIQUE identity resolution. See MATERIAL_CLASSIFICATION.md for the eight real groups and safe field boundaries.

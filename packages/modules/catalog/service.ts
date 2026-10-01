@@ -13,6 +13,7 @@ import { libraryInputLimit, LibraryBusyError } from '../imports/library-decompre
 import { libraryMatcherVersion, proposeMatches } from './matching.js';
 import { deriveMaterialRequests } from './requests.js';
 import { technicalModelDetail } from '../projects/technical-model.js';
+import { classifyMaterial } from './classification.js';
 
 
 const metadata = { id: librarySnapshots.id, category: librarySnapshots.category, filename: librarySnapshots.filename, hash: librarySnapshots.hash,
@@ -47,6 +48,7 @@ export async function libraryDetail(actor: Actor, id: string) {
   // Raw binary may contain financial data; never include it in normal review responses.
   return { id: source.id, category: source.category, filename: source.filename, hash: source.hash, size: source.size, parserVersion: source.parserVersion,
     status: source.status, recordCount: source.recordCount, createdAt: source.createdAt, createdBy: source.createdBy,
+    profiles: source.result.records.map(r => classifyMaterial(source.id, source.hash, r)),
     result: { ...source.result, headerHex: '', payloadPrefixHex: '', records: source.result.records.map(r => ({ ...r, rawHex: '' })) } };
 }
 export async function rawLibraryRecord(actor: Actor, id: string, index: number) {

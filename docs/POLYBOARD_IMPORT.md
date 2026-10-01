@@ -70,3 +70,7 @@ Technical model creation and refresh now derive requests automatically and resol
 ## Automatic BOM boundary
 
 The current BOM consumes only the confirmed normalized dimensions/quantity/material fields. It does not reparse exports or alter adapters. Rectangle area does not require assigning manufacturing axes. Column 10 and raw edge orientation remain excluded; no edge length is calculated. See MATERIAL_REQUIREMENTS.md for exact formula, limitations and source-row lineage.
+
+## Technical classification follow-up
+
+The classification sidecar reuses staged source evidence without changing either adapter. Exact-source PFL and Glass declarations provide family-level SOURCE_DECLARED classification; they do not establish composition, grade or purchase format. Other substrate claims remain UNKNOWN. No undocumented binary field receives new semantics. See MATERIAL_CLASSIFICATION.md.

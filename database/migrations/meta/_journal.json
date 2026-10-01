@@ -50,6 +50,13 @@
       "when": 1790794601006,
       "tag": "0006_wakeful_meggan",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790796232160,
+      "tag": "0007_high_wendell_rand",
+      "breakpoints": true
     }
   ]
 }

@@ -95,3 +95,7 @@ library.activate + library.view authorizes explicit activation/deactivation with
 ## Activation propagation authorization
 
 An authorized library.activate command now recomputes affected technical material reports internally in its transaction, attributed to the initiating administrator. The internal resolver is private and cannot bypass permissions through an HTTP endpoint. Normal project processing still requires the existing project permissions and no library/admin capabilities. Manual matching diagnostics are optional and retain their original authorization.
+
+## Technical classification access
+
+Safe classification projections use library.view; project profiles inherit the existing project model/processing permissions. Profile creation is an internal audited consequence of authorized resolution/activation. No raw, supplier, financial or manufacturing privileges are granted. No manual override endpoint is introduced.

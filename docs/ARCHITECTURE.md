@@ -141,3 +141,7 @@ See D42 and MATERIAL_RESOLUTION.md: Overview now exposes automatic resolution im
 ## Technical material requirements
 
 Projects now owns immutable material_requirement_reports, derived inside the existing resolution transaction. The Catalog resolver calls the narrow Projects BOM service with an exact resolution ID/results; the BOM module reads frozen model rows and uses a pure deterministic calculator. No new queue, microservice or dependency. The report is linked to resolution/version rather than inserted into the immutable design. See MATERIAL_REQUIREMENTS.md and D43.
+
+## Technical classification and purchasing basis
+
+Catalog now owns append-only material_technical_profiles, ensured by the existing resolution transaction and exposed separately from historical report contents. A pure, versioned evidence classifier is shared by library review and persisted master enrichment. Migration 0007 adds the profile table, idempotency and ancestry/immutability controls. No parser, BOM algorithm, supplier module or service boundary changes. See MATERIAL_CLASSIFICATION.md and D44.

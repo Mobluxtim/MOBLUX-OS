@@ -30,7 +30,11 @@ test('project automatically resolves current materials and shows only exceptions
   const initial = await (await page.request.get(endpoint)).json();
   const bom = page.getByRole('region', { name: 'Automatic material requirements' });
   await expect(bom.getByRole('heading', { name: 'Material requirements / BOM' })).toBeVisible();
-  await expect(bom.locator('.bom-totals')).toContainText('280 panel units');
+  await expect(bom.locator('.bom-totals')).toContainText('280 panel units · 126.46 m²');
+  await expect(bom.locator('.classification-totals')).toHaveText('PANEL classifications: 2/8 source-declared · 6 require evidence review');
+  await expect(bom.getByText('PFL / HDF fibreboard', { exact: true })).toBeVisible();
+  await expect(bom.getByText('Glass', { exact: true })).toBeVisible();
+  expect(initial.bom.result.totals.panelAreaM2).toBe('126.46318129');
   await expect(bom.locator('tbody tr')).toHaveCount(13);
   expect(initial.bom.result.panels).toHaveLength(8); expect(initial.bom.result.edges).toHaveLength(5);
   expect(initial.bom.result.edges.every((e: { lengthM: null }) => e.lengthM === null)).toBe(true);

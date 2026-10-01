@@ -55,6 +55,18 @@ test('automatic resolution, active libraries, persistent identity and immutable 
     const initial = (await get()).current!;
     const initialBom = (await get()).bom!;
     const versions = (await owner.query('select * from project_versions where project_id=$1 order by id', [first.projectId])).rows;
+    await t.test('technical profiles are automatic, idempotent, immutable and source-bound without changing resolution/BOM', async () => {
+      const profiles = (await get()).profiles; assert.ok(profiles.length > 0);
+      assert.ok(profiles.every(p => p.result.panelType === 'UNKNOWN'));
+      await Promise.all([run(), run()]); assert.deepEqual((await get()).profiles, profiles);
+      assert.deepEqual((await get()).current, initial); assert.deepEqual((await get()).bom, initialBom);
+      for (const profile of profiles) {
+        assert.equal((await owner.query("select count(*)::int n from audit_events where entity_id=$1 and event='material_profile.derived'", [profile.id])).rows[0].n, 1);
+        assert.equal(profile.result.purchasingBasis.unit, null); assert.equal(profile.result.purchasingBasis.stockSheet, null);
+      }
+      await assert.rejects(owner.query('update material_technical_profiles set policy_version=$1 where id=$2', ['changed', profiles[0].id]), /immutable/i);
+      await assert.rejects(owner.query('insert into material_technical_profiles(material_master_id,policy_version,result,created_by) values($1,$2,$3,$4)', [profiles[0].materialMasterId, 'invalid-test', JSON.stringify({...profiles[0].result, policyVersion: 'invalid-test', source: {...profiles[0].result.source, hash: 'wrong'}}), user.id]), /ancestry/i);
+    });
     await t.test('BOM is automatic, immutable, idempotent and pinned to exact resolution/version with complete source drill-down', async () => {
       assert.ok(initialBom); assert.equal(initialBom.resolutionId, initial.id);
       assert.deepEqual([initialBom.result.totals.cabinets, initialBom.result.totals.partRows, initialBom.result.totals.units], [21,216,280]);
@@ -127,7 +139,19 @@ test('automatic resolution, active libraries, persistent identity and immutable 
       assert.equal(r.results.filter(m => m.category === 'PANEL').length, 8); assert.equal(r.results.filter(m => m.category === 'EDGE').length, 5);
       assert.deepEqual((await app.inject({ method: 'GET', url: base, headers })).json(), before);
       assert.deepEqual([before.cabinets.length, before.parts.length, before.parts.reduce((n: number, p: { data: { quantity: number } }) => n + p.data.quantity, 0), before.materials.length], [21,216,280,8]);
-      const bom = (await app.inject({ method: 'GET', url: `${base}/material-resolution`, headers })).json<ResolutionState>().bom!;
+      const state = (await app.inject({ method: 'GET', url: `${base}/material-resolution`, headers })).json<ResolutionState>();
+      const bom = state.bom!;
+      const panelProfiles = state.profiles.filter(p => p.result.status !== 'NOT_APPLICABLE');
+      assert.equal(panelProfiles.length, 8); assert.equal(state.profiles.length, 13);
+      assert.equal(panelProfiles.filter(p => p.result.status === 'SOURCE_DECLARED').length, 2);
+      assert.equal(panelProfiles.filter(p => p.result.status === 'REVIEW_REQUIRED').length, 6);
+      assert.equal(panelProfiles.find(p => p.result.source.name === '--PFL--0110 PE(Alb)')!.result.panelType, 'FIBREBOARD_PFL_HDF');
+      assert.equal(panelProfiles.find(p => p.result.source.name === 'zz-Glass 0080 tr nou')!.result.panelType, 'GLASS');
+      assert.ok(state.profiles.every(p => p.result.purchasingBasis.unit === null && p.result.purchasingBasis.stockSheet === null));
+      assert.equal(bom.result.totals.panelAreaM2, '126.46318129');
+      const library = (await app.inject({ method: 'GET', url: `/api/library/${r.snapshots.find(s => s.category === 'PANEL')!.snapshotId}`, headers })).json();
+      for (const p of panelProfiles) assert.deepEqual(library.profiles.find((v: { source: { recordId: string } }) => v.source.recordId === p.result.source.recordId), p.result);
+      console.log('Real classifications: 2 source-declared (PFL, Glass), 6 UNKNOWN/REVIEW_REQUIRED; purchasing basis unverified for all.');
       assert.equal(bom.result.panels.length, 8); assert.equal(bom.result.edges.length, 5);
       assert.ok(bom.result.panels.every(p => p.materialMasterId)); assert.ok(bom.result.edges.every(e => e.materialMasterId && e.lengthM === null));
       const expected = (await owner.query(`select m.description, m.thickness, count(*)::int rows, sum((p.data->>'quantity')::int)::int units,

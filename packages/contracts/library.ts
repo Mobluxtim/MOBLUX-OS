@@ -19,7 +19,7 @@ export interface LibrarySnapshot {
   parserVersion: string; status: LibraryResult['status']; recordCount: number;
   createdAt: string; createdBy: string;
 }
-export interface LibrarySnapshotDetail extends LibrarySnapshot { result: LibraryResult; }
+export interface LibrarySnapshotDetail extends LibrarySnapshot { result: LibraryResult; profiles: import('./material-profile.js').MaterialProfile[]; }
 export type MatchStatus = 'EXACT_UNIQUE' | 'AMBIGUOUS' | 'NO_MATCH' | 'REVIEW_REQUIRED';
 export interface MaterialMatch {
   category: 'PANEL' | 'EDGE'; name: string; thickness: string; unit: 'mm';

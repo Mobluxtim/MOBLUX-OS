@@ -11,6 +11,7 @@ import { libraryCategories } from '../../contracts/library.js';
 import type { ActiveLibrary, ResolvedMaterial } from '../../contracts/resolution.js';
 import { deriveMaterialRequests } from './requests.js';
 import { proposeMatches, libraryMatcherVersion } from './matching.js';
+import { ensureMaterialProfiles, readMaterialProfiles } from './material-profiles.js';
 
 export const resolverVersion = `automatic-material/v1:${libraryMatcherVersion}`;
 const lock = sql`select pg_advisory_xact_lock(hashtextextended('material-resolution-active-library', 0))`;
@@ -71,7 +72,7 @@ async function resolveCore(tx: Transaction, actor: Actor, projectId: string, mod
   await tx.execute(lock);
   const { requests, active, inputKey } = await context(tx, projectId, modelId);
   const previous = await tx.query.materialResolutions.findFirst({ where: and(eq(materialResolutions.modelId, modelId), eq(materialResolutions.inputKey, inputKey), eq(materialResolutions.resolverVersion, resolverVersion)) });
-  if (previous) { await ensureBom(tx, actor, previous); return previous; }
+  if (previous) { await ensureMaterialProfiles(tx, actor, previous.results); await ensureBom(tx, actor, previous); return previous; }
   const selected = active.length ? await tx.select().from(librarySnapshots).where(inArray(librarySnapshots.id, active.map(a => a.snapshotId))) : [];
   const matches = proposeMatches(requests, selected.map(s => ({ id: s.id, records: s.result.records })));
   const results: ResolvedMaterial[] = [];
@@ -93,6 +94,7 @@ async function resolveCore(tx: Transaction, actor: Actor, projectId: string, mod
   const [report] = await tx.insert(materialResolutions).values({ modelId, inputKey, resolverVersion, snapshots: active, results, createdBy: actor.id }).returning();
   await record(tx, actor.id, 'materials.automatically_resolved', report.id, projectId, { modelId, snapshotIds: active.map(a => a.snapshotId), resolverVersion, resolved: results.filter(r => r.materialMasterId).length, total: results.length, manufacturingVerified: false });
   await ensureBom(tx, actor, report);
+  await ensureMaterialProfiles(tx, actor, report.results);
   return report;
 }
 export async function resolveMaterials(actor: Actor, projectId: string, modelId: string) {
@@ -105,6 +107,7 @@ export async function resolutionState(actor: Actor, projectId: string, modelId: 
     const history = await tx.select().from(materialResolutions).where(eq(materialResolutions.modelId, modelId)).orderBy(desc(materialResolutions.createdAt));
     const current = history.find(r => r.inputKey === inputKey && r.resolverVersion === resolverVersion) ?? null;
     const bom = current ? await tx.query.bomReports.findFirst({ where: and(eq(bomReports.resolutionId, current.id), eq(bomReports.algorithmVersion, bomAlgorithmVersion)) }) : null;
-    return { current, history, active, stale: !current, bom: bom ?? null };
+    const profiles = current ? await readMaterialProfiles(tx, current.results) : [];
+    return { current, history, active, stale: !current, bom: bom ?? null, profiles };
   });
 }
