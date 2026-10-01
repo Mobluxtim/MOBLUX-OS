@@ -195,3 +195,7 @@ MaterialRequirementReport references one MaterialResolutionReport, which fixes T
 ## MaterialTechnicalProfile
 
 MaterialMaster has append-only technical profiles unique by master ID + policy version. Each contains PANEL family/status/reason, exact source provenance, corroborated thickness and nullable evidence-bearing purchasing-unit/stock-format/technical-attribute fields. The current profile is an enrichment, not part of a historical resolution or BOM snapshot. No supplier SKU, price, stock or order entity is added. SOURCE_DECLARED and REVIEW_REQUIRED describe classification evidence independently of EXACT_UNIQUE identity resolution. See MATERIAL_CLASSIFICATION.md for the eight real groups and safe field boundaries.
+
+## OptimizationRequirementReport
+
+Separate from MaterialRequirementReport (net BOM), an OptimizationRequirementReport pins one TechnicalModel, MaterialResolutionReport and SourceFile/hash with parser/actor/time. Its immutable result includes imported stock formats, sheets/areas/placed units, cutting-map waste, edge lengths, project totals and failed source rows/reasons. Exact material associations are report-owned; failed Part IDs remain null. Multiple reports are alternatives/history, not additive demand. Neither master nor design is updated. See OPTICUT_IMPORT.md.

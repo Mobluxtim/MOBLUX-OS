@@ -2,6 +2,7 @@ import { pgTable, uuid, text, timestamp, boolean, integer, serial, jsonb, unique
 import type { ActiveLibrary, ResolvedMaterial } from '../packages/contracts/resolution.js';
 import type { BomResult } from '../packages/contracts/bom.js';
 import type { MaterialProfile } from '../packages/contracts/material-profile.js';
+import type { OptimizationResult } from '../packages/contracts/optimization.js';
 import type { CsvProfile, CsvResult, ImportedCabinet, ImportedPart } from '../packages/contracts/imports.js';
 import type { ModelSummary, ModelIssue } from '../packages/contracts/technical-model.js';
 import type { LibraryCategory, LibraryResult, MaterialMatch } from '../packages/contracts/library.js';
@@ -88,3 +89,9 @@ export const materialProfiles = pgTable('material_technical_profiles', {
   id: id(), materialMasterId: uuid('material_master_id').references(() => materialMasters.id).notNull(), policyVersion: text('policy_version').notNull(),
   result: jsonb('result').$type<MaterialProfile>().notNull(), createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
 }, t => [unique().on(t.materialMasterId, t.policyVersion)]);
+export const optimizationReports = pgTable('optimization_requirement_reports', {
+  id: id(), modelId: uuid('model_id').references(() => technicalModels.id).notNull(), sourceId: uuid('source_id').references(() => sources.id).notNull(),
+  resolutionId: uuid('resolution_id').references(() => materialResolutions.id).notNull(), sourceHash: text('source_hash').notNull(), parserVersion: text('parser_version').notNull(),
+  status: text('status').$type<'IMPORTED' | 'FAILED' | 'UNSUPPORTED'>().notNull(), result: jsonb('result').$type<OptimizationResult>(), finding: text('finding'),
+  createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
+}, t => [unique().on(t.modelId, t.sourceId, t.resolutionId, t.parserVersion)]);

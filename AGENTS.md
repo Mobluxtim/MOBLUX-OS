@@ -48,3 +48,7 @@ The owner authorizes automatic technical Material Requirements / BOM from the no
 ## Material Classification & Purchasing Basis
 
 The owner authorized technical classification and nullable evidence-backed purchasing metadata only. Follow docs/MATERIAL_CLASSIFICATION.md and D44. Preserve historical masters/resolutions/BOMs; derive separate immutable profiles automatically. Only exact-source PFL/Glass declarations are classified in the current fixture; other substrates and all purchase formats remain unverified. No suppliers, prices, stock, purchasing calculations or orders. Stop for review.
+
+## OptiCut result import v1
+
+The owner authorizes importing the existing OptiCut optimization report, not running an optimizer. Follow docs/OPTICUT_IMPORT.md and D45: immutable source/model/resolution reports, separate net BOM and optimized/failed requirements, exact-only material links, truncated failure text preserved, no supplier/pricing/order/costing/nesting scope. Stop after verification for review.

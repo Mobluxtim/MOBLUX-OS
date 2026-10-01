@@ -145,3 +145,7 @@ Projects now owns immutable material_requirement_reports, derived inside the exi
 ## Technical classification and purchasing basis
 
 Catalog now owns append-only material_technical_profiles, ensured by the existing resolution transaction and exposed separately from historical report contents. A pure, versioned evidence classifier is shared by library review and persisted master enrichment. Migration 0007 adds the profile table, idempotency and ancestry/immutability controls. No parser, BOM algorithm, supplier module or service boundary changes. See MATERIAL_CLASSIFICATION.md and D44.
+
+## OptiCut optimization requirements
+
+Import owns bounded PDF extraction and the pure observed-table parser; Projects owns append-only optimization_requirement_reports pinned to model/source/resolution. The normal project view automatically invokes the idempotent command for uploaded same-version/base-version PDFs. Original storage, permissions and audit are reused. One new dependency, pdfjs-dist, runs text extraction in a resource-limited worker; no optimizer, service or durable job infrastructure is introduced. See OPTICUT_IMPORT.md and D45.

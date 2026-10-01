@@ -57,6 +57,13 @@
       "when": 1790796232160,
       "tag": "0007_high_wendell_rand",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790834225201,
+      "tag": "0008_brave_shiva",
+      "breakpoints": true
     }
   ]
 }

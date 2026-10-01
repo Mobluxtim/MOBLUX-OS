@@ -91,3 +91,7 @@ Originals remain private versioned objects and downloads verify byte count/hash.
 ## Automatic resolution controls
 
 Active configuration is an immutable event history with permission-controlled commands. A shared transaction lock prevents mixed active sets during resolution; unique constraints deduplicate reports and masters. Database triggers protect all new immutable rows and validate active category/snapshot and corroborated master source evidence. Commands preserve project ancestry and Origin checks. Normal resolution exposes safe material/provenance only, not raw binary data or prices. Missing libraries fail into explicit REVIEW_REQUIRED rather than guessed defaults. See MATERIAL_RESOLUTION.md.
+
+## OptiCut PDF import boundary
+
+Only existing authorized project sources in the model/base version are eligible. Original byte count/hash is verified before parsing. OptiCut safe responses exclude financial columns; imported text executes no scripts or URLs. Bounded PDF text extraction runs with no application environment (10 MiB, 64 pages, text/item limits, two workers, 15 seconds, 192 MiB old generation). Unsupported/corrupt reports cannot publish partial requirements. Existing staff project permissions, Origin enforcement, private storage, source/model/resolution ancestry, immutable triggers and atomic audit apply. This is a bounded local parser, not certification for arbitrary hostile PDFs or a production OS sandbox.

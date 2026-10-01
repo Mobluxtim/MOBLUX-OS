@@ -74,3 +74,7 @@ The current BOM consumes only the confirmed normalized dimensions/quantity/mater
 ## Technical classification follow-up
 
 The classification sidecar reuses staged source evidence without changing either adapter. Exact-source PFL and Glass declarations provide family-level SOURCE_DECLARED classification; they do not establish composition, grade or purchase format. Other substrate claims remain UNKNOWN. No undocumented binary field receives new semantics. See MATERIAL_CLASSIFICATION.md.
+
+## OptiCut downstream result import
+
+OptiCut reports now have a separate observed PDF adapter described in OPTICUT_IMPORT.md. Existing PolyBoard adapters and edge/grain mappings are unchanged. The result supplies source-reported sheets and lengths without resolving PolyBoard edge orientation, rewriting the net BOM or populating catalog stock dimensions.

@@ -33,3 +33,7 @@ No suppliers, prices, stock, purchasing, waste factors, optimization, sheet coun
 ## Classification display
 
 The project now shows current-policy MaterialTechnicalProfile enrichment beside each resolved PANEL BOM line. Profiles are stored separately; historical BOM contents and algorithm remain unchanged. Two real groups are source-declared and six require substrate evidence. Purchasing unit and stock-sheet size remain unverified for all groups. The UI rounds displayed PANEL quantities to at most two decimals while exact stored decimal strings and calculations are preserved. See MATERIAL_CLASSIFICATION.md.
+
+## Imported optimization alongside net requirements
+
+The owner authorized external OptiCut result import in a separate report/UI section. The exact net BOM remains unchanged. OptiCut sheets/area/edge/cutting/waste values and failed requirements retain their own source/model/resolution provenance; they are never merged into net calculations or used as purchasing orders. See OPTICUT_IMPORT.md.

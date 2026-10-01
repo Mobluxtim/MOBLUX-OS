@@ -76,3 +76,10 @@ Q13 still blocks linear edge-length calculations: the material/thickness pair is
 - Q20: Which authoritative evidence establishes purchasing units and available stock-sheet formats? None is confirmed by the analyzed files. These fields stay null; texture dimensions and technical net m² are not substitutes.
 
 No BLOCKING question prevents the bounded classification model and automatic review UI. Evidence collection and any future audited correction workflow must precede filling these unresolved values; no purchasing conversion is implemented.
+
+## OptiCut v1 — NON-BLOCKING limitations
+
+- Q21: Can an untruncated structured OptiCut export provide complete failed material/reference labels and reasons, and stable Part identifiers? This blocks safe failed-item/Part reconciliation; literal PDF rows remain preserved.
+- Q22: If multiple optimization runs exist for one technical version, what explicit review policy should designate an accepted run? Current reports are separate alternatives/history and are never summed or manufacturing-authoritative.
+
+No blocking question prevents the current observed-report import. Per-material cutting and aggregate waste are absent in this PDF; do not allocate global values or infer them from names/geometry.
