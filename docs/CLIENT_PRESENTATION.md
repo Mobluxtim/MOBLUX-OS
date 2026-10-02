@@ -47,3 +47,7 @@ Targeted tests cover strict content validation and safe DTO allowlisting; hidden
 ## Local setup
 
 Run the existing `pnpm db:migrate` and `pnpm db:seed`, then restart the normal API when ready to review the new routes. No package installation is needed. The task's verification used a temporary API on port 3101 and preserved pre-existing development services; their already-loaded API code does not hot reload. Open Project → Client presentation, select the exact version, curate/save, then View as client.
+
+## Quote integration now available (D51)
+
+Commercial Quote Builder can pin an exact presentation revision and embed this safe projection in its standalone preview. Presentation authoring remains separate and contains no price calculation. Later presentation edits cannot alter a saved quote's preview. See COMMERCIAL_QUOTES.md; portal, approval, payment, PDF and release remain deferred.

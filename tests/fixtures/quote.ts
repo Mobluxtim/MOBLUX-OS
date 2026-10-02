@@ -1,0 +1,6 @@
+import {randomUUID} from 'node:crypto';
+import type {QuoteContent} from '../../packages/contracts/quote.js';
+export function quoteFixture():QuoteContent {
+ const furniture={id:randomUUID(),kind:'FURNITURE' as const,sectionId:null,presentationSectionId:null,title:'Kitchen cabinetry',description:'Customer-facing furniture description',customerNote:'Offered configuration',internalNote:'INTERNAL_LINE_SENTINEL',visible:true,pricingMode:'MANUAL_PRICE' as const,calculatedPriceReference:null,basis:'UNIT_PRICE' as const,quantity:'2',unit:'set',offeredUnitPrice:'123.456789',offeredLineTotal:null,discount:{kind:'PERCENT' as const,value:'10'}};
+ return {title:'TEST commercial offer',currency:'RON',customerNotes:'Delivery arrangements to be agreed.',internalNotes:'INTERNAL_QUOTE_SENTINEL',sections:[],lines:[furniture,{...furniture,id:randomUUID(),kind:'INSTALLATION',title:'Installation',quantity:null,unit:'service',basis:'LINE_TOTAL',offeredUnitPrice:null,offeredLineTotal:'100.125',discount:{kind:'NONE',value:null}},{...furniture,id:randomUUID(),title:'HIDDEN_LINE_SENTINEL',visible:false,offeredUnitPrice:'999999'}],discount:{kind:'AMOUNT',value:'5'},vatPercent:'20',deposit:{kind:'PERCENT',value:'30'}};
+}

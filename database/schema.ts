@@ -7,6 +7,7 @@ import type { HardwareResult } from '../packages/contracts/hardware.js';
 import type { MachiningResult } from '../packages/contracts/machining.js';
 import type { CostRules, CostInputs, CostResult } from '../packages/contracts/costing.js';
 import type {PresentationContent,MediaKind} from '../packages/contracts/presentation.js';
+import type {QuoteContent,QuoteCalculation} from '../packages/contracts/quote.js';
 import type { CsvProfile, CsvResult, ImportedCabinet, ImportedPart } from '../packages/contracts/imports.js';
 import type { ModelSummary, ModelIssue } from '../packages/contracts/technical-model.js';
 import type { LibraryCategory, LibraryResult, MaterialMatch } from '../packages/contracts/library.js';
@@ -134,3 +135,7 @@ export const presentationRevisions=pgTable('presentation_revisions',{
 export const presentationAssets=pgTable('presentation_assets',{
  id:id(),projectId:uuid('project_id').notNull(),versionId:uuid('version_id').notNull(),requestId:uuid('request_id').notNull(),name:text('name').notNull(),kind:text('kind').$type<MediaKind>().notNull(),provenance:text('provenance').notNull(),hash:text('hash').notNull(),displayHash:text('display_hash').notNull(),mime:text('mime').notNull(),size:integer('size').notNull(),width:integer('width').notNull(),height:integer('height').notNull(),objectKey:text('object_key').notNull().unique(),objectVersion:text('object_version'),displayKey:text('display_key').notNull().unique(),displayVersion:text('display_version'),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
 },t=>[foreignKey({columns:[t.projectId,t.versionId],foreignColumns:[versions.projectId,versions.id]}),unique().on(t.versionId,t.requestId)]);
+
+export const quoteVersions=pgTable('quote_versions',{
+ id:id(),projectId:uuid('project_id').notNull(),versionId:uuid('version_id').notNull(),number:integer('number').notNull(),previousId:uuid('previous_id'),presentationRevisionId:uuid('presentation_revision_id').references(()=>presentationRevisions.id),requestId:uuid('request_id').notNull(),payloadHash:text('payload_hash').notNull(),contentHash:text('content_hash').notNull(),algorithmVersion:text('algorithm_version').notNull(),content:jsonb('content').$type<QuoteContent>().notNull(),result:jsonb('result').$type<QuoteCalculation>().notNull(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+},t=>[foreignKey({columns:[t.projectId,t.versionId],foreignColumns:[versions.projectId,versions.id]}),unique().on(t.versionId,t.number),unique().on(t.versionId,t.requestId)]);

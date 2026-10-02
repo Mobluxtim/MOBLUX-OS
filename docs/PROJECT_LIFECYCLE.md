@@ -66,3 +66,7 @@ Creating or refreshing a technical review model now automatically resolves its u
 ## Presentation preparation is not approval
 
 An internal user may prepare a separate ClientPresentation for an exact ProjectVersion and append immutable content revisions. View-as-client previews saved curated content only. Neither save nor preview approves the design, quote, payment or production. Later ProjectVersions do not mutate or inherit presentation approval. A future approval snapshot must explicitly pin the exact presentation revision/assets and applicable quote; design-deliverable access remains an unimplemented policy.
+
+## Commercial offer revisions (D51)
+
+Saving a QuoteVersion freezes offered terms for exactly one ProjectVersion and optional presentation revision. It does not approve the project, confirm a deposit, satisfy payment conditions or authorize ProductionRelease. Future approval must pin exact ProjectVersion + QuoteVersion; later edits append revisions and cannot rewrite accepted historical evidence.

@@ -111,3 +111,7 @@ Manual overrides require cost.override and existing financial/project/evidence a
 ## Client presentation safe projection
 
 Dedicated preview serializers construct only customer-visible text/sections/media from an exact presentation revision. No internal project/BOM/cost/audit record is serialized or fetched by the standalone preview page. Preview image endpoints independently enforce revision visibility and exact ancestry, verify display hashes, serve only PNG/JPEG with no-store/nosniff and sandbox headers, and never expose original filenames, keys or provenance. Originals remain private. Bounded structural image checks and metadata removal are not a full decoder/malware scanner. Authored prose/pixels require internal editorial review. Staff edit/preview permissions, Origin checks, transactional audit and immutable guards apply; future customer authentication/grants are not implemented. See CLIENT_PRESENTATION.md.
+
+## Quote projection boundary (D51)
+
+Quote preview is a dedicated allowlisted DTO and standalone UI. Hidden sections/lines are excluded from both output and totals; internal notes, costing references, technical quantities and manufacturing/supplier evidence are never projected. Attached presentation uses existing exact-revision safe projection/media authorization. Session, Origin, staff-only capability checks and atomic audit remain mandatory. Preview is not a public portal grant. See COMMERCIAL_QUOTES.md.

@@ -644,3 +644,24 @@ Limitations are explicit, not hidden blockers: staff preview only; raster struct
 Files changed: AGENTS.md; apps/api/server.ts; apps/web/components/workspace.tsx; apps/web/components/presentation-editor.tsx; apps/web/components/presentation-preview.tsx; apps/web/app/globals.css; apps/web/app/presentation-preview/[projectId]/[versionId]/[revisionId]/page.tsx; database/schema.ts; database/migrations/0012_dark_sabra.sql and meta/{0012_snapshot,_journal}.json; packages/contracts/presentation.ts; packages/modules/identity/policy.ts; packages/modules/presentations/{service,projection,media}.ts; tests/fixtures/presentation.ts; tests/unit/presentation.test.ts; tests/integration/presentation.test.ts; tests/e2e/presentation.spec.ts; docs/{CLIENT_PRESENTATION,ARCHITECTURE,DOMAIN_MODEL,DECISIONS,PERMISSIONS,SECURITY,PROJECT_LIFECYCLE,IMPLEMENTATION_REPORT}.md.
 
 No commit or push. Increment complete for owner review.
+
+## Commercial Proposal / Quote Builder v1 — complete (2026-10-02)
+
+Before resumption: quote contracts/calculator/projection/service/API, migration 0013 and seed capabilities, editor/preview and unit/integration test sources were saved. Migration/seed had been applied. No implementation was restarted.
+
+Continuation: verified PostgreSQL/API behavior, added desktop/mobile browser coverage, corrected project navigation overflow revealed by the extra Quote tab, documented D51 and updated affected architecture/security/domain/lifecycle guidance. No business calculation or unrelated module was rewritten. No dependencies added.
+
+Verification:
+- 4 targeted quote unit tests passed: exact decimal calculations, discounts/VAT/deposits, missing versus explicit zero, validation and safe projection.
+- 1 targeted PostgreSQL/API integration scenario passed: no-costing manual offer, idempotency/concurrency, immutable revisions, exact presentation/version ancestry, stale-write rejection, historical preview, permissions/Origin/customer isolation, audit and unchanged ProjectVersion fingerprint. Repeated only to refresh the synthetic browser fixture after a failed mobile run.
+- 1 Chrome desktop/mobile scenario passed: edit manual quote, sections, independent installation line, add/remove/reorder, VAT/deposit, save history, combined pinned presentation preview, safe-only API requests, hidden/internal exclusion, empty later version, no page errors or horizontal overflow. Desktop/mobile screenshots were visually inspected in ignored test-results/quote-{desktop,mobile}.png.
+- Root and web TypeScript checks and affected-file ESLint passed. git diff --check passed. No unrelated suite or expensive production build was repeated; affected routes compiled and ran in Next during browser verification.
+- Initial integration/browser failures were stopped local infrastructure / unavailable web server, then the mobile tab overflow. Services were restored for verification, launcher environment handling corrected, and overflow fixed. Final tests passed.
+
+Synthetic offer example only: subtotal 347.04 RON, discounts 29.69, before VAT 317.35, test VAT 20% = 63.47, total 380.82, requested test deposit 30% = 114.25, balance 266.57. These are not seeded commercial defaults. Exact inputs/products remain frozen.
+
+All task-started API/web/infra processes were cleaned up; PostgreSQL used pg_ctl fast clean shutdown. No pre-existing development services were stopped (none were listening at resume). No commit or push. Start the usual local infrastructure and application to review Project → Quote.
+
+Files changed: AGENTS.md; apps/api/server.ts; apps/web/app/globals.css; apps/web/components/{workspace,quote-builder,quote-preview}.tsx; apps/web/app/quote-preview/[projectId]/[versionId]/[quoteId]/page.tsx; database/schema.ts; database/migrations/0013_dizzy_jasper_sitwell.sql; database/migrations/meta/{0013_snapshot,_journal}.json; packages/contracts/quote.ts; packages/modules/quotes/{calculation,projection,service}.ts; packages/modules/identity/policy.ts; tests/{fixtures/quote.ts,unit/quote.test.ts,integration/quote.test.ts,e2e/quote.spec.ts}; docs/{COMMERCIAL_QUOTES,ARCHITECTURE,DOMAIN_MODEL,PERMISSIONS,SECURITY,PROJECT_LIFECYCLE,CLIENT_PRESENTATION,DECISIONS,IMPLEMENTATION_REPORT}.md.
+
+No remaining blocker for the bounded increment. Intentionally deferred: calculated pricing, cost comparison, customer approval/portal, payment confirmation, PDF/e-sign, ProductionRelease and all excluded ERP functionality. Preview remains staff-only; latest 50 revisions listed, exact older URLs retained; authored prose/images require editorial responsibility. Stop for owner review.

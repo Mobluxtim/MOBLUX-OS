@@ -11,6 +11,7 @@ import * as resolution from '../../packages/modules/catalog/resolution.js';
 import * as optimization from '../../packages/modules/projects/optimization.js';
 import * as hardware from '../../packages/modules/projects/hardware.js';
 import * as machining from '../../packages/modules/projects/machining.js';
+import * as quotes from '../../packages/modules/quotes/service.js';
 import * as presentation from '../../packages/modules/presentations/service.js';
 import {maxPresentationBytes} from '../../packages/modules/presentations/media.js';
 import * as costing from '../../packages/modules/costing/service.js';
@@ -59,6 +60,12 @@ export function buildServer(logging = false) {
     return reply.code(201).send(await imports.upload(actor, projectId, versionId, requestId, file.filename, body));
   });
 
+  type QuoteParams={id:string;versionId:string;quoteId:string};
+  const quotePath='/api/projects/:id/versions/:versionId/quotes';
+  app.get<{Params:QuoteParams}>(quotePath,async req=>quotes.quoteState(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.versionId)));
+  app.post<{Params:QuoteParams}>(quotePath,{bodyLimit:1024*1024},async req=>quotes.saveQuote(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.versionId),req.body));
+  app.post<{Params:QuoteParams}>(quotePath+'/calculate',{bodyLimit:1024*1024},async req=>quotes.calculateDraft(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.versionId),req.body));
+  app.get<{Params:QuoteParams}>(quotePath+'/:quoteId/preview',async req=>quotes.quotePreview(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.versionId),uuid.parse(req.params.quoteId)));
   type PresentationParams={id:string;versionId:string;revisionId:string;assetId:string};
   const p='/api/projects/:id/versions/:versionId/presentations';
   app.get<{Params:PresentationParams}>(p,async req=>presentation.presentationState(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.versionId)));

@@ -115,3 +115,7 @@ POST costing/overrides additionally requires cost.override plus existing project
 ## Client presentation preparation
 
 New staff capabilities: presentation.edit (editor, save, upload/attach and internal image review) and presentation.preview (safe exact-revision preview and visible media). Both require project.view and honor explicit denies; neither grants costing/source-file access. Customer actors remain denied. Backend validates all project/version/reference/media ancestry. Hidden or future-deliverable content is absent from the preview DTO and image route. Existing development seed grants these capabilities to the local administrator.
+
+## Quote capabilities (D51)
+
+`project.view` + `quote.view`: internal quote history/editor state. Add `quote.edit`: calculate/save revisions. `project.view` + `quote.preview`: customer-safe staff preview; attached presentation also requires `presentation.preview`. Explicit deny wins; customer actors have no access in this increment. Existing cost permissions continue to protect costs; no cost data enters these responses.

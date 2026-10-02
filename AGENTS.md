@@ -72,3 +72,7 @@ Owner-authorized extension: D49 and docs/TECHNICAL_COSTING.md. Keep legacy calcu
 ## Client Presentation Builder v1
 
 Owner authorizes admin-side curated presentation revisions for an exact ProjectVersion (D50; docs/CLIENT_PRESENTATION.md). Technical truth, client presentation and future design deliverables remain separate. Preview must use an allowlisted DTO and revision-scoped media authorization, never an internal model response. No portal, approval, payment, quotation, PDF or release workflow. Preserve immutable history and existing BOM/costing behavior. Stop after targeted verification for review.
+
+## Commercial Proposal / Quote Builder v1
+
+Owner authorizes exact-version manual commercial quotes (D51; docs/COMMERCIAL_QUOTES.md). Preserve immutable history and safe client projection, separate offered prices from internal cost, and keep VAT/deposit explicit. No approval, payments, PDF, pricing engine or release scope. Stop after targeted verification for review.

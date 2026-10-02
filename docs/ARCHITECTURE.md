@@ -171,3 +171,7 @@ Apply ADOPT → ADAPT → BUILD for future generic modules: prefer mature self-h
 ## Client presentation boundary
 
 The presentations module owns version-scoped curated revisions and presentation media. It references existing material/hardware identities without projecting their technical/commercial internals. A standalone preview page requests only an allowlisted presentation DTO and authorized raster streams, not the internal workspace/project endpoint. Existing private storage/audit/session infrastructure is reused. Technical source files remain separate; no portal, quote, PDF or payment service is introduced. See CLIENT_PRESENTATION.md and D50.
+
+## Commercial quotes (D51)
+
+The quotes module owns immutable QuoteVersion content and Decimal calculations, separate from costing and technical evidence. It pins an optional presentation revision and reuses its safe projection. Project Quote editor and isolated client preview use dedicated permission-gated endpoints. See COMMERCIAL_QUOTES.md for calculation/version/security contracts.
