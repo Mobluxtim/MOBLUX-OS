@@ -211,3 +211,7 @@ A separate immutable report pins TechnicalModel/ProjectVersion, SourceFile/hash 
 ## CostRuleVersion and CostingRun
 
 CostRuleVersion belongs to Project and contains currency, mutually exclusive panel basis, exact category/identity/unit selectors, configured rates, predecessor/request hash, reason and actor/time. CostingRun belongs to exact ProjectVersion/TechnicalModel and CostRuleVersion, pinning existing Material BOM, OptiCut, Hardware and Machining report IDs. Immutable calculated lines freeze quantities, rate used, exact/rounded subtotals and evidence paths; reference prices remain separate fields. Null input/rate/quantity means incomplete, not zero. Historical runs never follow current rate edits. No supplier or commercial master is introduced. See TECHNICAL_COSTING.md.
+
+## Configurable costing and override events
+
+CostRuleVersion optionally embeds CostConfiguration v1: explicit panel/glass/layer mappings, edge roll formats/attributes, one cutting mode, exclusive OperationPriceFamilies and WorkstationCostPlaceholders. CostingRun may embed a CostOverride referencing its base run, one line, original rounded/exact amount, full override amount, actor/time/reason and request hash. Other lines and pinned inputs remain unchanged. Future HardwareCostIdentity, FutureCommercialPrice, FutureRemnantReference and FutureProjectCostDimension are contracts only, not new catalogs or calculations. See CONFIGURABLE_COSTING.md.

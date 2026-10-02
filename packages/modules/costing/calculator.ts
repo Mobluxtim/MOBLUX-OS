@@ -57,7 +57,7 @@ export function calculateCosts(inputs:CostSourceSet,rules:CostRules|null):CostRe
  }
  const result=[...lines.values()].sort((a,b)=>a.key<b.key?-1:a.key>b.key?1:0);
  const subtotal=(ls:CostLine[])=>{const costed=ls.filter(l=>l.subtotal!==null);return costed.length?money(costed.reduce((n,l)=>add(n,l.subtotal!), '0')):null;};
- const categories=costCategories.map(category=>{const ls=result.filter(l=>l.category===category),missingLines=ls.filter(l=>l.status!=='COSTED').length;return {category,missingLines,knownSubtotal:subtotal(ls),subtotal:missingLines?null:subtotal(ls)};});
+ const categories=costCategories.filter(category=>category!=='DOUBLING').map(category=>{const ls=result.filter(l=>l.category===category),missingLines=ls.filter(l=>l.status!=='COSTED').length;return {category,missingLines,knownSubtotal:subtotal(ls),subtotal:missingLines?null:subtotal(ls)};});
  const knownSubtotal=subtotal(result),complete=!!rules&&coverageIssues.length===0&&result.every(l=>l.status==='COSTED');
  return {currency:rules?.currency??null,panelBasis:basis,lines:result,categories,knownSubtotal,total:complete?knownSubtotal:null,status:complete?'COMPLETE':'PARTIAL',coverageIssues,warnings};
 }

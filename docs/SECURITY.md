@@ -103,3 +103,7 @@ Machining reports reuse staff project.view/import/files.download enforcement, Or
 ## Costing financial boundary
 
 Costing checks financial and technical access on every command/query, including previews and full history. Separate configuration/calculation capabilities and Origin validation apply to mutations. Audit records identifiers/counts rather than monetary payloads. Database triggers reject rule/run modification and invalid model/version/project/input ancestry. Exact report IDs and rates remain immutable; no source price becomes authoritative implicitly. Missing values remain null. No new credential, integration, dependency or customer endpoint. See TECHNICAL_COSTING.md.
+
+## Configurable costing safety
+
+Manual overrides require cost.override and existing financial/project/evidence access, retain exact owned base-run ancestry and append an immutable run atomically with audit. Payload hashes protect retries; clients cannot assert original amounts. Active family membership and unit compatibility are validated; material mappings validate existing master category/thickness. Configured/reference/override amounts remain restricted financial response data.

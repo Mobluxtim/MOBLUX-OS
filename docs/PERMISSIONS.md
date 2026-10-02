@@ -107,3 +107,7 @@ Hardware import/read uses project.view + project.import + project.files.download
 ## Technical costing capabilities
 
 All cost read/preview/rule/run endpoints require project.cost.view plus the existing project.view/import/files.download technical evidence permissions. cost.configure separately authorizes new rate versions; cost.calculate authorizes immutable run creation. Development seed grants these explicit capabilities; customer actors and explicit denies remain blocked. A cost-view grant alone does not permit rate edits or run creation. Source reference prices, configured rates and calculated values never appear in unauthorized responses. See TECHNICAL_COSTING.md.
+
+## Manual project cost overrides
+
+POST costing/overrides additionally requires cost.override plus existing project.cost.view and project/evidence access. It grants no rate-edit permission. Backend derives original values from the owned immutable run; foreign project/model references, denied permissions and missing Origin fail. Audit contains identifiers, not amounts. Existing development seed grants the new capability without seeding rates.

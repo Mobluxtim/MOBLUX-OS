@@ -161,3 +161,9 @@ Import owns the bounded continuation-aware PolyBoard operation parser and exact-
 ## Technical costing foundation
 
 Costing is a new bounded module inside the existing monolith, with a pure exact-decimal calculator and authorized configuration/preview/run service. It reads existing Material/OptiCut/Hardware/Machining reports without triggering or duplicating imports. Project-scoped rate versions and report-pinned runs use two additive immutable tables, transactional audit and ancestry guards. The project component exposes preview/configuration/history; no jobs, microservice or dependency. See TECHNICAL_COSTING.md and D48.
+
+## Configurable costing extension (D49)
+
+Validated optional configuration and a pure configured calculator extend the existing costing module; legacy rules retain their calculator. Manual overrides append runs with frozen evidence using existing immutable JSON persistence and transactional audit. No BOM/import redesign or migration. Future hardware commercial identity, remnants and project-cost dimensions are contracts only; workstation fields are non-calculated configuration. See CONFIGURABLE_COSTING.md.
+
+Apply ADOPT → ADAPT → BUILD for future generic modules: prefer mature self-hosted/open-source components behind replaceable adapters where appropriate; build internally where they do not fit.

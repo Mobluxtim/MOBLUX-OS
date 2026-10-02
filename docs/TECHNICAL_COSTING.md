@@ -86,3 +86,7 @@ For another computer, use the normal README setup, then `pnpm db:migrate` and `p
 ## Scope and next step
 
 No selling price, markup/margin, VAT, quotation, time tracking, overhead, transport, installation, supplier purchasing, inventory, invoices or AI costing. Next step after owner review: agree and configure real rates, currencies and panel valuation basis, and decide how unplaced requirements are supplied before any total is accepted as complete.
+
+## Configurable Costing Rules extension — 2026-10-02
+
+See CONFIGURABLE_COSTING.md and D49 for the additive owner-authorized configuration, family bases, manual overrides and future-only contracts. These supersede the foundation's limits only for newly configured rule versions. Historical rules/runs and source BOMs remain unchanged. No new migration or dependency.

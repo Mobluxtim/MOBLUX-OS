@@ -72,6 +72,7 @@ export function buildServer(logging = false) {
   app.post<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/costing/preview', async req => costing.costingState(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId), req.body));
   app.post<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/costing/rules', {bodyLimit:262144}, async req => costing.saveCostRules(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId), req.body));
   app.post<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/costing/runs', async req => costing.createCostRun(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId), req.body));
+  app.post<{ Params: { id: string; modelId: string } }>('/api/projects/:id/technical-models/:modelId/costing/overrides', async req => costing.overrideCostLine(await authenticate(req.cookies.moblux_session), uuid.parse(req.params.id), uuid.parse(req.params.modelId), req.body));
   app.post<{ Params: { category: string } }>('/api/library/:category', { config: { rateLimit: { max: 15, timeWindow: '1 minute' } } }, async (req, reply) => {
     const actor = await authenticate(req.cookies.moblux_session); authorize(actor, 'library.import'); authorize(actor, 'library.view');
     const category = z.enum(libraryCategories).parse(req.params.category);

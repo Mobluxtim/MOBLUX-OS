@@ -6,3 +6,5 @@ export function multiply(a:string,b:string){const x=parse(a),y=parse(b);return t
 export function millimetersToMeters(a:string){const x=parse(a);return text(x.n,x.scale+3);}
 export function money(a:string){const x=parse(a);let n=x.n;if(x.scale>2){const divisor=10n**BigInt(x.scale-2);n=(n+divisor/2n)/divisor;}else n*=10n**BigInt(2-x.scale);const s=n.toString().padStart(3,'0');return s.slice(0,-2)+'.'+s.slice(-2);}
 export function canonical(a:string){const x=parse(a);return text(x.n,x.scale);}
+/** Whole rolls, with explicit configured roll length; never converts money to binary float. */
+export function ceilDivide(a:string,b:string){const x=parse(a),y=parse(b);if(y.n===0n)throw new Error('Divisor must be positive.');const n=x.n*10n**BigInt(y.scale),d=y.n*10n**BigInt(x.scale);return ((n+d-1n)/d).toString();}

@@ -64,3 +64,7 @@ The owner authorizes importing explicit PolyBoard report operations only. Follow
 ## Technical Costing Foundation v1
 
 The owner authorizes a separate versioned technical costing layer (D48; docs/TECHNICAL_COSTING.md). Never promote source/reference prices to configured rates. Keep exact input-report/version references and immutable CostingRuns; missing rates/data stay null, not zero. No real rates are seeded. Decimal-safe arithmetic and financial capability enforcement are mandatory. No selling prices, margin, taxes, supplier/purchasing/inventory, time tracking or overhead. Stop after targeted verification for review.
+
+## Configurable Costing Rules v1
+
+Owner-authorized extension: D49 and docs/TECHNICAL_COSTING.md. Keep legacy calculations replayable; new optional configuration uses sheets, explicit glass/doubling/edge/cutting rules and exclusive operation families. Manual project overrides append runs, never rewrite rates or technical evidence. Workstations, commercial hardware identities and future project costs are placeholders only. No real rates seeded; no excluded commercial/production modules. Stop after targeted verification for review.

@@ -596,3 +596,27 @@ Read-only real quantities: net 126.46318129 m²; 25 optimized sheets / 137.76 m�
 Changed/created: AGENTS.md; docs/TECHNICAL_COSTING.md, DECISIONS.md, ARCHITECTURE.md, DOMAIN_MODEL.md, PERMISSIONS.md, SECURITY.md, OPEN_QUESTIONS.md, IMPLEMENTATION_REPORT.md; packages/contracts/costing.ts; packages/modules/costing/calculator.ts, decimal.ts, service.ts; packages/modules/identity/policy.ts; database/schema.ts, migrations/0011_chubby_avengers.sql, migrations/meta/0011_snapshot.json and _journal.json; apps/api/server.ts; apps/web/components/costing.tsx and material-resolution.tsx; tests/fixtures/costing.ts, unit/costing.test.ts, integration/costing.test.ts and e2e/costing.spec.ts.
 
 No dependency, authoritative specification or Git configuration change. No commit/push. Synthetic test records remain clearly TEST-labeled immutable history. Existing local services were left running; task browser processes closed, and the earlier task-owned alternate API is no longer present after restart. Next proposed increment only after review: configure owner-approved real rates/basis and resolve missing optimization coverage. No implementation blocker remains for this bounded foundation.
+
+## Configurable Costing Rules v1 — completed 2026-10-02
+
+Before continuation: additive contracts/configuration, configured calculator, rule/override service, financial capability, project forms and tests were saved. Ten costing unit tests, typecheck, targeted lint and the first integration pass had succeeded. Browser verification and final documentation remained unfinished.
+
+Continuation completed:
+
+- Corrected the new synthetic machining test fixture to use its actual Part/Cabinet/source ancestry; production guards were unchanged.
+- Corrected Windows file encoding affecting browser compilation and finished two-decimal monetary readouts. Full stored rates/products and editable inputs retain precision.
+- Fixed browser test select locators and the history locator that became stale when its count changed. No unrelated UI/BOM redesign.
+- Completed D49, CONFIGURABLE_COSTING.md and relevant architecture/domain/security/permission/agent guidance. Includes ADOPT → ADAPT → BUILD and explicit future-only boundaries.
+
+Verification:
+
+- Existing evidence retained: 10/10 focused unit tests (six new configurable cases plus four foundation cases), including legacy replay, sheets/glass/doubling, rolls, mutually exclusive cutting, exclusive families, groove area, missing routing geometry, override immutability and workstation placeholders.
+- PostgreSQL integration passed after fixture correction: configuration/run persistence, overrides with exact original and replacement values, concurrent retry reuse, changed-payload rejection, foreign/missing-line rejection, financial/override/Origin denial, DB immutability, audit and history preservation. Synthetic rates stay on the clearly marked TEST project.
+- Read-only real fixture: 21 cabinets / 216 part rows / 280 units / 8 materials; 25 sheets; 3774 holes; 0.3842135 m² groove area. Current routing area lacks evidence and stays MISSING COST BASIS. Source fingerprints unchanged; no real rates/runs created.
+- Chrome project browser scenario passed on desktop and 390px mobile: explicit drilling family, external cutting replacing internal, saved immutable run, audited manual amount, unchanged configured preview/rate and previous run, no page errors/document overflow. Screenshots inspected in ignored test-results. Test-only examples: known subtotal 28.38 RON; changing the synthetic hardware line from 0.38 to 5.50 produces a separate 33.50 RON known subtotal, not a complete project total.
+- Typecheck, affected-file lint and git diff whitespace check passed. No unrelated suite or production build repeated; affected web compilation was exercised by browser verification.
+- Task-owned alternate API PID 4468 on port 3101 was stopped after verification. Playwright closed its browser. Existing web/API/PostgreSQL/storage services were preserved.
+
+Persistence uses existing immutable rules/runs JSON, no migration or dependency. The development seed grants cost.override; it seeds no rates. Intentionally deferred: supplier/history catalogs, hardware kit processing, remnant inventory, purchasing/orders, selling prices/margin/tax, nesting, time tracking, machine amortization and AI. Real rate definitions, layer sheet allocations and missing routing geometry need owner/source evidence; none are invented.
+
+Files changed: AGENTS.md; apps/api/server.ts; apps/web/components/costing.tsx and cost-configuration.tsx; packages/contracts/costing.ts; packages/modules/identity/policy.ts; packages/modules/costing/{calculator,decimal,service,configuration,configured-calculator}.ts; tests/unit/configured-costing.test.ts; tests/integration/configured-costing.test.ts; tests/e2e/configured-costing.spec.ts; docs/{ARCHITECTURE,DECISIONS,DOMAIN_MODEL,PERMISSIONS,SECURITY,TECHNICAL_COSTING,CONFIGURABLE_COSTING,IMPLEMENTATION_REPORT}.md. No commit or push. Stop for owner review.
