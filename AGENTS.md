@@ -68,3 +68,7 @@ The owner authorizes a separate versioned technical costing layer (D48; docs/TEC
 ## Configurable Costing Rules v1
 
 Owner-authorized extension: D49 and docs/TECHNICAL_COSTING.md. Keep legacy calculations replayable; new optional configuration uses sheets, explicit glass/doubling/edge/cutting rules and exclusive operation families. Manual project overrides append runs, never rewrite rates or technical evidence. Workstations, commercial hardware identities and future project costs are placeholders only. No real rates seeded; no excluded commercial/production modules. Stop after targeted verification for review.
+
+## Client Presentation Builder v1
+
+Owner authorizes admin-side curated presentation revisions for an exact ProjectVersion (D50; docs/CLIENT_PRESENTATION.md). Technical truth, client presentation and future design deliverables remain separate. Preview must use an allowlisted DTO and revision-scoped media authorization, never an internal model response. No portal, approval, payment, quotation, PDF or release workflow. Preserve immutable history and existing BOM/costing behavior. Stop after targeted verification for review.

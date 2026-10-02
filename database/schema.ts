@@ -6,6 +6,7 @@ import type { OptimizationResult } from '../packages/contracts/optimization.js';
 import type { HardwareResult } from '../packages/contracts/hardware.js';
 import type { MachiningResult } from '../packages/contracts/machining.js';
 import type { CostRules, CostInputs, CostResult } from '../packages/contracts/costing.js';
+import type {PresentationContent,MediaKind} from '../packages/contracts/presentation.js';
 import type { CsvProfile, CsvResult, ImportedCabinet, ImportedPart } from '../packages/contracts/imports.js';
 import type { ModelSummary, ModelIssue } from '../packages/contracts/technical-model.js';
 import type { LibraryCategory, LibraryResult, MaterialMatch } from '../packages/contracts/library.js';
@@ -123,3 +124,13 @@ export const costingRuns = pgTable('costing_runs', {
   inputs: jsonb('inputs').$type<CostInputs>().notNull(), inputKey: text('input_key').notNull(), algorithmVersion: text('algorithm_version').notNull(),
   result: jsonb('result').$type<CostResult>().notNull(), createdBy: uuid('created_by').references(() => users.id).notNull(), createdAt: created()
 }, t => [unique().on(t.modelId, t.ruleVersionId, t.inputKey, t.algorithmVersion)]);
+
+export const clientPresentations=pgTable('client_presentations',{
+ id:id(),projectId:uuid('project_id').notNull(),versionId:uuid('version_id').notNull().unique(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+},t=>[foreignKey({columns:[t.projectId,t.versionId],foreignColumns:[versions.projectId,versions.id]})]);
+export const presentationRevisions=pgTable('presentation_revisions',{
+ id:id(),presentationId:uuid('presentation_id').references(()=>clientPresentations.id).notNull(),number:integer('number').notNull(),previousId:uuid('previous_id'),requestId:uuid('request_id').notNull(),payloadHash:text('payload_hash').notNull(),contentHash:text('content_hash').notNull(),content:jsonb('content').$type<PresentationContent>().notNull(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+},t=>[unique().on(t.presentationId,t.number),unique().on(t.presentationId,t.requestId)]);
+export const presentationAssets=pgTable('presentation_assets',{
+ id:id(),projectId:uuid('project_id').notNull(),versionId:uuid('version_id').notNull(),requestId:uuid('request_id').notNull(),name:text('name').notNull(),kind:text('kind').$type<MediaKind>().notNull(),provenance:text('provenance').notNull(),hash:text('hash').notNull(),displayHash:text('display_hash').notNull(),mime:text('mime').notNull(),size:integer('size').notNull(),width:integer('width').notNull(),height:integer('height').notNull(),objectKey:text('object_key').notNull().unique(),objectVersion:text('object_version'),displayKey:text('display_key').notNull().unique(),displayVersion:text('display_version'),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+},t=>[foreignKey({columns:[t.projectId,t.versionId],foreignColumns:[versions.projectId,versions.id]}),unique().on(t.versionId,t.requestId)]);

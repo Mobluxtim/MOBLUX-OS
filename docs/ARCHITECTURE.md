@@ -167,3 +167,7 @@ Costing is a new bounded module inside the existing monolith, with a pure exact-
 Validated optional configuration and a pure configured calculator extend the existing costing module; legacy rules retain their calculator. Manual overrides append runs with frozen evidence using existing immutable JSON persistence and transactional audit. No BOM/import redesign or migration. Future hardware commercial identity, remnants and project-cost dimensions are contracts only; workstation fields are non-calculated configuration. See CONFIGURABLE_COSTING.md.
 
 Apply ADOPT → ADAPT → BUILD for future generic modules: prefer mature self-hosted/open-source components behind replaceable adapters where appropriate; build internally where they do not fit.
+
+## Client presentation boundary
+
+The presentations module owns version-scoped curated revisions and presentation media. It references existing material/hardware identities without projecting their technical/commercial internals. A standalone preview page requests only an allowlisted presentation DTO and authorized raster streams, not the internal workspace/project endpoint. Existing private storage/audit/session infrastructure is reused. Technical source files remain separate; no portal, quote, PDF or payment service is introduced. See CLIENT_PRESENTATION.md and D50.

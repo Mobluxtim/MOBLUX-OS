@@ -62,3 +62,7 @@ Every later stage retains the canonical Project ID and applicable version/releas
 ## Material resolution is a separate technical association
 
 Creating or refreshing a technical review model now automatically resolves its unique Panel/Edge requests against current libraries. Reports and MaterialMaster associations are external to the frozen ProjectVersion. RESOLVED means all catalog requests have safe exact technical links only: it does not mean customer approval, commercial/payment satisfaction, technical manufacturing validation or ProductionRelease. Changing active libraries creates new evidence on next processing without rewriting earlier design or approval history. See MATERIAL_RESOLUTION.md.
+
+## Presentation preparation is not approval
+
+An internal user may prepare a separate ClientPresentation for an exact ProjectVersion and append immutable content revisions. View-as-client previews saved curated content only. Neither save nor preview approves the design, quote, payment or production. Later ProjectVersions do not mutate or inherit presentation approval. A future approval snapshot must explicitly pin the exact presentation revision/assets and applicable quote; design-deliverable access remains an unimplemented policy.

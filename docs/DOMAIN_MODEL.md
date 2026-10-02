@@ -215,3 +215,7 @@ CostRuleVersion belongs to Project and contains currency, mutually exclusive pan
 ## Configurable costing and override events
 
 CostRuleVersion optionally embeds CostConfiguration v1: explicit panel/glass/layer mappings, edge roll formats/attributes, one cutting mode, exclusive OperationPriceFamilies and WorkstationCostPlaceholders. CostingRun may embed a CostOverride referencing its base run, one line, original rounded/exact amount, full override amount, actor/time/reason and request hash. Other lines and pinned inputs remain unchanged. Future HardwareCostIdentity, FutureCommercialPrice, FutureRemnantReference and FutureProjectCostDimension are contracts only, not new catalogs or calculations. See CONFIGURABLE_COSTING.md.
+
+## ClientPresentation, PresentationRevision and PresentationAsset
+
+ClientPresentation belongs to exactly one immutable ProjectVersion. Append-only PresentationRevision freezes authored sections/items, internal reference provenance, visibility, ordered media/cover and content hash; it records predecessor, idempotency identity and actor/time. PresentationAsset preserves same-version private original/display object revisions and hashes, kind and internal provenance. All are separate from SourceFile and technical BOMs. MATERIAL references an evidenced master; HARDWARE references an exact report/item, with customer text independently authored. Future approval must pin an exact revision and assets alongside its version/quote references. No approval state or deliverable entitlement is added. See CLIENT_PRESENTATION.md.

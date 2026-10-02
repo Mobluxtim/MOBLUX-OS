@@ -107,3 +107,7 @@ Costing checks financial and technical access on every command/query, including 
 ## Configurable costing safety
 
 Manual overrides require cost.override and existing financial/project/evidence access, retain exact owned base-run ancestry and append an immutable run atomically with audit. Payload hashes protect retries; clients cannot assert original amounts. Active family membership and unit compatibility are validated; material mappings validate existing master category/thickness. Configured/reference/override amounts remain restricted financial response data.
+
+## Client presentation safe projection
+
+Dedicated preview serializers construct only customer-visible text/sections/media from an exact presentation revision. No internal project/BOM/cost/audit record is serialized or fetched by the standalone preview page. Preview image endpoints independently enforce revision visibility and exact ancestry, verify display hashes, serve only PNG/JPEG with no-store/nosniff and sandbox headers, and never expose original filenames, keys or provenance. Originals remain private. Bounded structural image checks and metadata removal are not a full decoder/malware scanner. Authored prose/pixels require internal editorial review. Staff edit/preview permissions, Origin checks, transactional audit and immutable guards apply; future customer authentication/grants are not implemented. See CLIENT_PRESENTATION.md.

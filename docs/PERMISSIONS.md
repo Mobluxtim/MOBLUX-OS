@@ -111,3 +111,7 @@ All cost read/preview/rule/run endpoints require project.cost.view plus the exis
 ## Manual project cost overrides
 
 POST costing/overrides additionally requires cost.override plus existing project.cost.view and project/evidence access. It grants no rate-edit permission. Backend derives original values from the owned immutable run; foreign project/model references, denied permissions and missing Origin fail. Audit contains identifiers, not amounts. Existing development seed grants the new capability without seeding rates.
+
+## Client presentation preparation
+
+New staff capabilities: presentation.edit (editor, save, upload/attach and internal image review) and presentation.preview (safe exact-revision preview and visible media). Both require project.view and honor explicit denies; neither grants costing/source-file access. Customer actors remain denied. Backend validates all project/version/reference/media ancestry. Hidden or future-deliverable content is absent from the preview DTO and image route. Existing development seed grants these capabilities to the local administrator.

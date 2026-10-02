@@ -11,6 +11,8 @@ import * as resolution from '../../packages/modules/catalog/resolution.js';
 import * as optimization from '../../packages/modules/projects/optimization.js';
 import * as hardware from '../../packages/modules/projects/hardware.js';
 import * as machining from '../../packages/modules/projects/machining.js';
+import * as presentation from '../../packages/modules/presentations/service.js';
+import {maxPresentationBytes} from '../../packages/modules/presentations/media.js';
 import * as costing from '../../packages/modules/costing/service.js';
 import { libraryCategories } from '../../packages/contracts/library.js';
 import * as customers from '../../packages/modules/customers/service.js';
@@ -55,6 +57,22 @@ export function buildServer(logging = false) {
     const file = await req.file(); if (!file) throw new DomainError(400, 'Choose a source file.');
     const body = await file.toBuffer(); if (file.file.truncated) throw new DomainError(413, 'File exceeds the 20 MB limit.');
     return reply.code(201).send(await imports.upload(actor, projectId, versionId, requestId, file.filename, body));
+  });
+
+  type PresentationParams={id:string;versionId:string;revisionId:string;assetId:string};
+  const p='/api/projects/:id/versions/:versionId/presentations';
+  app.get<{Params:PresentationParams}>(p,async req=>presentation.presentationState(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.versionId)));
+  app.post<{Params:PresentationParams}>(p,{bodyLimit:1024*1024},async req=>presentation.savePresentation(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.versionId),req.body));
+  app.post<{Params:PresentationParams;Querystring:{kind:string;provenance?:string}}>(p+'/media',async(req,reply)=>{
+    const actor=await authenticate(req.cookies.moblux_session);authorize(actor,'presentation.edit');authorize(actor,'project.view');
+    const file=await req.file({limits:{fileSize:maxPresentationBytes,files:1,fields:0}});if(!file)throw new DomainError(400,'Choose a PNG or JPEG presentation image.');
+    const bytes=await file.toBuffer();if(file.file.truncated)throw new DomainError(400,'Presentation image exceeds 10 MB.');
+    return reply.code(201).send(await presentation.uploadPresentationMedia(actor,uuid.parse(req.params.id),uuid.parse(req.params.versionId),{requestId:uuid.parse(req.headers['idempotency-key']),kind:req.query.kind,provenance:req.query.provenance??''},file.filename,bytes));
+  });
+  app.get<{Params:PresentationParams}>(p+'/:revisionId/preview',async req=>presentation.previewPresentation(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.versionId),uuid.parse(req.params.revisionId)));
+  for(const route of [p+'/media/:assetId',p+'/:revisionId/media/:assetId'])app.get<{Params:PresentationParams}>(route,async(req,reply)=>{
+    const image=await presentation.presentationMedia(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.versionId),uuid.parse(req.params.assetId),req.params.revisionId?uuid.parse(req.params.revisionId):undefined);
+    return reply.type(image.mime).header('Content-Disposition','inline').header('Content-Security-Policy',"sandbox; default-src 'none'").send(image.bytes);
   });
   app.get('/api/documents', async req => projects.listSources(await authenticate(req.cookies.moblux_session)));
   app.get('/api/library', async req => library.listLibrary(await authenticate(req.cookies.moblux_session)));
