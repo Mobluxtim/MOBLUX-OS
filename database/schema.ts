@@ -139,3 +139,25 @@ export const presentationAssets=pgTable('presentation_assets',{
 export const quoteVersions=pgTable('quote_versions',{
  id:id(),projectId:uuid('project_id').notNull(),versionId:uuid('version_id').notNull(),number:integer('number').notNull(),previousId:uuid('previous_id'),presentationRevisionId:uuid('presentation_revision_id').references(()=>presentationRevisions.id),requestId:uuid('request_id').notNull(),payloadHash:text('payload_hash').notNull(),contentHash:text('content_hash').notNull(),algorithmVersion:text('algorithm_version').notNull(),content:jsonb('content').$type<QuoteContent>().notNull(),result:jsonb('result').$type<QuoteCalculation>().notNull(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
 },t=>[foreignKey({columns:[t.projectId,t.versionId],foreignColumns:[versions.projectId,versions.id]}),unique().on(t.versionId,t.number),unique().on(t.versionId,t.requestId)]);
+
+export const portalSnapshots=pgTable('portal_snapshots',{
+ id:id(),projectId:uuid('project_id').references(()=>projects.id).notNull(),customerId:uuid('customer_id').references(()=>customers.id).notNull(),versionId:uuid('version_id').references(()=>versions.id).notNull(),quoteId:uuid('quote_id').references(()=>quoteVersions.id).notNull(),presentationId:uuid('presentation_id').references(()=>presentationRevisions.id).notNull(),content:jsonb('content').$type<import('../packages/contracts/portal.js').PortalSnapshot>().notNull(),contentHash:text('content_hash').notNull(),evidence:jsonb('evidence').$type<{quoteHash:string;presentationHash:string;media:{id:string;hash:string;objectVersion:string|null}[]}>().notNull(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+},t=>[unique().on(t.projectId,t.quoteId)]);
+export const portalAccesses=pgTable('portal_accesses',{
+ id:id(),snapshotId:uuid('snapshot_id').references(()=>portalSnapshots.id).notNull(),requestId:uuid('request_id').notNull().unique(),payloadHash:text('payload_hash').notNull(),tokenHash:text('token_hash').notNull().unique(),contactName:text('contact_name').notNull(),contactEmail:text('contact_email').notNull(),expiresAt:timestamp('expires_at',{withTimezone:true}).notNull(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+});
+export const portalRevocations=pgTable('portal_revocations',{
+ accessId:uuid('access_id').primaryKey().references(()=>portalAccesses.id),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+});
+export const portalSupersessions=pgTable('portal_supersessions',{
+ snapshotId:uuid('snapshot_id').primaryKey().references(()=>portalSnapshots.id),replacementId:uuid('replacement_id').references(()=>portalSnapshots.id).notNull(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+});
+export const portalSessions=pgTable('portal_sessions',{
+ tokenHash:text('token_hash').primaryKey(),accessId:uuid('access_id').references(()=>portalAccesses.id).notNull().unique(),expiresAt:timestamp('expires_at',{withTimezone:true}).notNull(),createdAt:created()
+});
+export const portalSessionEnds=pgTable('portal_session_ends',{
+ tokenHash:text('token_hash').primaryKey().references(()=>portalSessions.tokenHash),createdAt:created()
+});
+export const portalActions=pgTable('portal_actions',{
+ id:id(),snapshotId:uuid('snapshot_id').references(()=>portalSnapshots.id).notNull(),accessId:uuid('access_id').references(()=>portalAccesses.id).notNull(),requestId:uuid('request_id').notNull(),payloadHash:text('payload_hash').notNull(),action:text('action').$type<'APPROVE'|'REQUEST_CHANGES'>().notNull(),message:text('message'),approvedContent:jsonb('approved_content').$type<import('../packages/contracts/portal.js').PortalSnapshot>(),contentHash:text('content_hash').notNull(),createdAt:created()
+},t=>[unique().on(t.accessId,t.requestId)]);

@@ -119,3 +119,7 @@ New staff capabilities: presentation.edit (editor, save, upload/attach and inter
 ## Quote capabilities (D51)
 
 `project.view` + `quote.view`: internal quote history/editor state. Add `quote.edit`: calculate/save revisions. `project.view` + `quote.preview`: customer-safe staff preview; attached presentation also requires `presentation.preview`. Explicit deny wins; customer actors have no access in this increment. Existing cost permissions continue to protect costs; no cost data enters these responses.
+
+## Portal access and approval (D52)
+
+Internal portal.view + project.view reads history/evidence. portal.manage + project.view issues/reissues/revokes; issue also checks quote.preview and presentation.preview, while quote selection requires quote.view. Staff cannot approve on behalf of the customer through these commands. Client endpoints authenticate a separate exact-snapshot session rather than the staff RBAC actor, and expose no project enumeration or internal APIs. See CLIENT_PORTAL.md.

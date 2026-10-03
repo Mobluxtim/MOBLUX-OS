@@ -115,3 +115,7 @@ Dedicated preview serializers construct only customer-visible text/sections/medi
 ## Quote projection boundary (D51)
 
 Quote preview is a dedicated allowlisted DTO and standalone UI. Hidden sections/lines are excluded from both output and totals; internal notes, costing references, technical quantities and manufacturing/supplier evidence are never projected. Attached presentation uses existing exact-revision safe projection/media authorization. Session, Origin, staff-only capability checks and atomic audit remain mandatory. Preview is not a public portal grant. See COMMERCIAL_QUOTES.md.
+
+## Implemented client portal boundary (D52)
+
+The earlier blanket customer-portal deferral is superseded only for docs/CLIENT_PORTAL.md. Internal APIs still deny customer access. Separate random 256-bit invitation/session verifiers, single-use redemption, bounded expiry, revocation/logout ledgers, Origin/rate limits and safe projections implement the local portal path. Fragment invitation secrets are not URL query/path logs and are removed before redemption; no secret is persisted or audited. Every media/action/read rechecks the grant. Customer actions use a dedicated immutable access-attributed ledger; staff issue/revoke retains existing audit. Possession of a delivered link is not independently verified identity/e-signature. Production authentication, TLS, delivery infrastructure and live-data retention remain prerequisites before public deployment; loopback development constraints were not relaxed.

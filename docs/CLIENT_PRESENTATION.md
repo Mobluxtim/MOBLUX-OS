@@ -51,3 +51,7 @@ Run the existing `pnpm db:migrate` and `pnpm db:seed`, then restart the normal A
 ## Quote integration now available (D51)
 
 Commercial Quote Builder can pin an exact presentation revision and embed this safe projection in its standalone preview. Presentation authoring remains separate and contains no price calculation. Later presentation edits cannot alter a saved quote's preview. See COMMERCIAL_QUOTES.md; portal, approval, payment, PDF and release remain deferred.
+
+## Customer access (D52)
+
+The local Client Portal now publishes a frozen safe presentation together with its exact quote/version. Scoped customer image routes verify the frozen visible membership and preserve display hashes. This narrows the earlier staff-only boundary without exposing presentation editing or technical files. See CLIENT_PORTAL.md.

@@ -223,3 +223,7 @@ ClientPresentation belongs to exactly one immutable ProjectVersion. Append-only 
 ## QuoteVersion (D51)
 
 ProjectVersion has many immutable QuoteVersions. Each quote has an exact predecessor and optional same-version PresentationRevision, authored ordered commercial sections/lines, offered prices, frozen VAT/deposit configuration and calculation evidence. Commercial quantities are independent of Parts/BOMs. No cost, payment or approval state is changed. Future approval must reference exact ProjectVersion + QuoteVersion. See COMMERCIAL_QUOTES.md.
+
+## Client review snapshot and decisions (D52)
+
+PortalSnapshot links Project/Customer + exact ProjectVersion + PresentationRevision + QuoteVersion and freezes the safe displayed content/hash/media evidence. PortalAccess records immutable recipient context/expiry; PortalSession is a single-redemption scoped verifier. Revocation, session end and supersession append records. PortalAction records REQUEST_CHANGES feedback or the equivalent of CustomerApprovalSnapshot with approved visible content, exact parent references/hash, access identity and timestamp. No source entity is mutated; no payment or post-installation CustomerAcceptance is created. See CLIENT_PORTAL.md.

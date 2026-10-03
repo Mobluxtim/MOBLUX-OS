@@ -12,6 +12,7 @@ import * as optimization from '../../packages/modules/projects/optimization.js';
 import * as hardware from '../../packages/modules/projects/hardware.js';
 import * as machining from '../../packages/modules/projects/machining.js';
 import * as quotes from '../../packages/modules/quotes/service.js';
+import * as portal from '../../packages/modules/portal/service.js';
 import * as presentation from '../../packages/modules/presentations/service.js';
 import {maxPresentationBytes} from '../../packages/modules/presentations/media.js';
 import * as costing from '../../packages/modules/costing/service.js';
@@ -40,6 +41,17 @@ export function buildServer(logging = false) {
     return reply.status(503).send({ error: 'The service is unavailable. Check that the database and object storage are running, then retry.' });
   });
   app.get('/api/health', async () => ({ status: 'ok', mode: 'local-development' }));
+  app.post('/api/client/redeem', {config:{rateLimit:{max:10,timeWindow:'1 minute'}}}, async(req,reply)=>{
+    const {token}=z.object({token:z.string().max(100)}).strict().parse(req.body),session=await portal.redeem(token);
+    reply.setCookie('moblux_client',session.token,{path:'/api/client',httpOnly:true,sameSite:'strict',secure:env.APP_ORIGIN.startsWith('https:'),expires:session.expiresAt});return {ok:true};
+  });
+  app.get('/api/client/snapshot',async req=>portal.view(req.cookies.moblux_client));
+  app.post('/api/client/actions',async req=>portal.act(req.cookies.moblux_client,req.body));
+  app.post('/api/client/logout',async(req,reply)=>{await portal.logout(req.cookies.moblux_client);reply.clearCookie('moblux_client',{path:'/api/client'});return {ok:true};});
+  app.get<{Params:{snapshotId:string;assetId:string}}>('/api/client/media/:snapshotId/:assetId',async(req,reply)=>{const image=await portal.media(req.cookies.moblux_client,uuid.parse(req.params.snapshotId),uuid.parse(req.params.assetId));return reply.header('Content-Security-Policy',"default-src 'none'; sandbox").type(image.mime).send(image.bytes);});
+  app.get<{Params:{id:string}}>('/api/projects/:id/client-access',async req=>portal.internalState(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id)));
+  app.post<{Params:{id:string}}>('/api/projects/:id/client-access',async req=>portal.issue(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),req.body));
+  app.post<{Params:{id:string;accessId:string}}>('/api/projects/:id/client-access/:accessId/revoke',async req=>portal.revoke(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.accessId)));
   app.post('/api/auth/login', { config: { rateLimit: { max: 10, timeWindow: '1 minute' } } }, async (req, reply) => {
     const { code } = z.object({ code: z.string().min(1).max(200) }).strict().parse(req.body);
     const token = await login(code); reply.setCookie('moblux_session', token, { path: '/', httpOnly: true, sameSite: 'strict', secure: env.APP_ORIGIN.startsWith('https:'), maxAge: 8 * 3600 }); return { ok: true };

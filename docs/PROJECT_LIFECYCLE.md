@@ -70,3 +70,7 @@ An internal user may prepare a separate ClientPresentation for an exact ProjectV
 ## Commercial offer revisions (D51)
 
 Saving a QuoteVersion freezes offered terms for exactly one ProjectVersion and optional presentation revision. It does not approve the project, confirm a deposit, satisfy payment conditions or authorize ProductionRelease. Future approval must pin exact ProjectVersion + QuoteVersion; later edits append revisions and cannot rewrite accepted historical evidence.
+
+## Sent commercial snapshot lifecycle (D52)
+
+Explicit issuance publishes exact version/presentation/quote as PENDING_CLIENT. Feedback makes it CHANGES_REQUESTED without changing content. Explicit confirmed approval creates immutable evidence and APPROVED for this exact tuple only. Sending a different quote snapshot appends SUPERSEDED to previous sent snapshots; later drafts alone do not replace what the customer is reviewing. New versions never inherit consent. Historical approved evidence survives supersession/revocation. CLIENT_APPROVED is independent of PAYMENT_CONDITION_SATISFIED, technical validation, ProductionRelease and installation CustomerAcceptance. See CLIENT_PORTAL.md.

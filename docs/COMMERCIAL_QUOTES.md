@@ -27,3 +27,7 @@ Project → Quote selects an exact technical version, supports sections/line ord
 Future approval must pin ProjectVersion + QuoteVersion, and the exact presentation/media evidence when relevant. Selling-price engines, markup/margin, payment confirmation, design-service stages, portal grants, PDF, e-signature and ProductionRelease require separate authorization/increments. None is implied by saving a quote.
 
 Apply existing migration/seed commands (`pnpm db:migrate`, `pnpm db:seed`) and restart the API after updating. No new dependency is required. Targeted unit, PostgreSQL/API and desktop/mobile browser evidence is recorded in IMPLEMENTATION_REPORT.md.
+
+## Published client review (D52)
+
+CLIENT_PORTAL.md now permits exact quote/presentation snapshots through a separate scoped customer session. It reuses these allowlisted offered totals and never exposes internal quote content. Existing staff preview remains unchanged; portal approval is separate immutable evidence rather than a quote mutation. Payment/PDF/release remain deferred.

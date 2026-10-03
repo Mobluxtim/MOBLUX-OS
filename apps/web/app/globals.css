@@ -26,3 +26,7 @@
 
 /* Project navigation grows as bounded modules are added; keep it scrollable on phones. */
 .tabs{max-width:100%;overflow-x:auto}.tabs button{flex-shrink:0}
+
+.client-status p,.client-status pre,.client-portal p{overflow-wrap:anywhere}.client-status textarea{width:100%}.client-portal>header{margin-bottom:24px}.client-portal button{margin:8px 12px 8px 0}
+
+.page-heading>div{min-width:0}.page-heading h1{overflow-wrap:anywhere}

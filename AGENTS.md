@@ -76,3 +76,7 @@ Owner authorizes admin-side curated presentation revisions for an exact ProjectV
 ## Commercial Proposal / Quote Builder v1
 
 Owner authorizes exact-version manual commercial quotes (D51; docs/COMMERCIAL_QUOTES.md). Preserve immutable history and safe client projection, separate offered prices from internal cost, and keep VAT/deposit explicit. No approval, payments, PDF, pricing engine or release scope. Stop after targeted verification for review.
+
+## Client Portal + Approval v1
+
+Owner authorizes D52 / docs/CLIENT_PORTAL.md: separately scoped client access, immutable exact ProjectVersion + PresentationRevision + QuoteVersion snapshots, feedback and customer approval. Internal APIs remain staff-only. Preserve access identity, safe projections, expiry/revocation and historical evidence. No payment, PDF, e-sign provider or production release. Stop after targeted verification for review.

@@ -175,3 +175,7 @@ The presentations module owns version-scoped curated revisions and presentation 
 ## Commercial quotes (D51)
 
 The quotes module owns immutable QuoteVersion content and Decimal calculations, separate from costing and technical evidence. It pins an optional presentation revision and reuses its safe projection. Project Quote editor and isolated client preview use dedicated permission-gated endpoints. See COMMERCIAL_QUOTES.md for calculation/version/security contracts.
+
+## Client portal / approval (D52)
+
+The portal module publishes frozen safe presentation/quote projections with exact source/media references. Dedicated client cookie endpoints never call internal project APIs or grant staff capabilities. Seven additive append-only tables hold snapshots, invitation grants, sessions/end events, revocations, supersessions and customer decisions. PostgreSQL locks/guards protect atomic transitions and immutable evidence. No delivery provider or separate service added. See CLIENT_PORTAL.md; deployment remains local development until production readiness work.
