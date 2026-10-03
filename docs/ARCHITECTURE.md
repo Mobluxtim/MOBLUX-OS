@@ -179,3 +179,7 @@ The quotes module owns immutable QuoteVersion content and Decimal calculations, 
 ## Client portal / approval (D52)
 
 The portal module publishes frozen safe presentation/quote projections with exact source/media references. Dedicated client cookie endpoints never call internal project APIs or grant staff capabilities. Seven additive append-only tables hold snapshots, invitation grants, sessions/end events, revocations, supersessions and customer decisions. PostgreSQL locks/guards protect atomic transitions and immutable evidence. No delivery provider or separate service added. See CLIENT_PORTAL.md; deployment remains local development until production readiness work.
+
+## Payment module (D53)
+
+The payment module reads exact quotes and portal approval references without changing them. Immutable plan revisions, reports and confirmation/reversal events produce a read-only payment prerequisite. Existing source storage supplies optional evidence references; no external banking/payment integration or release orchestration is added. Safe customer projection is separate from internal financial DTOs and is not yet published in the live portal. See PAYMENT_CONDITIONS.md.

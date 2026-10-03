@@ -31,3 +31,7 @@ Apply existing migration/seed commands (`pnpm db:migrate`, `pnpm db:seed`) and r
 ## Published client review (D52)
 
 CLIENT_PORTAL.md now permits exact quote/presentation snapshots through a separate scoped customer session. It reuses these allowlisted offered totals and never exposes internal quote content. Existing staff preview remains unchanged; portal approval is separate immutable evidence rather than a quote mutation. Payment/PDF/release remain deferred.
+
+## Payment-plan boundary (D53)
+
+Versioned internal payment plans now reference the exact quote without altering offered totals, deposit terms or approval. Plan percentages explicitly use total with VAT. No payment data transfers to a newer quote. See PAYMENT_CONDITIONS.md; plan configuration is not customer consent to changed terms.

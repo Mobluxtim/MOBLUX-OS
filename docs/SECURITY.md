@@ -119,3 +119,7 @@ Quote preview is a dedicated allowlisted DTO and standalone UI. Hidden sections/
 ## Implemented client portal boundary (D52)
 
 The earlier blanket customer-portal deferral is superseded only for docs/CLIENT_PORTAL.md. Internal APIs still deny customer access. Separate random 256-bit invitation/session verifiers, single-use redemption, bounded expiry, revocation/logout ledgers, Origin/rate limits and safe projections implement the local portal path. Fragment invitation secrets are not URL query/path logs and are removed before redemption; no secret is persisted or audited. Every media/action/read rechecks the grant. Customer actions use a dedicated immutable access-attributed ledger; staff issue/revoke retains existing audit. Possession of a delivered link is not independently verified identity/e-signature. Production authentication, TLS, delivery infrastructure and live-data retention remain prerequisites before public deployment; loopback development constraints were not relaxed.
+
+## Payment evidence safety (D53)
+
+Payment state and commands enforce dedicated financial capabilities and staff session/Origin checks. Exact plan/milestone/quote/currency/evidence ancestry, per-quote transaction locks, immutable DB guards, idempotency and atomic audit protect history. Reported money never counts without explicit confirmation; reversal appends evidence. No bank credentials or provider dependency. Safe payment projection excludes staff/evidence/internal notes and hidden milestones; no new customer file/payment endpoint. See PAYMENT_CONDITIONS.md.

@@ -104,3 +104,10 @@ Q24 remains unresolved despite three unique non-cabinet candidate tuples: PDF pa
 - Q27: What authoritative additional optimization requirements cover the 21 failed/unplaced fixture units before any complete technical total is accepted? Reported optimized quantities are partial; no guessed sheet/edge/cutting allowance is added.
 
 The eight-category foundation is complete without answering these. They block a complete business-valued result, not the software layer. Selling price, overhead, taxes and the other excluded cost concepts remain future owner-scoped work.
+
+## Payment Conditions v1 — NON-BLOCKING future policy
+
+- Before supporting an explicit no-advance production policy, define the authorized waiver/configuration evidence. v1 returns NOT_CONFIGURED when no production-required milestone is marked, never automatic satisfaction.
+- Before carrying money to a revised plan/quote, define the explicit reconciliation/allocation workflow. v1 preserves historical money on its original plan, without invisible transfers.
+
+These do not block the authorized configuration/report/confirm/reversal increment. See PAYMENT_CONDITIONS.md for implemented boundaries.

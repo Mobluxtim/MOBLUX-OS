@@ -123,3 +123,7 @@ New staff capabilities: presentation.edit (editor, save, upload/attach and inter
 ## Portal access and approval (D52)
 
 Internal portal.view + project.view reads history/evidence. portal.manage + project.view issues/reissues/revokes; issue also checks quote.preview and presentation.preview, while quote selection requires quote.view. Staff cannot approve on behalf of the customer through these commands. Client endpoints authenticate a separate exact-snapshot session rather than the staff RBAC actor, and expose no project enumeration or internal APIs. See CLIENT_PORTAL.md.
+
+## Payment permissions (D53)
+
+All payment APIs require project.view + payment.view. Separate configure/record/confirm/reverse capabilities enforce commands; explicit deny takes precedence. Source evidence attachment/download additionally requires project.files.download and exact source ancestry. Customer portal sessions cannot access these internal endpoints; safe customer contract inspection remains staff-only until publication is implemented. No cost permission is implied.

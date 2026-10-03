@@ -30,3 +30,5 @@
 .client-status p,.client-status pre,.client-portal p{overflow-wrap:anywhere}.client-status textarea{width:100%}.client-portal>header{margin-bottom:24px}.client-portal button{margin:8px 12px 8px 0}
 
 .page-heading>div{min-width:0}.page-heading h1{overflow-wrap:anywhere}
+
+.payments p,.payments h3,.payments h4{overflow-wrap:anywhere}.payments input[type=checkbox]{width:auto}.payments button{margin:6px 10px 6px 0}.payment-milestone,.payment-record{border-top:1px solid var(--line);padding:20px 0}.payment-record h4{margin:0}

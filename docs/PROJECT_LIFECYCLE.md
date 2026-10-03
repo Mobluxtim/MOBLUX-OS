@@ -74,3 +74,7 @@ Saving a QuoteVersion freezes offered terms for exactly one ProjectVersion and o
 ## Sent commercial snapshot lifecycle (D52)
 
 Explicit issuance publishes exact version/presentation/quote as PENDING_CLIENT. Feedback makes it CHANGES_REQUESTED without changing content. Explicit confirmed approval creates immutable evidence and APPROVED for this exact tuple only. Sending a different quote snapshot appends SUPERSEDED to previous sent snapshots; later drafts alone do not replace what the customer is reviewing. New versions never inherit consent. Historical approved evidence survives supersession/revocation. CLIENT_APPROVED is independent of PAYMENT_CONDITION_SATISFIED, technical validation, ProductionRelease and installation CustomerAcceptance. See CLIENT_PORTAL.md.
+
+## Implemented payment prerequisite (D53)
+
+CLIENT_APPROVED and PAYMENT_CONDITION_SATISFIED are separately derived for an exact quote/version. Current plan configuration plus valid confirmed milestone allocations determine only the payment prerequisite. Missing configuration fails closed; partial/reported payments do not imply satisfaction; reversal can invalidate it. New plans/quotes do not inherit allocations. Due triggers remain metadata and no installation/acceptance event is fabricated. Future combined release eligibility/ProductionRelease is not implemented. See PAYMENT_CONDITIONS.md.

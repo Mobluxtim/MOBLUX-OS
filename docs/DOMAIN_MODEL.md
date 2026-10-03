@@ -227,3 +227,7 @@ ProjectVersion has many immutable QuoteVersions. Each quote has an exact predece
 ## Client review snapshot and decisions (D52)
 
 PortalSnapshot links Project/Customer + exact ProjectVersion + PresentationRevision + QuoteVersion and freezes the safe displayed content/hash/media evidence. PortalAccess records immutable recipient context/expiry; PortalSession is a single-redemption scoped verifier. Revocation, session end and supersession append records. PortalAction records REQUEST_CHANGES feedback or the equivalent of CustomerApprovalSnapshot with approved visible content, exact parent references/hash, access identity and timestamp. No source entity is mutated; no payment or post-installation CustomerAcceptance is created. See CLIENT_PORTAL.md.
+
+## PaymentPlan, PaymentReport and PaymentEvent (D53)
+
+PaymentPlan pins ProjectVersion + QuoteVersion and ordered immutable milestone configuration/calculation. PaymentReport references one milestone within an exact plan, amount/currency/date/method/reference, optional same-version SourceFile, reporter/time. PaymentEvent appends confirmation or full reversal with actor/reason/time. No allocation transfers when quote/plan revisions change. Internal configured obligations are not themselves new customer approval evidence. See PAYMENT_CONDITIONS.md.

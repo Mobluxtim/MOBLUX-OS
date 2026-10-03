@@ -46,3 +46,7 @@ Project → Client approval shows exact sent versions, states, contact grants/ex
 Apply migration 0014 and run the existing seed command to grant new capabilities to the development admin; restart the API. No new dependency. Existing development configuration still requires loopback APP_ORIGIN and binds locally. This increment was verified locally in isolated customer browser sessions, not deployed publicly. Public customer delivery requires the separate production authentication/TLS/hosting/retention readiness already described in SECURITY.md; do not expose the development staff login through a public proxy.
 
 CLIENT_APPROVED, PAYMENT_CONDITION_SATISFIED and production authorization remain distinct. The immutable exact-version approval evidence can later be a release prerequisite; it does not satisfy a payment plan or technical validation gate. Deferred: payment processing/reconciliation, invoices, portal account upgrades, automated invitation delivery, PDF, e-sign provider, approval retraction policies and ProductionRelease.
+
+## Payment contracts (D53)
+
+Payment Conditions provides a dedicated allowlisted customer contract, but live portal payment UI/publication remains deferred. Approved portal content stays frozen; reported/confirmed payments do not alter it. A later separate authenticated payment read projection must maintain this exact-snapshot boundary. No proof upload or gateway added.

@@ -80,3 +80,7 @@ Owner authorizes exact-version manual commercial quotes (D51; docs/COMMERCIAL_QU
 ## Client Portal + Approval v1
 
 Owner authorizes D52 / docs/CLIENT_PORTAL.md: separately scoped client access, immutable exact ProjectVersion + PresentationRevision + QuoteVersion snapshots, feedback and customer approval. Internal APIs remain staff-only. Preserve access identity, safe projections, expiry/revocation and historical evidence. No payment, PDF, e-sign provider or production release. Stop after targeted verification for review.
+
+## Payment Conditions / Milestones v1
+
+Owner authorizes D53 / docs/PAYMENT_CONDITIONS.md: immutable exact-quote payment plans, reported/confirmed payments, partial allocation and audited reversal, separate approval/payment gates. No banking, gateway, invoice/accounting or ProductionRelease. Client-safe projection only; no live portal payment UI in this increment. Stop after targeted verification for review.

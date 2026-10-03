@@ -161,3 +161,13 @@ export const portalSessionEnds=pgTable('portal_session_ends',{
 export const portalActions=pgTable('portal_actions',{
  id:id(),snapshotId:uuid('snapshot_id').references(()=>portalSnapshots.id).notNull(),accessId:uuid('access_id').references(()=>portalAccesses.id).notNull(),requestId:uuid('request_id').notNull(),payloadHash:text('payload_hash').notNull(),action:text('action').$type<'APPROVE'|'REQUEST_CHANGES'>().notNull(),message:text('message'),approvedContent:jsonb('approved_content').$type<import('../packages/contracts/portal.js').PortalSnapshot>(),contentHash:text('content_hash').notNull(),createdAt:created()
 },t=>[unique().on(t.accessId,t.requestId)]);
+
+export const paymentPlans=pgTable('payment_plans',{
+ id:id(),projectId:uuid('project_id').references(()=>projects.id).notNull(),versionId:uuid('version_id').references(()=>versions.id).notNull(),quoteId:uuid('quote_id').references(()=>quoteVersions.id).notNull(),number:integer('number').notNull(),previousId:uuid('previous_id'),requestId:uuid('request_id').notNull(),payloadHash:text('payload_hash').notNull(),reason:text('reason').notNull(),currency:text('currency').notNull(),quoteTotal:text('quote_total').notNull(),algorithm:text('algorithm').notNull(),milestones:jsonb('milestones').$type<import('../packages/contracts/payments.js').Milestone[]>().notNull(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+},t=>[unique().on(t.quoteId,t.number),unique().on(t.quoteId,t.requestId)]);
+export const paymentReports=pgTable('payment_reports',{
+ id:id(),planId:uuid('plan_id').references(()=>paymentPlans.id).notNull(),milestoneId:uuid('milestone_id').notNull(),requestId:uuid('request_id').notNull(),payloadHash:text('payload_hash').notNull(),amount:text('amount').notNull(),currency:text('currency').notNull(),paymentDate:text('payment_date').notNull(),method:text('method').notNull(),reference:text('reference').notNull(),evidenceSourceId:uuid('evidence_source_id').references(()=>sources.id),internalNote:text('internal_note').notNull(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+},t=>[unique().on(t.planId,t.requestId)]);
+export const paymentEvents=pgTable('payment_events',{
+ id:id(),paymentId:uuid('payment_id').references(()=>paymentReports.id).notNull(),requestId:uuid('request_id').notNull(),payloadHash:text('payload_hash').notNull(),action:text('action').$type<'CONFIRMED'|'REVERSED'>().notNull(),reason:text('reason').notNull(),createdBy:uuid('created_by').references(()=>users.id).notNull(),createdAt:created()
+},t=>[unique().on(t.paymentId,t.action),unique().on(t.paymentId,t.requestId)]);

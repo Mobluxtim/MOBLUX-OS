@@ -685,3 +685,53 @@ Existing web3000, API3001, PostgreSQL54329 and storage9000 were already running 
 Scope limitations: verified locally; existing loopback/development authentication restrictions remain. This is not a public deployment or independently identity-verified signature. Account upgrades, automated email/SMS, payment processing/reconciliation, invoices, PDF, e-sign provider and ProductionRelease are deferred. No blocker for this bounded local increment. No commit/push. Stop for owner review.
 
 Files changed: AGENTS.md; apps/api/server.ts; apps/web/app/{globals.css,client/page.tsx}; apps/web/components/{workspace,client-status,client-portal}.tsx; database/schema.ts; database/migrations/0014_silly_anthem.sql and meta/{0014_snapshot,_journal}.json; packages/contracts/portal.ts; packages/modules/portal/{service,evidence}.ts; packages/modules/identity/policy.ts; tests/{unit/portal.test.ts,integration/portal.test.ts,e2e/portal.spec.ts}; docs/{CLIENT_PORTAL,CLIENT_PRESENTATION,COMMERCIAL_QUOTES,ARCHITECTURE,DOMAIN_MODEL,PERMISSIONS,SECURITY,PROJECT_LIFECYCLE,DECISIONS,IMPLEMENTATION_REPORT}.md.
+
+## Payment Conditions / Milestones v1 — complete for review (2026-10-03)
+
+Before resume: contracts, Decimal calculation/derived gate, immutable plan/report/event schema and migration 0015, permission-gated API, internal Payments UI were saved; migration/seed applied and root/web typecheck passed. Continued only unfinished targeted tests, browser verification, evidence download UI and documentation; no restart or unrelated refactor.
+
+Completed behavior: exact ProjectVersion + QuoteVersion plan revisions; ordered configurable percentage/fixed milestones, independent design service, due metadata, visibility/notes, explicit production-required flags. Report is not confirmation. Confirmed partial sums use full Decimal precision; full reversals append history and remove the payment from the valid sum. Missing plan/prerequisite configuration fails closed. Exact current client approval and payment satisfaction are separately shown; no release/combined eligibility is created. Old quote/plan payments are not transferred to new revisions. Safe client contract and staff-only preview implemented; live portal payment UI deliberately deferred.
+
+Verification passed:
+- 3 unit tests covering percentage/fixed exact calculation, partial/reported/confirmed/reversed sums, missing configuration, and hidden/internal field exclusion from customer projection.
+- 1 PostgreSQL/private-storage integration scenario covering exact quote approval separate from unpaid gate; immutable/idempotent plan/report/event history; concurrent confirmation retry; partial payments and reversal; revised plan isolation and historical reversal; quote revision without transferred approval/payment; quote fingerprint unchanged; atomic audit; permission denies, customer-session denial and missing-Origin denial; foreign project/milestone/evidence rejection; existing private SourceFile evidence attachment with file permission enforcement. Repeated only to add positive evidence-reference coverage.
+- 1 Chrome desktop/mobile flow passed: create/reorder percentage advance and independent fixed design milestone; report two partial payments; confirm separately; observe payment gate true while client approval remains false; reverse one and observe outstanding/gate reset. No page errors or document overflow. Synthetic records only. Screenshots: ignored test-results/payments-{desktop,mobile}.png.
+- Root/web typecheck, affected-file ESLint and git diff whitespace checks passed. No expensive unrelated suites/build were run; affected route compiled and executed in Next.
+
+Browser example uses TEST data: quote 380.82 RON, 50% prerequisite 190.41, independent fixed design input 25.123456 settling at 25.12. Confirmations of 100 + 90.41 satisfy the required milestone; reversing 100 restores 100 outstanding. These are fixture values, not seeded defaults.
+
+No blocker for this increment. Deferred: live portal payment publication/proof upload, bank/gateway, invoices/accounting, automated matching/reminders, refunds/partial reversals, explicit cross-plan reconciliation/no-advance waiver and ProductionRelease. Existing paid funds remain traceable on historical plans and must not be treated as automatically transferred. The client-safe contract is ready but not presented as newly customer-approved terms.
+
+Only temporary API PID 18564 on port 3101 was stopped; browser contexts closed. Existing web3000 (14404), API3001 (7848), PostgreSQL54329 (26496), storage9000 (19580) remain running. Restart the normal API when ready to load these new endpoints. No dependency installed, commit or push.
+
+Changed files:
+- AGENTS.md
+- apps/api/server.ts
+- apps/web/app/globals.css
+- apps/web/components/workspace.tsx
+- apps/web/components/payments.tsx
+- database/schema.ts
+- database/migrations/0015_warm_the_order.sql
+- database/migrations/meta/0015_snapshot.json
+- database/migrations/meta/_journal.json
+- packages/contracts/payments.ts
+- packages/modules/payments/calculation.ts
+- packages/modules/payments/service.ts
+- packages/modules/identity/policy.ts
+- tests/fixtures/payments.ts
+- tests/unit/payments.test.ts
+- tests/integration/payments.test.ts
+- tests/e2e/payments.spec.ts
+- docs/PAYMENT_CONDITIONS.md
+- docs/ARCHITECTURE.md
+- docs/DOMAIN_MODEL.md
+- docs/PERMISSIONS.md
+- docs/SECURITY.md
+- docs/PROJECT_LIFECYCLE.md
+- docs/COMMERCIAL_QUOTES.md
+- docs/CLIENT_PORTAL.md
+- docs/DECISIONS.md
+- docs/OPEN_QUESTIONS.md
+- docs/IMPLEMENTATION_REPORT.md
+
+Stopped for owner review.

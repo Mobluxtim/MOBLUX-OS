@@ -13,6 +13,7 @@ import * as hardware from '../../packages/modules/projects/hardware.js';
 import * as machining from '../../packages/modules/projects/machining.js';
 import * as quotes from '../../packages/modules/quotes/service.js';
 import * as portal from '../../packages/modules/portal/service.js';
+import * as payments from '../../packages/modules/payments/service.js';
 import * as presentation from '../../packages/modules/presentations/service.js';
 import {maxPresentationBytes} from '../../packages/modules/presentations/media.js';
 import * as costing from '../../packages/modules/costing/service.js';
@@ -41,6 +42,12 @@ export function buildServer(logging = false) {
     return reply.status(503).send({ error: 'The service is unavailable. Check that the database and object storage are running, then retry.' });
   });
   app.get('/api/health', async () => ({ status: 'ok', mode: 'local-development' }));
+  app.get<{Params:{id:string}}>('/api/projects/:id/payment-quotes',async req=>payments.options(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id)));
+  app.get<{Params:{id:string;quoteId:string}}>('/api/projects/:id/quotes/:quoteId/payments',async req=>payments.state(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.quoteId)));
+  app.post<{Params:{id:string;quoteId:string}}>('/api/projects/:id/quotes/:quoteId/payment-plans',async req=>payments.configure(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.quoteId),req.body));
+  app.post<{Params:{id:string;planId:string}}>('/api/projects/:id/payment-plans/:planId/reports',async req=>payments.report(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.planId),req.body));
+  app.get<{Params:{id:string;planId:string}}>('/api/projects/:id/payment-plans/:planId/client-preview',async req=>payments.safePreview(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.planId)));
+  app.post<{Params:{id:string;paymentId:string}}>('/api/projects/:id/payments/:paymentId/events',async req=>payments.event(await authenticate(req.cookies.moblux_session),uuid.parse(req.params.id),uuid.parse(req.params.paymentId),req.body));
   app.post('/api/client/redeem', {config:{rateLimit:{max:10,timeWindow:'1 minute'}}}, async(req,reply)=>{
     const {token}=z.object({token:z.string().max(100)}).strict().parse(req.body),session=await portal.redeem(token);
     reply.setCookie('moblux_client',session.token,{path:'/api/client',httpOnly:true,sameSite:'strict',secure:env.APP_ORIGIN.startsWith('https:'),expires:session.expiresAt});return {ok:true};
